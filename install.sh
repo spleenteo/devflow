@@ -37,5 +37,5 @@ plugins="$HOME/.claude/plugins/installed_plugins.json"
 if [ -f "$plugins" ] && grep -q '"superpowers@' "$plugins"; then
   echo "  ok     superpowers (plugin)"
 else
-  echo "  MANCA  superpowers  (claude plugin install superpowers@claude-plugins-official)"
+  echo "  MANCA  superpowers  (in Claude Code: /plugin install superpowers@claude-plugins-official)"
 fi

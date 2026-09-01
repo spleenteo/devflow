@@ -4,6 +4,25 @@ Tre skill per [Claude Code](https://claude.com/claude-code) che conducono un lav
 
 Questa guida è per chi deve installarle e lavorarci. Il dettaglio di cosa fa ogni skill sta nei rispettivi `SKILL.md`, che legge Claude; qui c'è il punto di vista di chi le usa.
 
+## Primi passi
+
+Le skill si installano **una volta sulla macchina**, non nei progetti. Dopo `install.sh` valgono in ogni repo che apri con Claude Code, senza copiare niente dentro il repo.
+
+Per provarla su un progetto, per esempio `~/Sites/dsm/acacia-2026`:
+
+```bash
+cd ~/Sites/dsm/acacia-2026
+claude
+```
+
+e nella sessione:
+
+```
+/devflow
+```
+
+La skill fa le domande di apertura e crea `docs/lavori/` al primo lavoro. Se `/devflow` non viene riconosciuto, la macchina non ha ancora le skill: vedi [Installazione sulla macchina](#installazione-sulla-macchina).
+
 ## L'idea in tre righe
 
 Il piano ad alto livello è la definizione delle slice, che nasce dallo shaping. Il piano di dettaglio di ogni slice si scrive subito prima di eseguirla, dopo che la precedente è chiusa: eseguire la slice N insegna cose che il piano di N+1 deve contenere, e un piano scritto settimane prima le ignora.

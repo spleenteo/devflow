@@ -272,3 +272,5 @@ Code, changelog, version and archived work land on `main` in one changeset. If t
 | Archiving | `devflow-archive` | this repo |
 
 `shaping`, `breadboarding`, `framing-doc`, `brainstorming`, `grill-me` aren't in the table because they aren't moments: they're tools this skill picks up when needed.
+
+A devflow work can be one action of a `projectflow` plan: the project's row says *"devflow work `<slug>` merged"*, this skill runs the work in its repo, and the row closes at the merge. The two skills share their skeleton and are kept in sync by hand.

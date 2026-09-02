@@ -1,10 +1,13 @@
 # devflow
 
-Claude Code skills that run a development work from idea to code, one slice at a time.
+Claude Code skills that run a piece of work from idea to done, one slice at a time. Two conductors on one skeleton:
 
-Shaping produces the slices. The detailed plan of each slice is written right before executing it, so it carries what the previous slices taught. Plans are reviewed by independent subagents, execution is delegated task by task, and every step returns to you before the next one starts. State lives in the repo: a work resumes from where it stopped, days later, in a new session.
+- **`devflow`** for software: the executor is code, written by subagents in a repo.
+- **`projectflow`** for everything else: the executor is people, over weeks or months, in a folder.
 
-Works with any stack. Adds nothing to your project's `CLAUDE.md`.
+Shaping produces the slices. The detailed plan of each slice is written right before it starts, so it carries what the previous slices taught. Plans are reviewed by a fresh head, and the flow returns to you at two points per slice. State lives on disk: a work resumes from where it stopped, days later, in a new session.
+
+`devflow` works with any stack and adds nothing to your project's `CLAUDE.md`. `projectflow` lives in a folder of your choice, outside any code repo.
 
 ## Install
 
@@ -12,7 +15,7 @@ Works with any stack. Adds nothing to your project's `CLAUDE.md`.
 npx skills add spleenteo/devflow -g
 ```
 
-Then the skills devflow invokes:
+That installs `devflow`, `devflow-docs`, `devflow-archive` and `projectflow`. Then the skills they invoke:
 
 ```bash
 npx skills add rjs/shaping-skills -g -s shaping -s breadboarding -s framing-doc
@@ -29,7 +32,7 @@ git clone https://github.com/spleenteo/devflow.git
 cd devflow && ./install.sh
 ```
 
-`install.sh` symlinks the three skills into `~/.claude/skills/` (so `git pull` updates them), checks every dependency, and asks before installing a missing one or updating an existing one.
+`install.sh` symlinks the four skills into `~/.claude/skills/` (so `git pull` updates them), checks every dependency, and asks before installing a missing one or updating an existing one.
 
 ```bash
 ./install.sh --check   # report only
@@ -84,7 +87,50 @@ Code, changelog, version and archived work land on `main` in one changeset. Both
 /devflow-archive
 ```
 
-## What lands in the repo
+## Projectflow
+
+For a project that isn't software: a renovation, a client engagement, a strategy, a personal plan. Open Claude Code anywhere and type:
+
+```
+/projectflow
+```
+
+**Opening.** One message with seven questions and proposed answers: what to achieve, a name, where it lives (inside a Maestro instance, `<documents_path>/<Name>/`; elsewhere, a folder you name), the appetite (time and money as a box, with a stop when it's reached), who's involved, source material, whether the outcome is already clear in one sentence.
+
+**Definition.** `frame.md` from dialogue or transcripts (`framing-doc`), `shaping.md` with the appetite as a hard constraint, `kickoff.md` from the call with the people who will execute (`kickoff-doc`), `slices.md` with at most nine slices per level, each ending in something observable in the world. Then a reality check by two subagents: money, time, people, permissions; dependencies and points of no return, existence of what the slices name, and a pre-mortem.
+
+**Slice loop**, two stops per slice:
+
+1. `plan`: an action table written with you (who, when, needs, cost, done when), under sixty lines.
+2. `review`: a fresh head checks fidelity, ignored lessons, availability, constraints. First stop.
+3. `execute`: people act; you report; the skill updates the plan, logs what was spent, records surprises and proposes decisions as they happen.
+4. `close`: the Done verified with evidence, spent against budget, lessons into `lessons.md`. Second stop.
+
+**Handoffs.** An action that is software is written as "devflow work `<slug>` merged" and run with `devflow` in its repo. A slice that needs its own slices becomes a sub-project folder with its own `STATUS.md`.
+
+**Exit.** `report.md`: what was done, spent against the appetite, decisions, lessons, what was left out. Then, if you want, the folder moves to an `archive/` next to it.
+
+```
+<Project>/
+  STATUS.md
+  constraints.md
+  frame.md
+  shaping.md
+  slices.md
+  lessons.md
+  S1-plan.md
+  S2-plan.md
+  S3-plumbing/          # a sub-project
+    STATUS.md
+    slices.md
+  decisions/
+    2026-09-10-local-supplier-over-cheaper.md
+  report.md
+```
+
+`devflow` and `projectflow` share their skeleton by design and are kept in sync by hand: a change to one is a question for the other.
+
+## What lands in the repo (devflow)
 
 ```
 .version
@@ -116,6 +162,7 @@ Markdown only, versioned with the code. `docs/` is the project's memory: what sh
 | `devflow` | Conductor: opening, definition phases, slice loop |
 | `devflow-docs` | Changelog entry and version bump |
 | `devflow-archive` | Archive a closed work, repair links |
+| `projectflow` | Conductor for projects that aren't software: appetite, reality check, action plans, people as executors |
 
 Impact lenses per stack (Rails, Astro, React, Node, generic): [`devflow/lenses.md`](devflow/lenses.md).
 
@@ -157,15 +204,15 @@ A missing dependency doesn't block start-up: devflow reports it when the phase t
 ## Update
 
 ```bash
-npx skills update devflow devflow-docs devflow-archive -g   # npx install
+npx skills update devflow devflow-docs devflow-archive projectflow -g   # npx install
 git -C <clone> pull                                          # clone install
 ```
 
 ## Uninstall
 
 ```bash
-npx skills remove devflow devflow-docs devflow-archive
-# or, for a clone: rm ~/.claude/skills/devflow{,-docs,-archive}
+npx skills remove devflow devflow-docs devflow-archive projectflow
+# or, for a clone: rm ~/.claude/skills/{devflow,devflow-docs,devflow-archive,projectflow}
 ```
 
 Projects are untouched: `docs/work/` is plain markdown.

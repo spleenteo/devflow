@@ -54,7 +54,7 @@ run() {
 
 echo "devflow skills -> $SKILLS_DIR"
 [ "$CHECK" = 1 ] || mkdir -p "$SKILLS_DIR"
-for s in devflow devflow-docs devflow-archive; do
+for s in devflow devflow-docs devflow-archive projectflow; do
   t="$SKILLS_DIR/$s"
   if [ -L "$t" ] && [ "$(readlink "$t")" = "$HERE/$s" ]; then
     echo "  ok       $s"

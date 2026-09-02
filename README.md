@@ -69,11 +69,17 @@ Open Claude Code inside the project and type:
 
 **Bugfix.** Same skill, short path: one slice, impact if it touches more than one file, the loop once.
 
-**Close.**
+**Close.** When the last slice is closed and you confirm the work is complete, devflow runs the closing sequence, asking before each step:
+
+1. `devflow-docs`: changelog entry and `.version`, committed on the branch.
+2. `devflow-archive`: the work folder moves to `docs/work/archive/`, committed on the branch.
+3. The branch is ready to merge into `main`. Devflow doesn't merge or push.
+
+Code, changelog, version and archived work land on `main` in one changeset. Both skills can also be invoked on their own:
 
 ```
-/devflow-docs      # before the merge: changelog entry and version bump
-/devflow-archive   # after the merge: moves the work to docs/work/archive/
+/devflow-docs
+/devflow-archive
 ```
 
 ## What lands in the repo

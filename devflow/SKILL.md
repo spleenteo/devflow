@@ -24,7 +24,7 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Skip steps silently | When it skips one, it says which and why |
 | Apply corrections on its own | Verifications propose, one at a time; the user decides |
 | Touch `CLAUDE.md` or write config on its own | `.devflow.yml` is written only to record a layout the user chose at first run (Step 0) |
-| Write the changelog or archive | That's `devflow-docs` and `devflow-archive` |
+| Write the changelog or archive itself | It invokes `devflow-docs` and `devflow-archive` in the closing sequence (Step 6), each after asking |
 
 **The rule that matters most**: a long session where the skill barrels ahead is worse than no skill. Between steps, always return to the user.
 
@@ -211,9 +211,14 @@ Applies to the definition phases and to the four loop steps. Four moves, in orde
 
 ## Step 6 — Exit
 
-When the last slice is closed: `phase: done`, `status: closed`. Report in a few lines: where the work lives, phases done and skipped (with why), slice count, what the verifications found.
+When the last slice is closed and the user confirms the work is complete, run the closing sequence. Each step asks before running; the user may stop at any point.
 
-Then propose, without running: `/devflow-docs` for changelog and version before the merge, `/devflow-archive` after.
+1. **Close the work.** `phase: done`, `status: closed`, final Log line, commit.
+2. **Docs.** Ask, then invoke `devflow-docs`: changelog entry and `.version`, committed on the branch.
+3. **Archive.** Ask, then invoke `devflow-archive`: the work folder moves to `docs/work/archive/`, committed on the branch.
+4. **Report.** Where the work lived, phases done and skipped (with why), slice count, what the verifications found, version assigned. Then say it plainly: the branch is ready to merge into `main`. Devflow doesn't merge or push.
+
+Code, changelog, version and archived work land on `main` in one changeset. If the merge review asks for changes that need the work's documents, move them back with `git mv`: they're plain files in git.
 
 ## The short path
 

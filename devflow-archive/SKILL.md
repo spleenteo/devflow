@@ -5,7 +5,7 @@ description: Use to archive a devflow work that is finished and already recorded
 
 # Devflow Archive
 
-Moves a finished work to `docs/work/archive/` and repairs its references. Paths assume the default root; with `root` in `.devflow.yml`, substitute it for `docs`.
+Moves a finished work to `docs/work/archive/` and repairs its references. Runs on the work's branch, after `devflow-docs` and before the merge, so the archived folder lands on `main` together with the code. Invoked on its own or from devflow's closing sequence, always after the user confirms. Paths assume the default root; with `root` in `.devflow.yml`, substitute it for `docs`.
 
 ## Why
 

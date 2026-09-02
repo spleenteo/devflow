@@ -22,7 +22,7 @@ Binding list. If you feel like doing one of these, don't.
 
 ## When it runs
 
-Only on explicit invocation. If at the end of a session the work looks finished, say so in one line and stop: the user knows whether it's done or continues tomorrow.
+On explicit invocation, or from devflow's closing sequence after the user has confirmed the work is complete. Never on its own: if at the end of a session the work looks finished, say so in one line and stop. The user knows whether it's done or continues tomorrow.
 
 > "The work looks finished: update the changelog? (`/devflow-docs`)"
 
@@ -85,7 +85,6 @@ One or two sentences: what changes and why it was done.
 - **Label**: plain-language sentence.
 - **Work**: `<slug>`
 - **Decision**: [readable slug](docs/decisions-log/YYYY-MM-DD-slug.md)
-- **Release**: merge `a1b2c3d`
 
 ---
 ```
@@ -97,7 +96,6 @@ One or two sentences: what changes and why it was done.
 - **Bullets**: a bold label naming the concept, then a plain sentence. No commit list: forty commits still make four bullets.
 - **Work**: the work's slug in `docs/work/`. It's the hook that survives archiving: `rg "<slug>" CHANGELOG.md` must find the entry.
 - **Decision**: links to the `docs/decisions-log/` files that explain why. Check the file exists before linking. If the work took decisions no file records, flag it in the final report: a decision is missing, but this skill doesn't write it. Omit the bullet if the repo has no `decisions-log/`.
-- **Release**: the merge sha, or the direct commits. It finds the changeset, nothing more.
 - **No "files changed" section**: this is a register, not a diff.
 - **No operational instructions**: migrations, backfills and secrets don't go here.
 - **No emoji**, unless the feature itself uses one.
@@ -117,7 +115,7 @@ git commit -m "Record vX.Y.Z in the changelog"
 - Never `git add -A` or `git add .`.
 - Never `--amend`: if the commit was pushed, rewriting it does more harm than good.
 - Imperative message, in the language the repo's history already uses.
-- The commit goes on the work's branch, before the merge: docs and code land on `main` in the same changeset.
+- The commit goes on the work's branch, before the merge: docs and code land on `main` in the same changeset. The archive commit follows it, on the same branch.
 
 ## Step 6 — Final report
 

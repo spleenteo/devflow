@@ -18,7 +18,7 @@ Binding list. If you feel like doing one of these, don't.
 | Describe migrations, backfills, secrets | The changelog says what changed, not what to do in production | The slice's plan and `STATUS.md` |
 | Publish anything outward | Landing pages, public release notes, posts: the user decides | Outside the repo |
 | Propose a major version | A product generation is a human decision | Step 2 |
-| Use `git add -A` or `git add .` | The working tree may hold unrelated work | Step 6 |
+| Use `git add -A` or `git add .` | The working tree may hold unrelated work | Step 5 |
 
 ## When it runs
 
@@ -31,11 +31,12 @@ Only on explicit invocation. If at the end of a session the work looks finished,
 | What | Where | If missing |
 |---|---|---|
 | Changelog | `CHANGELOG.md` at the repo root | Created, with a two-line intro and the first entry |
-| Version | `version` field of `package.json` | Look for a `VERSION` file or a gemspec; if none, ask where it lives or skip the bump and say so |
-| Code placement rules | `docs/project-structure.md` | Ignored |
+| Version | `.version` at the repo root: one line, e.g. `1.4.2` | Created in Step 4, after asking the user for the current version |
 | Decisions | `docs/decisions-log/` | The "Decision" bullet is omitted |
 
-A `.devflow.yml` at the root with `changelog` and `version_file` overrides the first two. Read if present, never created.
+A `.devflow.yml` at the root with `changelog` and `version_file` overrides the first two; `root` moves `docs/`. Read if present, never created here.
+
+`package.json` is not touched: its `version` tracks the package, not the application.
 
 **Language**: that of the existing changelog entries. For a new changelog, that of the rest of `docs/`.
 
@@ -49,7 +50,7 @@ git diff main..HEAD --stat
 git status --short
 ```
 
-Read the changelog: existing entries set tone and detail, and the top one carries the last version. Read the work's `STATUS.md` and `slices.md` in `docs/work/`: the "V<n> — done on" sections say what really happened.
+Read the changelog: existing entries set tone and detail. Read `.version` for the current number; if the file is missing, ask the user what the current version is (suggest `0.1.0` for a project not yet released, `1.0.0` for one in production). Read the work's `STATUS.md` and `slices.md` in `docs/work/`: the "V<n> — done on" sections say what really happened.
 
 If the branch holds unrelated works, don't force them into one entry: ask whether they are one release or two. If it's unclear what to document, ask: *"Which work should I record?"*
 
@@ -103,23 +104,13 @@ One or two sentences: what changes and why it was done.
 
 ## Step 4 — Bump the version
 
-Set the `version` field (or the equivalent file) to the number computed in Step 2. It's the only place the version lives.
+Write the number computed in Step 2 to `.version`, nothing else in the file, newline-terminated. Create the file if missing. It's the only place the application version lives.
 
-## Step 5 — `project-structure.md`, only if needed
-
-If `docs/project-structure.md` exists, it's the code placement rule: where things go, and how to choose between two plausible directories. Update it only if the work:
-
-- created or removed a directory pattern (a new place for a *category* of code);
-- changed the criterion for choosing between two existing places;
-- introduced or removed an application area or an external service.
-
-A new file in an existing directory is not a reason to touch it. For most works this step is a no-op: say so and move on.
-
-## Step 6 — Commit
+## Step 5 — Commit
 
 ```bash
 git status --short                      # show it to the user first
-git add CHANGELOG.md package.json       # ONLY the touched files, explicitly
+git add CHANGELOG.md .version           # ONLY the touched files, explicitly
 git commit -m "Record vX.Y.Z in the changelog"
 ```
 
@@ -128,13 +119,12 @@ git commit -m "Record vX.Y.Z in the changelog"
 - Imperative message, in the language the repo's history already uses.
 - The commit goes on the work's branch, before the merge: docs and code land on `main` in the same changeset.
 
-## Step 7 — Final report
+## Step 6 — Final report
 
 Briefly:
 
 - version assigned and why that level;
 - title of the entry written;
-- whether `project-structure.md` was touched (or the declared no-op);
 - missing decisions: choices made during the work that no file explains;
 - what remains to be done by hand after the merge, if the plan says so (backfills, secrets, migrations), as a reminder in the report and never in the changelog;
 - a reminder that the work's `STATUS.md` must say `status: closed`, and that after the merge it can be archived with `/devflow-archive`.

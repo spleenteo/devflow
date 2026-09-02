@@ -23,7 +23,7 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Decide a step is finished | It closes, commits, stops and asks before the next one |
 | Skip steps silently | When it skips one, it says which and why |
 | Apply corrections on its own | Verifications propose, one at a time; the user decides |
-| Touch `CLAUDE.md` or create config files | Conventions suffice; the override file is written by the user only |
+| Touch `CLAUDE.md` or write config on its own | `.devflow.yml` is written only to record a layout the user chose at first run (Step 0) |
 | Write the changelog or archive | That's `devflow-docs` and `devflow-archive` |
 
 **The rule that matters most**: a long session where the skill barrels ahead is worse than no skill. Between steps, always return to the user.
@@ -32,12 +32,30 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 
 | What | Convention | Detection |
 |---|---|---|
-| Work home | `docs/work/` | Created on the first work |
+| Root | `docs/` | Everything devflow writes lives under it: `docs/work/`, `docs/decisions-log/`, `docs/development-guidelines.md`. Checked at first run (Step 0) |
 | Stack | `rails`, `astro`, `react`, `node`, `generic` | `Gemfile` + `config/application.rb` → rails; `astro.config.*` → astro; `package.json` with `react` in dependencies → react; `package.json` without → node; else generic |
-| Repo standards | `CLAUDE.md`, `docs/dev-standards.md`, `docs/decisions-log/` | Read if present, ignored if not |
+| Guidelines | `docs/development-guidelines.md` | Read if present; passed to every plan, review and execution. Template in `development-guidelines.template.md` next to this skill |
+| Decisions | `docs/decisions-log/` | Read by impact and review; written on request at the close of a step. Format in `decisions-log.md` next to this skill |
 | Impact lenses | Per stack, in `lenses.md` next to this skill | Chosen from the detected stack |
 
-A project can override the defaults with `.devflow.yml` at its root: keys `work_dir`, `stack`, `changelog`, `version_file`. Read if present. Never created by the skill.
+A project can override the defaults with `.devflow.yml` at its root: keys `root`, `stack`, `changelog`, `version_file`. Read if present. The skill writes it in one case only: Step 0, to record a non-default root the user chose. Paths in this document assume the default root.
+
+## Step 0 — First run in a repo
+
+Runs once: when there is no `docs/work/` and no `.devflow.yml`.
+
+```bash
+ls -d docs docs/work docs/decisions-log docs/development-guidelines.md .devflow.yml 2>/dev/null
+```
+
+**`docs/` doesn't exist** → create `docs/work/` and say so in one line.
+
+**`docs/` exists** → it's already someone's namespace. Say what devflow will add inside it (`work/`, `decisions-log/`, `development-guidelines.md`), report any collision (one of those paths already present with content devflow didn't write), and ask:
+
+1. **Keep `docs/` (recommended).** Devflow's folders sit next to the existing ones. If something collides, the user moves or renames it first: devflow never moves files it doesn't own.
+2. **Use a top-level `devflow/` folder (discouraged).** Documentation splits in two places, and readers look in `docs/` first. If chosen, write `.devflow.yml` with `root: devflow` and say so.
+
+Then, if `docs/development-guidelines.md` is missing, offer to create it from `development-guidelines.template.md` next to this skill. The user fills it in; if they decline, don't create it: an empty template is worse than none.
 
 ## On start: open or resume
 
@@ -134,7 +152,7 @@ For each phase: invoke the tool telling it where to save, commit, update `phase:
 
 ### `phase: impact`, once, on `slices.md`
 
-The slices against the real code, before the first plan. Subagents in parallel, one per lens, each with the word `ultrathink` in the prompt you pass. Lenses live in `lenses.md`: the common ones plus the detected stack's. Each subagent reads `slices.md`, `shaping.md` and `breadboard.md` if present, and the code the slices touch.
+The slices against the real code, before the first plan. Subagents in parallel, one per lens, each with the word `ultrathink` in the prompt you pass. Lenses live in `lenses.md`: the common ones plus the detected stack's. Each subagent reads `slices.md`, `shaping.md` and `breadboard.md` if present, `docs/decisions-log/` and `docs/development-guidelines.md` if present, and the code the slices touch.
 
 Not in session: whoever just ran the shaping is the worst head for seeing what breaks elsewhere.
 
@@ -150,31 +168,32 @@ From here `phase: slice`. For each slice, in `slices.md` order, four steps. `ste
 
 ### `step: plan`
 
-Invoke `writing-plans` with the slice's section of `slices.md`, `shaping.md` and `breadboard.md` if present, and **the lessons left by closed slices**. Path: `V<n>-plan.md` in the work's home, with the explicit path instruction.
+Invoke `writing-plans` with the slice's section of `slices.md`, `shaping.md` and `breadboard.md` if present, `docs/development-guidelines.md` if present (the plan's tests, naming and structure must follow it), and **the lessons left by closed slices**. Path: `V<n>-plan.md` in the work's home, with the explicit path instruction.
 
 Writing the plan surfaces deviations from the mandate: an affordance better moved to another slice, a file that doesn't exist, a mechanism the shape didn't foresee. State them to the user and record them in `slices.md` under **"Deviations found while planning V<n>"**. The high-level document stays true.
 
 ### `step: review`
 
-The plan against the documents, by a subagent with `ultrathink`, never in session: whoever just wrote the plan is the worst head for finding its contradictions. It reads the plan, `slices.md` in full, `shaping.md` and `breadboard.md`, the closed slices' lessons, and `docs/decisions-log/` and `docs/dev-standards.md` if present.
+The plan against the documents, by a subagent with `ultrathink`, never in session: whoever just wrote the plan is the worst head for finding its contradictions. It reads the plan, `slices.md` in full, `shaping.md` and `breadboard.md`, the closed slices' lessons, and `docs/decisions-log/` and `docs/development-guidelines.md` if present.
 
 | Lens | Looks for |
 |---|---|
 | **Mandate fidelity** | The plan does things the slice doesn't call for; contradicts a shaping or breadboard choice; the Done criteria aren't covered by the tasks |
 | **Ignored lessons** | A rule written by a closed slice that the plan doesn't follow; the same mistake already made and documented |
 | **Existence** | The files, symbols and methods the plan names exist, and do what the plan assumes |
+| **Guideline compliance** | Tests, naming, function size and code placement in the plan follow `docs/development-guidelines.md`, if present |
 
-With one plan, the three lenses fit in one subagent. Corrections one at a time. Plans to correct go back through `writing-plans` with the inconsistency and the approved fix, plus a three-line statement of what changed: a regenerated plan is long, and a three-line fix shouldn't force a full reread.
+With one plan, the lenses fit in one subagent. Corrections one at a time. Plans to correct go back through `writing-plans` with the inconsistency and the approved fix, plus a three-line statement of what changed: a regenerated plan is long, and a three-line fix shouldn't force a full reread.
 
 ### `step: execute`
 
-`subagent-driven-development` on the plan. One subagent per task, an independent review per task. That skill runs without stopping between tasks: that's how it works and it isn't changed here. The return to the user sits before (plan and review) and after (close).
+`subagent-driven-development` on the plan, passing `docs/development-guidelines.md` if present: implementers and reviewers must follow it. One subagent per task, an independent review per task. That skill runs without stopping between tasks: that's how it works and it isn't changed here. The return to the user sits before (plan and review) and after (close).
 
 If execution finds the plan wrong at a point the subagent's ruling can't cover: stop, fix the plan, restart from the interrupted task.
 
 ### `step: close`
 
-1. Verify the slice's Done as written in `slices.md`, plus the repo gate if present (`docs/dev-standards.md`; else tests green, typecheck or lint green, build green). If the slice is a refactor, the Done is a regression checklist written before starting and run by hand before committing: a "look, nothing changed" demo proves nothing unless it's a list of things to try.
+1. Verify the slice's Done as written in `slices.md`, plus the gate: the `## Gate` section of `docs/development-guidelines.md` if present, else tests green, typecheck or lint green, build green. If the slice is a refactor, the Done is a regression checklist written before starting and run by hand before committing: a "look, nothing changed" demo proves nothing unless it's a list of things to try.
 2. Write in `slices.md`, under the slice, a section **"V<n> — done on <date>"** with what execution revealed that matters for later slices. When a finding is a rule, phrase it as one: *"before declaring something unused, grep all of `src`, value and setter, and say in the report where you looked."*
 3. Tick the slice in `STATUS.md`, set `slice:` to the next one and `step:` to `plan`, add a Log line.
 4. Commit, stop, ask: *"V3 closed and committed. Write the plan for V4, or stop here?"*
@@ -187,7 +206,7 @@ Applies to the definition phases and to the four loop steps. Four moves, in orde
 
 1. **Commit** the document or code just produced. Explicit `git add` on the touched files, never `-A` or `.`: the working tree may hold unrelated work. Imperative messages, in the language the repo already uses.
 2. **Update `STATUS.md`**: `phase:`, `slice:`, `step:`, `updated:`, Log line. After a verification the line states the outcome: *"09-02 — impact on slices.md: 2 problems, fixed in V2 and V4"*.
-3. **Ask whether a choice should be recorded.** If the repo has `docs/decisions-log/`, apply its criterion. If it doesn't and the decision is one that will surprise in a month (a real alternative discarded, a known problem deferred), propose writing it in `slices.md` under a "Decisions" section. Now is the time: in two weeks the reason has faded.
+3. **Ask whether a choice should be recorded.** Apply the criterion in `decisions-log.md` next to this skill: a real alternative discarded, a known problem deferred on purpose, a behaviour that will surprise whoever reads the code. If it applies, propose `docs/decisions-log/YYYY-MM-DD-<slug>.md` in that format; never write it unasked. Now is the time: in two weeks the reason has faded.
 4. **Stop and ask** before the next step.
 
 ## Step 6 — Exit

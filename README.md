@@ -44,6 +44,8 @@ Open Claude Code inside the project and type:
 /devflow
 ```
 
+**First run in a repo.** If `docs/` doesn't exist, devflow creates `docs/work/`. If it does, devflow says what it will add inside it (`work/`, `decisions-log/`, `development-guidelines.md`), reports collisions, and asks whether to keep `docs/` (recommended) or use a top-level `devflow/` folder (discouraged: documentation ends up in two places). It then offers to create `docs/development-guidelines.md` from a template.
+
 **Opening.** Five questions, one at a time: what to build, a code name, source material, whether the outcome is already clear in one sentence (technical work skips to slicing; product work starts from the frame), whether the problem is clear. Then `docs/work/<date>-<slug>/STATUS.md` is created and the path is declared.
 
 **Definition.** Each phase writes one document in the work's folder, commits, and stops:
@@ -58,10 +60,10 @@ Open Claude Code inside the project and type:
 
 **Slice loop.** For each slice, in order:
 
-1. `plan`: `writing-plans` writes `V<n>-plan.md` from the slice, the shaping and the lessons of closed slices. Deviations from the mandate are recorded in `slices.md`.
-2. `review`: a subagent checks the plan against the documents: mandate fidelity, ignored lessons, existence of what the plan names.
-3. `execute`: `subagent-driven-development` runs the plan, one subagent per task with a review each.
-4. `close`: Done criteria verified, lessons written under the slice in `slices.md`, `STATUS.md` updated, commit. Then: "V3 closed. Plan V4, or stop here?"
+1. `plan`: `writing-plans` writes `V<n>-plan.md` from the slice, the shaping, the guidelines and the lessons of closed slices. Deviations from the mandate are recorded in `slices.md`.
+2. `review`: a subagent checks the plan against the documents: mandate fidelity, ignored lessons, existence of what the plan names, guideline compliance.
+3. `execute`: `subagent-driven-development` runs the plan, one subagent per task with a review each, guidelines in hand.
+4. `close`: the gate is green, lessons written under the slice in `slices.md`, `STATUS.md` updated, commit. Then: "V3 closed. Plan V4, or stop here?"
 
 **Resume.** `/devflow` again, or "resume mobile-menu". The skill reads `STATUS.md` and offers to continue from `phase`, `slice` and `step`.
 
@@ -77,21 +79,26 @@ Open Claude Code inside the project and type:
 ## What lands in the repo
 
 ```
+.version
 CHANGELOG.md
-docs/work/
-  archived.md
-  2026-09-02-mobile-menu/
-    STATUS.md
-    shaping.md
-    slices.md
-    spike-view-transitions.md
-    V1-plan.md
-    V2-plan.md
-  archive/
-    2026-08-20-list-filter/
+docs/
+  development-guidelines.md
+  decisions-log/
+    2026-09-03-server-side-locale-detection.md
+  work/
+    archived.md
+    2026-09-02-mobile-menu/
+      STATUS.md
+      shaping.md
+      slices.md
+      spike-view-transitions.md
+      V1-plan.md
+      V2-plan.md
+    archive/
+      2026-08-20-list-filter/
 ```
 
-Markdown only, versioned with the code. On the first archive, `devflow-archive` offers to add a `deny` on `docs/work/archive/**` to `.claude/settings.json`, so closed works stop consuming context. You can decline.
+Markdown only, versioned with the code. `.version` holds the application version, one line; `package.json` is left alone, its version tracks the package. On the first archive, `devflow-archive` offers to add a `deny` on `docs/work/archive/**` to `.claude/settings.json`, so closed works stop consuming context. You can decline.
 
 ## Skills
 
@@ -103,20 +110,28 @@ Markdown only, versioned with the code. On the first archive, `devflow-archive` 
 
 Impact lenses per stack (Rails, Astro, React, Node, generic): [`devflow/lenses.md`](devflow/lenses.md).
 
+## Development guidelines
+
+`docs/development-guidelines.md` is where you write the rules plans and code must follow: how tests are written, naming, how functions are split, where code goes, what a commit contains, and the `## Gate` (the commands that must be green before a slice closes). Devflow passes it to every plan, review and execution; the review checks compliance. Template: [`devflow/development-guidelines.template.md`](devflow/development-guidelines.template.md). Keep it short and checkable.
+
+## Decisions log
+
+`docs/decisions-log/` keeps the *why*: one dated file per decision, with context, the decision, the alternatives discarded and the consequences. Written only when a real alternative was discarded, a known problem was deferred on purpose, or the behaviour will surprise whoever reads the code. Devflow proposes one at the close of every step and never writes it unasked. Decisions outlive works: archiving leaves them in place, and the changelog links them. Format and criterion: [`devflow/decisions-log.md`](devflow/decisions-log.md).
+
 ## Configuration
 
-None required. Defaults: `docs/work/` for works, `CHANGELOG.md` for the changelog, `package.json` for the version, stack detected from `Gemfile`, `astro.config.*` or `package.json`.
+None required. Defaults: `docs/` as the root for work, decisions and guidelines; `CHANGELOG.md` and `.version` at the repo root; stack detected from `Gemfile`, `astro.config.*` or `package.json`.
 
 Optional `.devflow.yml` at the project root:
 
 ```yaml
-work_dir: docs/work
+root: docs              # where work/, decisions-log/ and development-guidelines.md live
 stack: astro            # rails | astro | react | node | generic
 changelog: CHANGELOG.md
-version_file: package.json
+version_file: .version
 ```
 
-The skills read it if present and never write it.
+The skills read it if present. Devflow writes it in one case only: when you choose a non-default root at first run.
 
 ## Dependencies
 

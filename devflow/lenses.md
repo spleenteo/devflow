@@ -1,8 +1,8 @@
 # Impact lenses
 
-Each lens is one subagent, launched in parallel with the others, with `ultrathink` in the prompt. Each subagent reads `slices.md` in full, `shaping.md` and `breadboard.md` if present, and the code the slices touch. It reports one entry per problem, by severity: what · where (`file:line`) · why · proposed fix. If it finds nothing, it says so.
+Two subagents in parallel, both with `ultrathink` in the prompt: one runs the common lenses, the other the detected stack's lenses. On a one-slice work, one subagent runs all of them. Each gets the same packet (`slices.md` in full, the matching decisions' descriptions, the guidelines) and reads the code the slices touch on its own. Each reports one entry per problem, by severity: what · where (`file:line`) · why · recommended fix, and names the lenses that found nothing.
 
-The three common lenses always run. Stack lenses are added from what was detected; on a small work pick one or two, saying which are skipped and why.
+The common lenses always run. On a small work, pick one or two stack lenses, saying which are skipped and why.
 
 ## Common, every stack
 

@@ -46,7 +46,7 @@ Open Claude Code inside the project and type:
 
 **First run in a repo.** If `docs/` doesn't exist, devflow creates `docs/work/`. If it does, devflow says what it will add inside it (`work/`, `decisions-log/`, `development-guidelines.md`, `CHANGELOG.md`), reports collisions, and asks whether to keep `docs/` (recommended) or use a top-level `devflow/` folder (discouraged: documentation ends up in two places). It then offers to create `docs/development-guidelines.md` from a template.
 
-**Opening.** Five questions, one at a time: what to build, a code name, source material, whether the outcome is already clear in one sentence (technical work skips to slicing; product work starts from the frame), whether the problem is clear. Then `docs/work/<date>-<slug>/STATUS.md` is created and the path is declared.
+**Opening.** One message with five questions and the answers devflow proposes: what to build, a code name, source material, whether the outcome is already clear in one sentence (technical work skips to slicing; product work starts from the frame), whether the problem is clear. Previous developments in the same area, found in the project memory, are flagged in the same message. Then `docs/work/<date>-<slug>/STATUS.md` is created and the path is declared.
 
 **Definition.** Each phase writes one document in the work's folder, commits, and stops:
 
@@ -56,18 +56,20 @@ Open Claude Code inside the project and type:
 | shaping | `shaping.md` | Requirements, solution options, fit check |
 | breadboard | `breadboard.md` | Parts and wiring |
 | slicing | `slices.md` | The slices: scope, Done criteria, gotchas |
-| impact | corrections in `slices.md` | Subagents read the slices and the real code, one lens each, and report problems one at a time |
+| impact | corrections in `slices.md` | Two subagents read the slices and the real code, one with the common lenses and one with the stack's, and report in one ranked message with a recommended fix per finding |
 
-**Slice loop.** For each slice, in order:
+**Slice loop.** For each slice, in order, with two stops:
 
-1. `plan`: `writing-plans` writes `V<n>-plan.md` from the slice, the shaping, the guidelines and the lessons of closed slices. Deviations from the mandate are recorded in `slices.md`.
-2. `review`: a subagent checks the plan against the documents: mandate fidelity, ignored lessons, existence of what the plan names, guideline compliance.
-3. `execute`: `subagent-driven-development` runs the plan, one subagent per task with a review each, guidelines in hand.
-4. `close`: the gate is green, lessons written under the slice in `slices.md`, `STATUS.md` updated, commit. Then: "V3 closed. Plan V4, or stop here?"
+1. `plan`: `writing-plans` writes `V<n>-plan.md` at task level (what, files, verification, done; dependencies and `critical` marks) from the slice, the guidelines and `lessons.md`. Deviations from the mandate are recorded in `slices.md`.
+2. `review`: a subagent checks the plan: mandate fidelity, ignored lessons, existence of what the plan names, guideline compliance. **First stop**: the plan in ten lines, the findings ranked with a recommended fix each, one question.
+3. `execute`: `subagent-driven-development` runs the plan, one subagent per task with a review each; task reviewers on a smaller model unless the task is `critical`; independent tasks in parallel.
+4. `close`: the gate is green, the narrative goes under the slice in `slices.md` and the rules into `lessons.md`, `STATUS.md` logs wall-clock and cost, commit. **Second stop**: "V3 closed. Plan V4, or stop here?"
 
 **Resume.** `/devflow` again, or "resume mobile-menu". The skill reads `STATUS.md` and offers to continue from `phase`, `slice` and `step`.
 
 **Bugfix.** Same skill, short path: one slice, impact if it touches more than one file, the loop once.
+
+**Cost.** Every subagent in a slice gets the same context packet (slice section, `lessons.md`, the guideline sections that apply) placed verbatim at the top of its prompt, so identical prefixes hit the prompt cache. `ultrathink` only at impact and on plans with more than five tasks. Each `STATUS.md` Log line records wall-clock and cost, so tuning is a comparison.
 
 **Close.** When the last slice is closed and you confirm the work is complete, devflow runs the closing sequence, asking before each step:
 
@@ -97,6 +99,7 @@ docs/
       STATUS.md
       shaping.md
       slices.md
+      lessons.md
       spike-view-transitions.md
       V1-plan.md
       V2-plan.md

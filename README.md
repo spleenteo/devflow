@@ -145,3 +145,7 @@ npx skills remove devflow devflow-docs devflow-archive
 ```
 
 Projects are untouched: `docs/work/` is plain markdown.
+
+## License
+
+[MIT](LICENSE)

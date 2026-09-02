@@ -1,47 +1,47 @@
 ---
 name: devflow-docs
-description: Da invocare esplicitamente quando un lavoro condotto con devflow è concluso e sta per arrivare su main. Trigger: "/devflow-docs", "aggiorna documentazione", "update docs", "scrivi il changelog". Registra la voce di changelog e la versione; non tocca il codice né i documenti del lavoro.
+description: Use when a work run with devflow is finished and about to land on main. Triggers include "/devflow-docs", "update docs", "write the changelog", "bump the version". Records the changelog entry and the version; touches neither the code nor the work's documents.
 ---
 
 # Devflow Docs
 
-Registra su `docs/change-log.md` un lavoro concluso, prima che arrivi su `main`.
+Records a finished work in the changelog, before it lands on `main`.
 
-## Cosa questa skill NON fa
+## What it does NOT do
 
-Elenco vincolante: se ti viene voglia di fare una di queste cose, non farla.
+Binding list. If you feel like doing one of these, don't.
 
-| Non fa | Perché | Dove sta invece |
+| Doesn't | Why | Where it lives instead |
 |---|---|---|
-| Non tocca `docs/lavori/` | `STATO.md` e `slices.md` li chiude `devflow` durante il lavoro | Nel ciclo per slice |
-| Non crea file in `docs/decisions-log/` | Una decisione si scrive quando la si prende, non quando si riepiloga | `devflow`, alla chiusura di ogni passo |
-| Non descrive migrazioni, backfill, segreti | Il changelog racconta cosa è cambiato, non cosa fare in produzione | Nel piano della slice e in `STATO.md` |
-| Non pubblica nulla verso l'esterno | Landing, note di rilascio pubbliche, post: li decide l'utente | Fuori dal repo |
-| Non propone mai una versione major | La generazione di prodotto è una decisione umana | Passo 2 |
-| Non usa `git add -A` né `git add .` | Nel working tree può esserci lavoro estraneo | Passo 6 |
+| Touch `docs/work/` | `STATUS.md` and `slices.md` are closed by `devflow` during the work | The slice loop |
+| Create files in `docs/decisions-log/` | A decision is written when taken, not when summarised | `devflow`, closing each step |
+| Describe migrations, backfills, secrets | The changelog says what changed, not what to do in production | The slice's plan and `STATUS.md` |
+| Publish anything outward | Landing pages, public release notes, posts: the user decides | Outside the repo |
+| Propose a major version | A product generation is a human decision | Step 2 |
+| Use `git add -A` or `git add .` | The working tree may hold unrelated work | Step 6 |
 
-## Quando parte
+## When it runs
 
-Solo su invocazione esplicita. Se a fine sessione il lavoro sembra concluso, ricordalo in una riga e fermati: è l'utente a sapere se è finito o se domani continua.
+Only on explicit invocation. If at the end of a session the work looks finished, say so in one line and stop: the user knows whether it's done or continues tomorrow.
 
-> "Il lavoro sembra concluso: vuoi che aggiorni il changelog? (`/devflow-docs`)"
+> "The work looks finished: update the changelog? (`/devflow-docs`)"
 
-## Convenzioni
+## Conventions
 
-| Cosa | Dove | Se manca |
+| What | Where | If missing |
 |---|---|---|
-| Changelog | `docs/change-log.md` | Si crea, con un blocco introduttivo di due righe e la prima voce |
-| Versione | campo `version` di `package.json` | Si cerca un file `VERSION` o un gemspec; se non c'è niente, si chiede dove vive o si salta il bump dichiarandolo |
-| Regola di collocazione del codice | `docs/project-structure.md` | Si ignora |
-| Decisioni | `docs/decisions-log/` | Il bullet "Decisione" si omette |
+| Changelog | `CHANGELOG.md` at the repo root | Created, with a two-line intro and the first entry |
+| Version | `version` field of `package.json` | Look for a `VERSION` file or a gemspec; if none, ask where it lives or skip the bump and say so |
+| Code placement rules | `docs/project-structure.md` | Ignored |
+| Decisions | `docs/decisions-log/` | The "Decision" bullet is omitted |
 
-Un `.devflow.yml` alla radice con le chiavi `changelog` e `versione` sovrascrive le prime due. Si legge se c'è, non si crea.
+A `.devflow.yml` at the root with `changelog` and `version_file` overrides the first two. Read if present, never created.
 
-**Lingua**: quella delle voci già presenti nel changelog. Se il changelog è nuovo, quella del resto di `docs/`.
+**Language**: that of the existing changelog entries. For a new changelog, that of the rest of `docs/`.
 
 ---
 
-## Passo 1 — Capire cosa è stato fatto
+## Step 1 — Understand what was done
 
 ```bash
 git log main..HEAD --format="%h %ad %s" --date=short
@@ -49,96 +49,96 @@ git diff main..HEAD --stat
 git status --short
 ```
 
-Leggi `docs/change-log.md`: le voci esistenti definiscono tono e livello di dettaglio, e la prima in cima porta l'ultima versione assegnata. Leggi `STATO.md` e `slices.md` del lavoro in `docs/lavori/`: le sezioni "V<n> — fatta il" dicono cosa è successo davvero.
+Read the changelog: existing entries set tone and detail, and the top one carries the last version. Read the work's `STATUS.md` and `slices.md` in `docs/work/`: the "V<n> — done on" sections say what really happened.
 
-Se il branch contiene lavori scollegati fra loro, non forzarli in una voce sola: chiedi se sono uno o due rilasci. Se non è chiaro cosa documentare, chiedi: *"Quale lavoro devo registrare?"*
+If the branch holds unrelated works, don't force them into one entry: ask whether they are one release or two. If it's unclear what to document, ask: *"Which work should I record?"*
 
-## Passo 2 — Calcolare la versione
+## Step 2 — Compute the version
 
-Non è una trattativa: è una regola. Applicala e dichiara il risultato.
+Not a negotiation: a rule. Apply it and state the result.
 
-| Livello | Criterio |
+| Level | Criterion |
 |---|---|
-| **MAJOR** `X.0.0` | Generazione di prodotto. Non proporla mai. Se il lavoro sembra da major, chiedi conferma e fermati |
-| **MINOR** `x.Y.0` | L'utente **può fare qualcosa che prima non poteva**: nuova vista, nuovo campo, nuovo filtro, nuovo comando, comportamento visibile diverso |
-| **PATCH** `x.y.Z` | Tutto il resto: bug fix, sicurezza, refactor, upgrade di stack, performance, infrastruttura, documentazione |
+| **MAJOR** `X.0.0` | A product generation. Never propose it. If the work looks major, ask and stop |
+| **MINOR** `x.Y.0` | The user **can do something they couldn't before**: new view, field, filter, command, visibly different behaviour |
+| **PATCH** `x.y.Z` | Everything else: bug fixes, security, refactors, stack upgrades, performance, infrastructure, docs |
 
-Il criterio è **cosa cambia per chi usa il prodotto**, non quanto codice è stato toccato: un refactor che muove cinquanta file è un patch; un filtro nuovo che ne muove sei è un minor. Sotto la 1.0 vale la stessa regola.
+The criterion is **what changes for the product's users**, not how much code moved: a refactor touching fifty files is a patch; a new filter touching six is a minor. Below 1.0 the same rule applies.
 
-Dichiara così, senza chiedere il permesso ma lasciando spazio all'obiezione:
+State it without asking permission, leaving room to object:
 
-> "Registro come **patch** → 1.10.1: il lavoro chiude tre difetti ma non cambia cosa l'utente può fare. Dimmi se lo vedi diversamente."
+> "Recording as **patch** → 1.10.1: the work fixes three defects but doesn't change what the user can do. Say if you see it differently."
 
-## Passo 3 — Scrivere la voce
+## Step 3 — Write the entry
 
-In cima a `docs/change-log.md`, dopo il blocco introduttivo e prima del primo `## v`.
+At the top of the changelog, after the intro block and before the first `## v`.
 
-### Formato
+### Format
 
 ```markdown
-## vX.Y.Z — YYYY-MM-DD — Titolo breve
+## vX.Y.Z — YYYY-MM-DD — Short title
 
-Una o due frasi: cosa cambia e perché è stato fatto.
+One or two sentences: what changes and why it was done.
 
-- **Etichetta**: frase in linguaggio piano.
-- **Etichetta**: frase in linguaggio piano.
-- **Lavoro**: `<slug>`
-- **Decisione**: [slug leggibile](decisions-log/YYYY-MM-DD-slug.md)
-- **Rilascio**: merge `a1b2c3d`
+- **Label**: plain-language sentence.
+- **Label**: plain-language sentence.
+- **Work**: `<slug>`
+- **Decision**: [readable slug](docs/decisions-log/YYYY-MM-DD-slug.md)
+- **Release**: merge `a1b2c3d`
 
 ---
 ```
 
-### Regole
+### Rules
 
-- **Data**: quella del merge, formato `YYYY-MM-DD`, non quella in cui il lavoro è iniziato.
-- **Titolo**: dice cosa è cambiato per chi legge, non il nome del branch. *"Il calendario non va più in crash"*, non *"fix/calendar-null-technician"*.
-- **Bullet**: etichetta in grassetto che nomina il concetto, poi una frase piana. Nessun elenco di commit: se il lavoro ne ha quaranta, i bullet restano quattro.
-- **Lavoro**: lo slug del lavoro in `docs/lavori/`. È l'aggancio che sopravvive all'archiviazione: `rg "<slug>" docs/change-log.md` deve ritrovare la voce.
-- **Decisione**: link ai file di `docs/decisions-log/` che spiegano il perché. Verifica che il file esista prima di linkarlo. Se il lavoro ha preso decisioni che nessun file racconta, segnalalo nel report finale: manca una decisione, ma non è questa skill a scriverla. Ometti il bullet se il repo non ha `decisions-log/`.
-- **Rilascio**: lo sha del merge o dei commit diretti. Serve a ritrovare il changeset, niente di più.
-- **Nessuna sezione "file cambiati"**: questo è un registro, non un diff.
-- **Nessuna istruzione operativa**: migrazioni, backfill e segreti non entrano qui.
-- **Niente emoji**, salvo che la feature stessa ne usi una.
+- **Date**: the merge date, `YYYY-MM-DD`, not when the work started.
+- **Title**: says what changed for the reader, not the branch name. *"The calendar no longer crashes"*, not *"fix/calendar-null-technician"*.
+- **Bullets**: a bold label naming the concept, then a plain sentence. No commit list: forty commits still make four bullets.
+- **Work**: the work's slug in `docs/work/`. It's the hook that survives archiving: `rg "<slug>" CHANGELOG.md` must find the entry.
+- **Decision**: links to the `docs/decisions-log/` files that explain why. Check the file exists before linking. If the work took decisions no file records, flag it in the final report: a decision is missing, but this skill doesn't write it. Omit the bullet if the repo has no `decisions-log/`.
+- **Release**: the merge sha, or the direct commits. It finds the changeset, nothing more.
+- **No "files changed" section**: this is a register, not a diff.
+- **No operational instructions**: migrations, backfills and secrets don't go here.
+- **No emoji**, unless the feature itself uses one.
 
-## Passo 4 — Aggiornare la versione
+## Step 4 — Bump the version
 
-Porta il campo `version` (o il file equivalente) al numero calcolato al Passo 2. È l'unico posto dove la versione vive.
+Set the `version` field (or the equivalent file) to the number computed in Step 2. It's the only place the version lives.
 
-## Passo 5 — `project-structure.md`, solo se serve
+## Step 5 — `project-structure.md`, only if needed
 
-Se `docs/project-structure.md` esiste, è la regola di collocazione del codice: dove va cosa, e con quale criterio si sceglie fra due directory entrambe plausibili. Aggiornalo solo se il lavoro:
+If `docs/project-structure.md` exists, it's the code placement rule: where things go, and how to choose between two plausible directories. Update it only if the work:
 
-- ha creato o eliminato una directory-pattern (un posto nuovo dove mettere una categoria di codice);
-- ha cambiato il criterio con cui si sceglie fra due posti esistenti;
-- ha introdotto o rimosso un'area applicativa o un servizio esterno.
+- created or removed a directory pattern (a new place for a *category* of code);
+- changed the criterion for choosing between two existing places;
+- introduced or removed an application area or an external service.
 
-Un file nuovo dentro una directory che già esiste non è un motivo per toccarlo. Nella maggior parte dei lavori questo passo è un no-op: dichiaralo e vai avanti.
+A new file in an existing directory is not a reason to touch it. For most works this step is a no-op: say so and move on.
 
-## Passo 6 — Committare
+## Step 6 — Commit
 
 ```bash
-git status --short                          # mostralo all'utente prima di procedere
-git add docs/change-log.md package.json     # SOLO i file toccati, esplicitamente
+git status --short                      # show it to the user first
+git add CHANGELOG.md package.json       # ONLY the touched files, explicitly
 git commit -m "Record vX.Y.Z in the changelog"
 ```
 
-- Mai `git add -A` o `git add .`.
-- Mai `--amend`: se il commit fosse già stato pushato, riscriverlo fa più danni di quanti ne eviti.
-- Messaggio all'imperativo, nella lingua che la storia del repo già usa.
-- Il commit va nel branch del lavoro, prima del merge: documentazione e codice arrivano su `main` nello stesso changeset.
+- Never `git add -A` or `git add .`.
+- Never `--amend`: if the commit was pushed, rewriting it does more harm than good.
+- Imperative message, in the language the repo's history already uses.
+- The commit goes on the work's branch, before the merge: docs and code land on `main` in the same changeset.
 
-## Passo 7 — Report finale
+## Step 7 — Final report
 
-In forma breve:
+Briefly:
 
-- versione assegnata e perché quel livello;
-- titolo della voce scritta;
-- se `project-structure.md` è stato toccato (e se no, il no-op dichiarato);
-- decisioni mancanti: scelte fatte durante il lavoro che nessun file spiega;
-- cosa resta da fare a mano dopo il merge, se il piano lo prevede (backfill, segreti, migrazioni), come promemoria nel report e mai nel changelog;
-- il promemoria che `STATO.md` del lavoro deve dire `stato: chiuso`, e che dopo il merge si può archiviare con `/devflow-archive`.
+- version assigned and why that level;
+- title of the entry written;
+- whether `project-structure.md` was touched (or the declared no-op);
+- missing decisions: choices made during the work that no file explains;
+- what remains to be done by hand after the merge, if the plan says so (backfills, secrets, migrations), as a reminder in the report and never in the changelog;
+- a reminder that the work's `STATUS.md` must say `status: closed`, and that after the merge it can be archived with `/devflow-archive`.
 
-## Rapporto con l'archiviazione
+## Relation to archiving
 
-La voce di changelog è ciò che sopravvive all'archiviazione: quando `/devflow-archive` sposta un lavoro in `docs/lavori/__Archived/`, il suo contenuto diventa illeggibile in sessione e restano solo il changelog e le decisioni. Scrivi la voce pensando a chi la leggerà quando il resto non sarà più consultabile: deve reggersi da sola.
+The changelog entry is what survives archiving: when `/devflow-archive` moves a work to `docs/work/archive/`, its content becomes unreadable in session and only the changelog and the decisions remain. Write the entry for someone who will read it when the rest is gone: it must stand on its own.

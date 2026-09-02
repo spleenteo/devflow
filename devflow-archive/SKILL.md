@@ -1,155 +1,155 @@
 ---
 name: devflow-archive
-description: Da invocare esplicitamente per archiviare un lavoro devflow concluso e già registrato nel changelog. Trigger: "/devflow-archive", "archivia il lavoro X", "metti via X". Non archivia mai di propria iniziativa.
+description: Use to archive a devflow work that is finished and already recorded in the changelog. Triggers include "/devflow-archive", "archive the work X", "put X away". Never archives on its own initiative.
 ---
 
 # Devflow Archive
 
-Sposta un lavoro concluso in `docs/lavori/__Archived/` e ne ripara i riferimenti.
+Moves a finished work to `docs/work/archive/` and repairs its references.
 
-## Perché esiste
+## Why
 
-Un lavoro chiuso continua a occupare contesto in ogni sessione che esplora `docs/lavori/`: slice, piani, note di stato che descrivono decisioni già prese e codice già scritto. Il suo esito vive altrove, nel changelog e nelle decisioni, e riletto oggi confonde invece di aiutare.
+A closed work keeps taking up context in every session that explores `docs/work/`: slices, plans, status notes describing decisions already taken and code already written. Its outcome lives elsewhere, in the changelog and the decisions, and reread today it confuses more than it helps.
 
-`docs/lavori/__Archived/` è murata: `.claude/settings.json` del progetto nega `Read` e `Grep` su quel percorso. Non è una convenzione da rispettare, è una porta chiusa. Per riaprirla si toglie il `deny` a mano, di proposito.
+`docs/work/archive/` is walled: the project's `.claude/settings.json` denies `Read` and `Grep` on that path. Not a convention to respect, a closed door. To reopen it, remove the `deny` by hand, on purpose.
 
-## Cosa questa skill NON fa
+## What it does NOT do
 
-| Non fa | Perché |
+| Doesn't | Why |
 |---|---|
-| Non archivia di propria iniziativa | Solo l'utente sa se un lavoro è davvero finito o solo fermo |
-| Non archivia un lavoro `in-corso` | Se il frontmatter non dice `chiuso`, si chiede prima |
-| Non cancella niente | Archiviare è spostare; la storia resta in git |
-| Non tocca `docs/decisions-log/` | Le decisioni sopravvivono al lavoro che le ha prodotte |
-| Non legge dentro `__Archived/` | Non può: il `deny` lo impedisce |
-| Non tocca `CLAUDE.md` | L'unico file di progetto fuori da `docs/` che tocca è `.claude/settings.json`, e solo con il permesso del Passo 0 |
+| Archive on its own initiative | Only the user knows whether a work is finished or merely paused |
+| Archive an `open` work | If the frontmatter doesn't say `closed`, ask first |
+| Delete anything | Archiving is moving; history stays in git |
+| Touch `docs/decisions-log/` | Decisions outlive the work that produced them |
+| Read inside `archive/` | It can't: the `deny` prevents it |
+| Touch `CLAUDE.md` | The only project file outside `docs/` it touches is `.claude/settings.json`, and only with the permission from Step 0 |
 
 ---
 
-## Passo 0 — La prima volta in un repo: il muro
+## Step 0 — First time in a repo: the wall
 
 ```bash
-grep -n "__Archived" .claude/settings.json 2>/dev/null
+grep -n "docs/work/archive" .claude/settings.json 2>/dev/null
 ```
 
-Se non c'è, proponi di aggiungere il `deny`, e aspetta il sì:
+If absent, propose adding the `deny`, and wait for a yes:
 
 ```json
 {
   "permissions": {
     "deny": [
-      "Read(./docs/lavori/__Archived/**)",
-      "Grep(./docs/lavori/__Archived/**)"
+      "Read(./docs/work/archive/**)",
+      "Grep(./docs/work/archive/**)"
     ]
   }
 }
 ```
 
-Se `settings.json` esiste già, si aggiungono le due righe all'array `deny` senza toccare il resto. Se l'utente non vuole il muro, si archivia lo stesso: la cartella resta leggibile e lo si dice nel report. Il muro entra in vigore alla sessione successiva.
+If `settings.json` exists, append the two lines to the `deny` array without touching the rest. If the user declines the wall, archive anyway: the folder stays readable, and the report says so. The wall takes effect from the next session.
 
-Crea anche `docs/lavori/archiviati.md` se manca:
+Also create `docs/work/archived.md` if missing:
 
 ```markdown
 ---
-tags: [lavori, archivio, indice]
-description: "Indice dei lavori archiviati in docs/lavori/__Archived/, cartella che Claude non legge. Questo file sta fuori ed è l'unica traccia che quei lavori siano esistiti."
+tags: [work, archive, index]
+description: "Index of the works archived in docs/work/archive/, a folder Claude doesn't read. This file lives outside it and is the only trace those works existed."
 ---
 
-# Lavori archiviati
+# Archived works
 
-> `docs/lavori/__Archived/` contiene i lavori conclusi. Claude non la legge: `.claude/settings.json` nega `Read` e `Grep` su quel percorso. Questo file sta fuori e dice dove trovare l'esito di ogni lavoro. Si aggiorna con `/devflow-archive`.
+> `docs/work/archive/` holds finished works. Claude doesn't read it: `.claude/settings.json` denies `Read` and `Grep` on that path. This file lives outside and says where each work's outcome is. Updated by `/devflow-archive`.
 
-| Lavoro | Chiuso | Cosa ha fatto | Dove sta l'esito |
+| Work | Closed | What it did | Where the outcome is |
 |---|---|---|---|
 ```
 
-## Passo 1 — Scegliere il lavoro
+## Step 1 — Pick the work
 
-Se l'utente non l'ha nominato, elenca i candidati:
+If the user didn't name it, list the candidates:
 
 ```bash
-for f in docs/lavori/*/STATO.md; do
-  printf "%-32s %s  %s\n" "$(basename $(dirname $f))" "$(grep -m1 '^stato:' $f)" "$(grep -m1 '^fase:' $f)"
+for f in docs/work/*/STATUS.md; do
+  printf "%-32s %s  %s\n" "$(basename $(dirname $f))" "$(grep -m1 '^status:' $f)" "$(grep -m1 '^phase:' $f)"
 done
 ```
 
-Sono candidati solo i lavori con `stato: chiuso` e `fase: conclusa`. Se l'utente ne indica uno diverso, dillo e chiedi conferma: potrebbe essersi dimenticato di aggiornare il frontmatter, oppure il lavoro non è finito. Un lavoro senza `STATO.md` non è archiviabile a occhi chiusi: chiedi cosa contiene.
+Only works with `status: closed` and `phase: done` are candidates. If the user points at a different one, say so and ask for confirmation: they may have forgotten to update the frontmatter, or the work isn't finished. A work without `STATUS.md` isn't archived blindly: ask what it holds.
 
-## Passo 2 — Verificare che l'esito sia documentato altrove
+## Step 2 — Check the outcome is recorded elsewhere
 
-Archiviare è sicuro solo se ciò che serve sapere è già fuori.
+Archiving is safe only if what needs knowing is already outside.
 
-- **Nel changelog**: `rg "<slug>" docs/change-log.md`. Se il lavoro non compare, il suo esito non è registrato da nessuna parte: segnalalo e proponi `/devflow-docs` prima.
-- **Nelle decisioni**: `rg -l "<slug>" docs/decisions-log/ 2>/dev/null`. Restano fuori dall'archivio e sono la memoria del perché.
+- **In the changelog**: `rg "<slug>" CHANGELOG.md`. If the work doesn't appear, its outcome is recorded nowhere: flag it and propose `/devflow-docs` first.
+- **In the decisions**: `rg -l "<slug>" docs/decisions-log/ 2>/dev/null`. They stay out of the archive and are the memory of the why.
 
-Se manca l'una o l'altra, non bloccare: riporta cosa manca e chiedi se archiviare lo stesso.
+If either is missing, don't block: report what's missing and ask whether to archive anyway.
 
-## Passo 3 — Censire i link entranti
+## Step 3 — Census of inbound links
 
 ```bash
-grep -rn "lavori/<dir>/" --include="*.md" docs README.md .claude 2>/dev/null
+grep -rn "work/<dir>/" --include="*.md" docs README.md .claude 2>/dev/null
 ```
 
-Ogni link va aggiornato al nuovo percorso: `lavori/<dir>/` diventa `lavori/__Archived/<dir>/`. Restano corretti per un umano che apre il file; è solo Claude a non poterli seguire. Se il numero è alto, dillo prima di procedere.
+Every link is updated to the new path: `work/<dir>/` becomes `work/archive/<dir>/`. They stay correct for a human opening the file; only Claude can't follow them. If the count is high, say so before proceeding.
 
-## Passo 4 — Marcare e spostare
+## Step 4 — Mark and move
 
-Prima dello spostamento, aggiungi al frontmatter dello `STATO.md`:
+Before moving, add to the `STATUS.md` frontmatter:
 
 ```yaml
-archiviato: YYYY-MM-DD
+archived: YYYY-MM-DD
 ```
 
-Va scritto prima: una volta spostato e chiusa la sessione, quel file non è più raggiungibile. Poi:
+Write it first: once moved and the session closed, that file is out of reach. Then:
 
 ```bash
-mkdir -p docs/lavori/__Archived
-git mv docs/lavori/<dir> docs/lavori/__Archived/<dir>
+mkdir -p docs/work/archive
+git mv docs/work/<dir> docs/work/archive/<dir>
 ```
 
-Sempre `git mv`, mai `mv`: la rinomina resta leggibile nella storia.
+Always `git mv`, never `mv`: the rename stays readable in history.
 
-## Passo 5 — Aggiornare i link, in due direzioni
+## Step 5 — Fix links, both directions
 
-**Entranti.** Riscrivi i riferimenti censiti al Passo 3, poi verifica che non ne restino al vecchio percorso:
+**Inbound.** Rewrite the references found in Step 3, then check none remain on the old path:
 
 ```bash
-grep -rn "lavori/<dir>/" --include="*.md" docs README.md .claude 2>/dev/null | grep -v "__Archived"
+grep -rn "work/<dir>/" --include="*.md" docs README.md .claude 2>/dev/null | grep -v "archive/"
 ```
 
-Deve restituire zero righe.
+Must return zero lines.
 
-**Uscenti, quelli che si dimenticano.** I file archiviati sono scesi di un livello: i loro link relativi verso il resto di `docs/` hanno bisogno di un `../` in più. Non sostituire alla cieca `../` con `../../`: un pattern che contiene l'altro raddoppia anche i livelli già corretti. Per ogni link rotto, prova ad aggiungere un solo livello e applica la modifica solo se così il file esiste davvero.
+**Outbound, the ones that get forgotten.** Archived files moved one level down: their relative links to the rest of `docs/` need one more `../`. Don't blindly replace `../` with `../../`: a pattern containing the other doubles levels that were already right. For each broken link, try adding a single level and apply only if the file then exists.
 
-**Fra due archiviati serve un livello in meno.** Se un lavoro già archiviato puntava a uno che archivi adesso, il suo link aveva un `../` in più per uscire da `__Archived/`: ora va tolto. Stessa regola: prova, verifica che il file esista, poi applica.
+**Between two archived works, one level less.** If an already archived work pointed at the one being archived now, its link had an extra `../` to leave `archive/`: remove it now. Same rule: try, check the file exists, then apply.
 
-## Passo 6 — Aggiornare l'indice
+## Step 6 — Update the index
 
-`docs/lavori/archiviati.md` sta fuori dalla cartella murata, quindi resta leggibile. Aggiungi una riga:
+`docs/work/archived.md` lives outside the walled folder, so it stays readable. Add a row:
 
 ```markdown
-| `<slug>` | <data di chiusura> | <una frase su cosa ha fatto> | <voci di changelog> · <n> decisioni |
+| `<slug>` | <closing date> | <one sentence on what it did> | <changelog entries> · <n> decisions |
 ```
 
-Una riga sola: se serve di più, quel "di più" appartiene al changelog o a una decisione.
+One row only: anything more belongs in the changelog or a decision.
 
-## Passo 7 — Committare e riferire
+## Step 7 — Commit and report
 
 ```bash
 git status --short
-git add docs/lavori docs/lavori/archiviati.md <file con i link aggiornati> [.claude/settings.json]
+git add docs/work docs/work/archived.md <files with updated links> [.claude/settings.json]
 git commit -m "Archive the <slug> work"
 ```
 
-Nel report finale: quale lavoro, quanti link aggiornati, dove ne resta traccia (voci di changelog e decisioni), se il muro è attivo o no, e l'avvertenza che da adesso quel contenuto non è più leggibile in sessione.
+In the final report: which work, how many links updated, where its trace remains (changelog entries and decisions), whether the wall is active, and the notice that from now on that content isn't readable in session.
 
 ---
 
-## Se serve rileggere un lavoro archiviato
+## Rereading an archived work
 
-Non chiedere a Claude di aggirare il `deny`: non può, ed è il punto. Le opzioni sono due:
+Don't ask Claude to bypass the `deny`: it can't, and that's the point. Two options:
 
-1. **Aprire il file a mano**: l'archivio è normale testo in git, un editor lo apre.
-2. **Togliere temporaneamente la regola** da `.claude/settings.json`, riavviare la sessione, fare ciò che serve, rimetterla.
+1. **Open the file by hand**: the archive is plain text in git, any editor opens it.
+2. **Temporarily remove the rule** from `.claude/settings.json`, restart the session, do what's needed, put it back.
 
-Se un lavoro archiviato torna attivo, la strada è la seconda seguita da `git mv` all'indietro: l'archivio non è una tomba, è uno scaffale alto.
+If an archived work becomes active again, take the second route followed by `git mv` back: the archive isn't a grave, it's a high shelf.

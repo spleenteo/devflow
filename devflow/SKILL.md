@@ -32,25 +32,39 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 
 | What | Convention | Detection |
 |---|---|---|
-| Root | `docs/` | Everything devflow writes lives under it: `docs/work/`, `docs/decisions-log/`, `docs/development-guidelines.md`. Checked at first run (Step 0) |
+| Root | `docs/` | Everything devflow writes lives under it: `docs/work/`, `docs/decisions-log/`, `docs/development-guidelines.md`, `docs/CHANGELOG.md`. Checked at first run (Step 0) |
 | Stack | `rails`, `astro`, `react`, `node`, `generic` | `Gemfile` + `config/application.rb` → rails; `astro.config.*` → astro; `package.json` with `react` in dependencies → react; `package.json` without → node; else generic |
 | Guidelines | `docs/development-guidelines.md` | Read if present; passed to every plan, review and execution. Template in `development-guidelines.template.md` next to this skill |
 | Decisions | `docs/decisions-log/` | Read by impact and review; written on request at the close of a step. Format in `decisions-log.md` next to this skill |
+| Changelog | `docs/CHANGELOG.md` | Written by `devflow-docs`; read at opening. An existing one is adopted, not replaced |
 | Impact lenses | Per stack, in `lenses.md` next to this skill | Chosen from the detected stack |
 
-A project can override the defaults with `.devflow.yml` at its root: keys `root`, `stack`, `changelog`, `version_file`. Read if present. The skill writes it in one case only: Step 0, to record a non-default root the user chose. Paths in this document assume the default root.
+A project can override the defaults with `.devflow.yml` at its root: keys `root`, `stack`, `changelog`, `version_file`. Read if present. The skill writes it in one case only: Step 0, to record a non-default root the user chose. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
+
+## Project memory
+
+`docs/` is the project's memory, and devflow reads it before writing anything new:
+
+| File | What it holds | When devflow reads it |
+|---|---|---|
+| `docs/CHANGELOG.md` | What shipped, by version, with the work slug | At opening, to see whether the request touches something already built |
+| `docs/decisions-log/` | Why things are the way they are: alternatives discarded, problems deferred | At opening, in the impact lens "Memory and debt", in every plan review |
+| `docs/work/archived.md` | Which works existed and where their outcome is | At opening, to check the slug and find related works |
+| `docs/development-guidelines.md` | How code is written here: tests, naming, placement, gate | In every plan, review, execution and close |
+
+Search before reading: `rg -il "<keywords>" docs/CHANGELOG.md docs/decisions-log/ docs/work/archived.md`, then read only what matches. Never scan `docs/work/archive/`: it's walled on purpose.
 
 ## Step 0 — First run in a repo
 
 Runs once: when there is no `docs/work/` and no `.devflow.yml`.
 
 ```bash
-ls -d docs docs/work docs/decisions-log docs/development-guidelines.md .devflow.yml 2>/dev/null
+ls -d docs docs/work docs/decisions-log docs/development-guidelines.md docs/CHANGELOG.md .devflow.yml 2>/dev/null
 ```
 
 **`docs/` doesn't exist** → create `docs/work/` and say so in one line.
 
-**`docs/` exists** → it's already someone's namespace. Say what devflow will add inside it (`work/`, `decisions-log/`, `development-guidelines.md`), report any collision (one of those paths already present with content devflow didn't write), and ask:
+**`docs/` exists** → it's already someone's namespace. Say what devflow will add inside it (`work/`, `decisions-log/`, `development-guidelines.md`, `CHANGELOG.md`), report any collision (one of those paths already present with content devflow didn't write; an existing `CHANGELOG.md` is adopted, not a collision), and ask:
 
 1. **Keep `docs/` (recommended).** Devflow's folders sit next to the existing ones. If something collides, the user moves or renames it first: devflow never moves files it doesn't own.
 2. **Use a top-level `devflow/` folder (discouraged).** Documentation splits in two places, and readers look in `docs/` first. If chosen, write `.devflow.yml` with `root: devflow` and say so.
@@ -81,6 +95,7 @@ One at a time, in this order. Each answer determines the next question.
    grep -n "<slug>" docs/work/archived.md 2>/dev/null
    ```
 3. **Source material?** Call transcripts, threads, notes. If yes, ask for paths: the frame starts from them with `framing-doc`.
+   Then check the project memory (see above) with the slug and the key words of question 1. If a changelog entry, a decision or an archived work touches the same area, say so before going on: *"v1.9 moved the list filters into `FilterBar`; the decision of 2026-06-12 rules out server-side filtering. I'll take both into account."*
 4. **The visible-outcome test.** *Can you already say in one sentence what changes for the product's users, without answering "it depends"?* **Yes** → technical work: skip to slicing. **No** → product work: start from the frame. State your reading rather than asking cold: *"I read this as product work: describing the outcome I'd say 'it depends on which pages change'. If it's already defined for you, I'll skip to slicing."*
 5. **If product work: is the problem already clear?** Yes → skip the frame, start from shaping. No → frame, using `brainstorming` as the dialogue technique.
 

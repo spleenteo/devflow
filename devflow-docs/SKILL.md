@@ -5,7 +5,7 @@ description: Use when a work run with devflow is finished and about to land on m
 
 # Devflow Docs
 
-Records a finished work in the changelog, before it lands on `main`.
+Records a finished work in `docs/CHANGELOG.md`, before it lands on `main`.
 
 ## What it does NOT do
 
@@ -30,11 +30,11 @@ On explicit invocation, or from devflow's closing sequence after the user has co
 
 | What | Where | If missing |
 |---|---|---|
-| Changelog | `CHANGELOG.md` at the repo root | Created, with a two-line intro and the first entry |
+| Changelog | `docs/CHANGELOG.md` | Created, with a two-line intro and the first entry. An existing `docs/CHANGELOG.md` is adopted as is |
 | Version | `.version` at the repo root: one line, e.g. `1.4.2` | Created in Step 4, after asking the user for the current version |
 | Decisions | `docs/decisions-log/` | The "Decision" bullet is omitted |
 
-A `.devflow.yml` at the root with `changelog` and `version_file` overrides the first two; `root` moves `docs/`. Read if present, never created here.
+A `.devflow.yml` at the root with `changelog` and `version_file` overrides the first two (a changelog under another name, say `docs/change-log.md`, goes there); `root` moves `docs/`. Read if present, never created here.
 
 `package.json` is not touched: its `version` tracks the package, not the application.
 
@@ -94,7 +94,7 @@ One or two sentences: what changes and why it was done.
 - **Date**: the merge date, `YYYY-MM-DD`, not when the work started.
 - **Title**: says what changed for the reader, not the branch name. *"The calendar no longer crashes"*, not *"fix/calendar-null-technician"*.
 - **Bullets**: a bold label naming the concept, then a plain sentence. No commit list: forty commits still make four bullets.
-- **Work**: the work's slug in `docs/work/`. It's the hook that survives archiving: `rg "<slug>" CHANGELOG.md` must find the entry.
+- **Work**: the work's slug in `docs/work/`. It's the hook that survives archiving: `rg "<slug>" docs/CHANGELOG.md` must find the entry.
 - **Decision**: links to the `docs/decisions-log/` files that explain why. Check the file exists before linking. If the work took decisions no file records, flag it in the final report: a decision is missing, but this skill doesn't write it. Omit the bullet if the repo has no `decisions-log/`.
 - **No "files changed" section**: this is a register, not a diff.
 - **No operational instructions**: migrations, backfills and secrets don't go here.
@@ -108,7 +108,7 @@ Write the number computed in Step 2 to `.version`, nothing else in the file, new
 
 ```bash
 git status --short                      # show it to the user first
-git add CHANGELOG.md .version           # ONLY the touched files, explicitly
+git add docs/CHANGELOG.md .version      # ONLY the touched files, explicitly
 git commit -m "Record vX.Y.Z in the changelog"
 ```
 

@@ -44,7 +44,7 @@ Open Claude Code inside the project and type:
 /devflow
 ```
 
-**First run in a repo.** If `docs/` doesn't exist, devflow creates `docs/work/`. If it does, devflow says what it will add inside it (`work/`, `decisions-log/`, `development-guidelines.md`), reports collisions, and asks whether to keep `docs/` (recommended) or use a top-level `devflow/` folder (discouraged: documentation ends up in two places). It then offers to create `docs/development-guidelines.md` from a template.
+**First run in a repo.** If `docs/` doesn't exist, devflow creates `docs/work/`. If it does, devflow says what it will add inside it (`work/`, `decisions-log/`, `development-guidelines.md`, `CHANGELOG.md`), reports collisions, and asks whether to keep `docs/` (recommended) or use a top-level `devflow/` folder (discouraged: documentation ends up in two places). It then offers to create `docs/development-guidelines.md` from a template.
 
 **Opening.** Five questions, one at a time: what to build, a code name, source material, whether the outcome is already clear in one sentence (technical work skips to slicing; product work starts from the frame), whether the problem is clear. Then `docs/work/<date>-<slug>/STATUS.md` is created and the path is declared.
 
@@ -86,8 +86,8 @@ Code, changelog, version and archived work land on `main` in one changeset. Both
 
 ```
 .version
-CHANGELOG.md
 docs/
+  CHANGELOG.md
   development-guidelines.md
   decisions-log/
     2026-09-03-server-side-locale-detection.md
@@ -104,7 +104,7 @@ docs/
       2026-08-20-list-filter/
 ```
 
-Markdown only, versioned with the code. `.version` holds the application version, one line; `package.json` is left alone, its version tracks the package. On the first archive, `devflow-archive` offers to add a `deny` on `docs/work/archive/**` to `.claude/settings.json`, so closed works stop consuming context. You can decline.
+Markdown only, versioned with the code. `docs/` is the project's memory: what shipped (`CHANGELOG.md`, `work/archived.md`), why (`decisions-log/`), how code is written here (`development-guidelines.md`). Devflow searches it at the opening of every work and reads what matches. `.version` holds the application version, one line, at the root; `package.json` is left alone, its version tracks the package. On the first archive, `devflow-archive` offers to add a `deny` on `docs/work/archive/**` to `.claude/settings.json`, so closed works stop consuming context. You can decline.
 
 ## Skills
 
@@ -126,14 +126,14 @@ Impact lenses per stack (Rails, Astro, React, Node, generic): [`devflow/lenses.m
 
 ## Configuration
 
-None required. Defaults: `docs/` as the root for work, decisions and guidelines; `CHANGELOG.md` and `.version` at the repo root; stack detected from `Gemfile`, `astro.config.*` or `package.json`.
+None required. Defaults: `docs/` as the root for work, decisions, guidelines and changelog; `.version` at the repo root; stack detected from `Gemfile`, `astro.config.*` or `package.json`.
 
 Optional `.devflow.yml` at the project root:
 
 ```yaml
 root: docs              # where work/, decisions-log/ and development-guidelines.md live
 stack: astro            # rails | astro | react | node | generic
-changelog: CHANGELOG.md
+changelog: docs/CHANGELOG.md
 version_file: .version
 ```
 

@@ -79,7 +79,7 @@ Only works with `status: closed` and `phase: done` are candidates. If the user p
 
 Archiving is safe only if what needs knowing is already outside.
 
-- **In the changelog**: `rg "<slug>" CHANGELOG.md`. If the work doesn't appear, its outcome is recorded nowhere: flag it and propose `/devflow-docs` first.
+- **In the changelog**: `rg "<slug>" docs/CHANGELOG.md`. If the work doesn't appear, its outcome is recorded nowhere: flag it and propose `/devflow-docs` first.
 - **In the decisions**: `rg -l "<slug>" docs/decisions-log/ 2>/dev/null`. They stay out of the archive and are the memory of the why.
 
 If either is missing, don't block: report what's missing and ask whether to archive anyway.

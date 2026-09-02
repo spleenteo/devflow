@@ -125,7 +125,7 @@ Briefly:
 - title of the entry written;
 - missing decisions: choices made during the work that no file explains;
 - what remains to be done by hand after the merge, if the plan says so (backfills, secrets, migrations), as a reminder in the report and never in the changelog;
-- a reminder that the work's `STATUS.md` must say `status: closed`, and that after the merge it can be archived with `/devflow-archive`.
+- a reminder that the work's `STATUS.md` must say `status: closed`, and that the next step, on the same branch, is `/devflow-archive`.
 
 ## Relation to archiving
 

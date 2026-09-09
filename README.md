@@ -55,7 +55,7 @@ Open Claude Code inside the project and type:
 
 | Phase | Document | What happens |
 |---|---|---|
-| frame | `frame.md` | The problem worth solving, from dialogue or transcripts |
+| frame | `frame.md` | The problem worth solving, from dialogue or transcripts. Opens with `## The criterion`: problem, outcome, what it is less about, and the measure |
 | shaping | `shaping.md` | Requirements, solution options, fit check |
 | breadboard | `breadboard.md` | Parts and wiring |
 | slicing | `slices.md` | The slices: scope, Done criteria, gotchas |
@@ -68,7 +68,7 @@ Open Claude Code inside the project and type:
 3. `execute`: `subagent-driven-development` runs the plan, one subagent per task with a review each; task reviewers on a smaller model unless the task is `critical`; independent tasks in parallel.
 4. `close`: the gate is green, the narrative goes under the slice in `slices.md` and the rules into `lessons.md`, `STATUS.md` logs wall-clock and cost, commit. **Second stop**: "V3 closed. Plan V4, or stop here?"
 
-**Resume.** `/devflow` again, or "resume mobile-menu". The skill reads `STATUS.md` and offers to continue from `phase`, `slice` and `step`.
+**Resume.** `/devflow` again, or "resume mobile-menu". The skill reloads the standing documents — `STATUS.md`, the frame's criterion, the applicable guidelines, `lessons.md`, the matching decision titles, the current plan — states what it reloaded, and offers to continue from `phase`, `slice` and `step`. Closed debates (shaping, breadboard, closed plans) stay closed.
 
 **Bugfix.** Same skill, short path: one slice, impact if it touches more than one file, the loop once.
 

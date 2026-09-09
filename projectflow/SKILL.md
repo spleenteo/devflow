@@ -61,7 +61,15 @@ rg "^phase:" <home>/STATUS.md <home>/*/STATUS.md 2>/dev/null
 
 > "`Cerbaia` is at slice **S3**, step **execute**, last log 2026-08-28. Resume there, or open a new project?"
 
-Resuming means reading `STATUS.md`, `lessons.md` and the current slice's plan. Don't reread closed phases.
+Resuming reloads the **standing documents**, and nothing else:
+
+| Always reloaded | Never reloaded |
+|---|---|
+| `STATUS.md`; `constraints.md`; the `## The criterion` block of `frame.md`; `lessons.md`; the `description:` line of each file in `decisions/`; the current slice's plan | `shaping.md`; `kickoff.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
+
+A standing document is one that is still true. A closed phase is a debate that ended. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a project that resumes without it resumes on whatever was written last, which is usually a detail.
+
+Open with what you reloaded, in five lines — project, phase and slice, spent against appetite, the criterion in the frame's own words, the blockers from the last Log line — then ask. The user has to be able to see that the frame is in the room.
 
 ## Step 1 — Opening
 
@@ -130,6 +138,23 @@ For each phase: invoke the tool telling it where to save, update `phase:`, stop.
 | `slicing` | Always, even with one slice | `shaping` (slicing section) | `slices.md` |
 | `reality` | Always, after slicing | Two subagents (below) | Corrections in `slices.md` |
 
+### The criterion
+
+`frame.md` opens, right under the frontmatter, with a block of at most ten lines:
+
+```markdown
+## The criterion
+
+- **Problem**: <one sentence>
+- **Outcome**: <observable in the world, one sentence>
+- **Less about**: <what this is explicitly not, named while it is still tempting>
+- **Measure**: <what tells us a document is serving this>
+```
+
+Everything else in the frame is body: sources, transcripts, numbers, the history of the reasoning. The block is the part that travels — on resume, into every definition phase, into every slice packet — so it has to survive being read alone. Keep source material out of it, and when a transcript already exists as a file, link it instead of copying it in.
+
+A frame written before this convention gets the block added at the top of its next update, built from what it already says and confirmed with the user.
+
 `breadboarding` is not in the table: it maps places and affordances of a system. Use it only when the project *is* a system (a service process, a workflow between people and tools), and say so.
 
 **`slices.md` is the high-level plan.** Per slice: what's in, what's out, the **Done** as something observable in the world (a document signed, a room usable, a client's yes, a delivery received), the known gotchas, and its order. Order by what unlocks or de-risks the rest first, then by dependency. A slice with no observable outcome is a phase, not a slice.
@@ -137,6 +162,8 @@ For each phase: invoke the tool telling it where to save, update `phase:`, stop.
 **The path instruction is mandatory on every invocation.** Without it, the tool uses its own default:
 
 > Save to `<home>/shaping.md`. Don't use default paths.
+
+**The criterion travels with every invocation.** `shaping`, `framing-doc`, `kickoff-doc` and `grill-me` don't know the project: put the `## The criterion` block and `constraints.md` verbatim at the top of the prompt, above the path instruction. Without them a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
 
 **If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `grill-me` on that point before moving on.
 
@@ -163,7 +190,7 @@ Approved corrections go into `slices.md`. If a correction splits or reorders sli
 
 From here `phase: slice`. For each slice, in `slices.md` order, four steps and two stops. `step:` in `STATUS.md` says which.
 
-**The slice packet**, built once per slice and placed verbatim at the top of every subagent prompt in it: the slice's section of `slices.md`; `lessons.md`; `constraints.md`; the matching decisions.
+**The slice packet**, built once per slice and placed verbatim at the top of every subagent prompt in it: the `## The criterion` block; the slice's section of `slices.md`; `lessons.md`; `constraints.md`; the matching decisions.
 
 ### `step: plan`
 
@@ -196,7 +223,7 @@ Right after the plan, one subagent, never in session: whoever just wrote the pla
 
 | Lens | Looks for |
 |---|---|
-| **Mandate fidelity** | Actions the slice doesn't call for; a Done not covered by the actions; a contradiction with the shape |
+| **Mandate fidelity** | Actions the slice doesn't call for; a Done not covered by the actions; a contradiction with the shape or with the frame's criterion |
 | **Ignored lessons** | A rule in `lessons.md` the plan doesn't follow |
 | **Availability** | The people, suppliers, documents and money the plan names exist and are available in the window |
 | **Constraints** | Appetite, calendar, non-negotiables from `constraints.md`; the point of no return placed after the checks it needs |
@@ -227,11 +254,12 @@ A closed slice isn't reopened. If a later slice finds an earlier one was wrong, 
 
 ## Step 5 — Closing a definition phase
 
-Applies to frame, shaping, kickoff, slicing and reality. Three moves:
+Applies to frame, shaping, kickoff, slicing and reality. Four moves, in order:
 
-1. **Update `STATUS.md`**: `phase:`, `updated:`, Log line.
-2. **Decision candidate** in the same report, when the criterion in `decisions.md` applies: a real alternative discarded, a known problem deferred on purpose, a choice that will surprise whoever reads the plan later. Propose `decisions/YYYY-MM-DD-<slug>.md`; never write it unasked.
-3. **Stop and ask** before the next phase.
+1. **Fidelity check**, before anything is reported. For each requirement, shape or slice just produced: which line of the criterion does it serve? Whatever traces back to nothing is named in the report, with what it would take to keep it. On `shaping.md` and `slices.md` — the documents the rest of the project inherits, and the ones the client reads — a subagent runs it, with a packet of the criterion, `constraints.md` and the document alone. On the others, in session. The frame phase checks itself differently: that the criterion block exists and that the body doesn't contradict it.
+2. **Update `STATUS.md`**: `phase:`, `updated:`, Log line.
+3. **Decision candidate** in the same report, when `decisions.md` says so: a real alternative discarded, a known problem deferred on purpose, a choice that will surprise whoever reads the plan later. Propose `decisions/YYYY-MM-DD-<slug>.md`; never write it unasked.
+4. **Stop and ask** before the next phase.
 
 If the home is under version control, commit at each of these points, with explicit paths. If it's a plain folder (a vault, a shared drive), the files are the record.
 

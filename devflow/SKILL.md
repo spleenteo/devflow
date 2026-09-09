@@ -95,7 +95,15 @@ rg "^phase:" docs/work/*/STATUS.md 2>/dev/null
 
 > "`2026-09-02-mobile-menu` is at slice **V3**, step **execute**. Resume there, or open a new work?"
 
-Resuming means reading `STATUS.md`, `lessons.md` and the current slice's plan. Don't reread closed phases.
+Resuming reloads the **standing documents**, and nothing else:
+
+| Always reloaded | Never reloaded |
+|---|---|
+| `STATUS.md`; the `## The criterion` block of `frame.md` when the work has one; the sections of `docs/development-guidelines.md` that apply; `lessons.md`; the `description:` line of the `docs/decisions-log/` files that match the work; the current slice's plan | `shaping.md`; `breadboard.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
+
+A standing document is one that is still true. A closed phase is a debate that ended. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a work that resumes without it resumes on whatever was written last.
+
+Open with what you reloaded, in five lines — work, phase and slice, cost so far from the Log, the criterion in the frame's own words, the blockers from the last Log line — then ask. The user has to be able to see that the frame is in the room.
 
 ## Step 1 — Opening
 
@@ -163,11 +171,30 @@ For each phase: invoke the tool telling it where to save, commit, update `phase:
 | `slicing` | Always, even with one slice | `shaping` (slicing section) or `breadboarding` | `slices.md` |
 | `impact` | Always, after slicing | Two subagents (below) | Corrections in `slices.md` |
 
+### The criterion
+
+`frame.md` opens, right under the frontmatter, with a block of at most ten lines:
+
+```markdown
+## The criterion
+
+- **Problem**: <one sentence>
+- **Outcome**: <what changes for the product's users, one sentence>
+- **Less about**: <what this is explicitly not, named while it is still tempting>
+- **Measure**: <what tells us a document is serving this>
+```
+
+Everything else in the frame is body: sources, transcripts, numbers, the history of the reasoning. The block is the part that travels — on resume, into every definition phase, into every slice packet — so it has to survive being read alone. Keep source material out of it, and when a transcript already exists as a file, link it instead of copying it in.
+
+A technical work that skipped the frame has no criterion, and nothing here applies to it. A frame written before this convention gets the block added at the top of its next update, built from what it already says and confirmed with the user.
+
 **`slices.md` is the high-level plan.** Per slice: what's in, what's out, how it's demonstrated (the "Done"), known gotchas. It's the mandate every detailed plan must honor, and where closed slices leave their narrative. Every slice ends in something you can see or run; a slice with no visible outcome is a horizontal layer, not a slice.
 
 **The path instruction is mandatory on every invocation.** Without it, the tool uses its own default:
 
 > Save to `docs/work/2026-09-02-mobile-menu/shaping.md`. Don't use default paths.
+
+**The criterion travels with every invocation.** `shaping`, `framing-doc`, `breadboarding` and `grill-me` don't know the work: put the `## The criterion` block verbatim at the top of the prompt, above the path instruction, with the guideline sections that bear on it. Without it a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
 
 **If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `grill-me` on that point before moving on. It's a tool for tightening, not a phase.
 
@@ -191,7 +218,7 @@ On a one-slice work, impact is often the check that saves you: the twenty-line f
 
 From here `phase: slice`. For each slice, in `slices.md` order, four steps and two stops. `step:` in `STATUS.md` says which.
 
-**The slice packet**, built once per slice and placed verbatim at the top of every subagent prompt in it: the slice's section of `slices.md`; `lessons.md`; the sections of `docs/development-guidelines.md` that apply (tests, naming, placement, gate); the descriptions of matching decisions. `shaping.md` and `breadboard.md` only if the slice's section points to them.
+**The slice packet**, built once per slice and placed verbatim at the top of every subagent prompt in it: the `## The criterion` block when the work has one; the slice's section of `slices.md`; `lessons.md`; the sections of `docs/development-guidelines.md` that apply (tests, naming, placement, gate); the descriptions of matching decisions. `shaping.md` and `breadboard.md` only if the slice's section points to them.
 
 ### `step: plan`
 
@@ -207,7 +234,7 @@ Right after the plan, one subagent, never in session: whoever just wrote the pla
 
 | Lens | Looks for |
 |---|---|
-| **Mandate fidelity** | The plan does things the slice doesn't call for; contradicts a shaping or breadboard choice; the Done criteria aren't covered by the tasks |
+| **Mandate fidelity** | The plan does things the slice doesn't call for; contradicts a shaping or breadboard choice, or the frame's criterion; the Done criteria aren't covered by the tasks |
 | **Ignored lessons** | A rule in `lessons.md` the plan doesn't follow; the same mistake already made and documented |
 | **Existence** | The files, symbols and methods the plan names exist, and do what the plan assumes |
 | **Guideline compliance** | Tests, naming, function size and code placement in the plan follow the guidelines |
@@ -237,12 +264,13 @@ A closed slice isn't reopened. If a later slice finds an earlier one was wrong, 
 
 ## Step 5 — Closing a definition phase
 
-Applies to frame, shaping, breadboard, slicing and impact. Four moves, in order:
+Applies to frame, shaping, breadboard, slicing and impact. Five moves, in order:
 
-1. **Commit** the document just produced. Explicit `git add` on the touched files, never `-A` or `.`: the working tree may hold unrelated work. Imperative messages, in the language the repo already uses.
-2. **Update `STATUS.md`**: `phase:`, `updated:`, Log line with wall-clock and cost. After a verification the line states the outcome: *"09-02 — impact — 2 problems, fixed in V2 and V4 — 14 min — $2.10"*.
-3. **Decision candidate** in the same report, when the criterion in `decisions-log.md` applies: a real alternative discarded, a known problem deferred on purpose, a behaviour that will surprise whoever reads the code. Propose `docs/decisions-log/YYYY-MM-DD-<slug>.md`; never write it unasked.
-4. **Stop and ask** before the next phase.
+1. **Fidelity check**, before the commit. For each requirement, shape or slice just produced: which line of the criterion does it serve? Whatever traces back to nothing is named in the report, with what it would take to keep it. On `shaping.md` and `slices.md` — the documents the rest of the work inherits — a subagent runs it, with a packet of the criterion, the applicable guidelines and the document alone. On the others, in session. Skipped entirely on a work with no frame, and said so.
+2. **Commit** the document just produced. Explicit `git add` on the touched files, never `-A` or `.`: the working tree may hold unrelated work. Imperative messages, in the language the repo already uses.
+3. **Update `STATUS.md`**: `phase:`, `updated:`, Log line with wall-clock and cost. After a verification the line states the outcome: *"09-02 — impact — 2 problems, fixed in V2 and V4 — 14 min — $2.10"*.
+4. **Decision candidate** in the same report, when `decisions-log.md` says so: a real alternative discarded, a known problem deferred on purpose, a behaviour that will surprise whoever reads the code. Propose `docs/decisions-log/YYYY-MM-DD-<slug>.md`; never write it unasked.
+5. **Stop and ask** before the next phase.
 
 ## Step 6 — Exit
 

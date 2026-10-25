@@ -29,5 +29,5 @@ The flow depends on no grilling skill. When a point stays vague, the conductor s
 
 ## References
 
-- [`slices.md`](../work/2026-10-25-flow-plugin/slices.md), V3 deviations and close
+- [`slices.md`](../work/archive/2026-10-25-flow-plugin/slices.md), V3 deviations and close
 - https://github.com/mattpocock/skills

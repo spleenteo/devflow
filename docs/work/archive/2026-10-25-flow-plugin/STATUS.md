@@ -6,6 +6,7 @@ step: null
 work: flow-plugin
 stack: generic
 updated: 2026-10-25
+archived: 2026-10-25
 tags: [work, flow-plugin]
 description: "Turn the skill set into the `flow` Claude Code plugin (/flow:dev, /flow:project, /flow:changelog, /flow:archive), installable from GitHub, with project impact lenses, architecture docs and a first tag."
 ---
@@ -20,7 +21,7 @@ description: "Turn the skill set into the `flow` Claude Code plugin (/flow:dev, 
 
 **Where it runs**: worktree `../devflow-flow` on `chore/convert-to-plugin`; the main checkout stays on `main`, so the symlinks in `~/.claude/skills/` keep serving the current conductor until the migration, after the merge.
 
-Source material: [`brief.md`](brief.md); the review of both briefs, [`../../briefs/2026-10-25-review-of-both-briefs.md`](../../briefs/2026-10-25-review-of-both-briefs.md) (written against an earlier draft of the brief).
+Source material: [`brief.md`](brief.md); the review of both briefs, [`../../briefs/2026-10-25-review-of-both-briefs.md`](../../../briefs/2026-10-25-review-of-both-briefs.md) (written against an earlier draft of the brief).
 
 ## Slices
 

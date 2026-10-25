@@ -29,6 +29,6 @@ A project's `.claude/settings.json` declares the `flow` marketplace without `ref
 
 ## References
 
-- [`spike-plugin-loading.md`](../work/2026-10-25-flow-plugin/spike-plugin-loading.md#pinning)
+- [`spike-plugin-loading.md`](../work/archive/2026-10-25-flow-plugin/spike-plugin-loading.md#pinning)
 - https://code.claude.com/docs/en/settings-reference (`extraKnownMarketplaces`)
 - https://code.claude.com/docs/en/plugins/marketplace-reference

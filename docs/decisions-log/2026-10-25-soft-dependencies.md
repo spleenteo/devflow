@@ -29,5 +29,5 @@ The plugin always loads. A teammate who opens a project for the first time gets 
 
 ## References
 
-- [`spike-plugin-loading.md`](../work/2026-10-25-flow-plugin/spike-plugin-loading.md#dependencies)
+- [`spike-plugin-loading.md`](../work/archive/2026-10-25-flow-plugin/spike-plugin-loading.md#dependencies)
 - https://code.claude.com/docs/en/plugins/dependencies

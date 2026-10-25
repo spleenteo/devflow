@@ -31,7 +31,7 @@ Imperative mood, English, one concern per commit. Explicit `git add <paths>`, ne
 Green before a slice closes, in order, from the repo root. The link check skips links inside fenced code blocks, where templates hold placeholder links. Both `rg` calls name the path (`.`): without one, `rg` reads stdin when it isn't a terminal and hangs.
 
 ```bash
-claude plugin validate .        # passes; the only warnings are the missing version
+claude plugin validate .        # passes; expected warnings: missing version and icon, the folder also holding a marketplace manifest, the README install line
 # old names: only the allowed matches remain (the .devflow.yml fallback sentence and
 # dev's notice, Step 0's condition and ls, the "devflow work ... merged" notes,
 # the repository URL, the README migration note and the repo-vs-plugin sentence)

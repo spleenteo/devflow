@@ -66,6 +66,7 @@ flowchart TD
   end
   open --> frame
   open -->|"technical work"| slicing
+  open -->|"problem already clear"| shaping
   frame -->|"STOP"| shaping
   shaping -->|"STOP"| bread
   bread -->|"STOP"| slicing
@@ -172,7 +173,7 @@ flowchart LR
     check["dependency check"]
   end
   subgraph repo["acme-app repository"]
-    docs["docs/, .version, .flow.yml"]
+    docs["docs/"]
   end
   deplist -->|"read at start"| check
   listed --> check

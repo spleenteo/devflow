@@ -155,7 +155,7 @@ Everything else in the frame is body: sources, transcripts, numbers, the history
 
 A frame written before this convention gets the block added at the top of its next update, built from what it already says and confirmed with the user.
 
-`breadboarding` is not in the table: it maps places and affordances of a system. Use it only when the project *is* a system (a service process, a workflow between people and tools), and say so.
+`breadboarding` (`shaping-skills:breadboarding`) is not in the table: it maps places and affordances of a system. Use it only when the project *is* a system (a service process, a workflow between people and tools), and say so.
 
 **`slices.md` is the high-level plan.** Per slice: what's in, what's out, the **Done** as something observable in the world (a document signed, a room usable, a client's yes, a delivery received), the known gotchas, and its order. Order by what unlocks or de-risks the rest first, then by dependency. A slice with no observable outcome is a phase, not a slice.
 

@@ -1,6 +1,6 @@
 ---
 status: open
-phase: frame
+phase: shaping
 slice: null
 step: null
 work: flow-own-engine
@@ -25,3 +25,4 @@ description: "Flow plans and runs its own work, owns its memory and the project 
 <!-- date — step — done — remaining — wall-clock — cost -->
 
 - 2026-10-26 — frame — brainstorming in session, frame written — builder check, then shaping — n/a — n/a
+- 2026-10-26 — frame — builder check: 5 questions, 2 answered by the owner, 3 settled as calls; frame approved — shaping, spikes 2-4 — n/a — n/a

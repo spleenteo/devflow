@@ -169,6 +169,10 @@ The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-pl
 - A fresh isolated configuration follows the README's commands, with the worktree served as a git URL in place of `spleenteo/devflow`, and ends with `claude plugin details flow@flow` listing the four skills.
 - The Gate is green over the whole repo, links included.
 
+**Deviations found while planning V6**
+- The Done's demo covers the isolated install only; the project snippet is stated as documented behaviour, not run: a `-p` run needs the owner's logged-in configuration and would register the marketplace in it.
+- No Claude Code version is given for the one-step install unless a docs page states it.
+
 ## After V6: closing sequence
 
 1. From the worktree session, with the frozen skills of the main checkout: `devflow-docs` (answer the current version as `0.0.0`, so the minor bump gives `0.1.0`), then `devflow-archive`.

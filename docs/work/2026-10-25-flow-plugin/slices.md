@@ -47,7 +47,7 @@ The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-pl
 - Session demo, read from the `init` event of `claude -p --output-format stream-json --verbose`: with `skillOverrides: "off"` in the scratch repo's `.claude/settings.local.json`, the four old skills are gone even in `-p` (266 skills); with `--plugin-dir`, `flow:archive`, `flow:changelog`, `flow:dev`, `flow:project` appear (270).
 - Gate with V1's narrowing: old-name grep 51 lines across 7 skill files (V2 clears them); link check green on 19 files.
 - Found during execution: `rg` without a path reads stdin when the shell isn't a terminal and hangs; the Gate now passes `.` to both calls.
-- Rulings: STATUS.md travelled in T1's commit (bookkeeping); T4 ran as a subagent so its outputs live in its report. Deferred minors: link check ignores `](<path>)`, `~~~` fences, indented code and reference links (none in the repo); `install.sh` still loops over the old folders (V3); skills' text still cites the old names (V2).
+- Rulings: STATUS.md travelled in T1's commit (bookkeeping); T4 ran as a subagent so its outputs live in its report. Deferred minors: link check ignores angle-bracket link targets, `~~~` fences, indented code and reference links (none in the repo); `install.sh` still loops over the old folders (V3); skills' text still cites the old names (V2).
 
 ## V2 — The rename inside the skills
 
@@ -75,6 +75,12 @@ The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-pl
 - The plan-row phrase for a software action becomes *"flow:dev work `<slug>` merged"*; the old *"devflow work … merged"* is read the same.
 - Allowed old-name matches extended: besides the fallback sentence and `spleenteo/devflow`, `dev`'s one-time notice, Step 0's condition and `ls` (they must name `.devflow.yml`), and the old-phrase notes in `dev` and `project`.
 - The dependency-name check (spike "Not run", item 3) runs first, as T0, so it settles the wording before the text is written.
+
+**V2 — done on 2026-10-25**
+- T0 settled the wording: with only the plugin copy visible, a bare `writing-plans` resolves to `superpowers:writing-plans`; the Naming rule says so.
+- Demo with `--plugin-dir`: the `init` event lists the four `flow:*` skills and no old name; asked to open a work, the session calls `flow:dev`; the loaded text cites `/flow:changelog`, `/flow:archive` and an absolute `.../skills/dev/lenses.md` that exists; nothing written in the scratch repo.
+- Gate with V2's narrowing: validate passes (warnings: missing version, README install line, the latter V6's); old-name grep shows only the allowed matches (`dev` :43, :72, :75, :304; `project` :216; `changelog` :37; `archive` :8); link check green after rewording V1's narrative, which quoted link syntax in prose.
+- Rulings: T0, T2's fix and T3 reviewed by the controller on their small diffs instead of a reviewer subagent. Fixes: T1 one round (an instruction at :207, an ambiguous "it", the skill-dir paths); T2 one round (`breadboarding` unbracketed at its first mention). Deferred minor: nested parentheses in `dev`'s Why paragraph.
 
 ## V3 — Soft dependencies
 

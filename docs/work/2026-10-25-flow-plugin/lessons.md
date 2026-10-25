@@ -5,3 +5,5 @@
 - What a session sees is the `skills` / `slash_commands` arrays of the `init` event (`claude -p --output-format stream-json --verbose`), never the model's prose.
 - `skillOverrides: "off"` in a scratch repo's `.claude/settings.local.json` hides personal skills in `-p` runs: use it to take the old conductors out of every demo.
 - A subagent reports its commit with `git rev-parse --short HEAD` output, not a shell variable it never printed.
+- Prose in any Markdown file outside fences must not quote link syntax (`](...)`): the Gate's link check reads it as a link. Describe it in words.
+- `skillOverrides` match exact names: hiding `subagent-driven-development` leaves `superpowers:subagent-driven-development` visible. List the plugin form too when a demo must hide it.

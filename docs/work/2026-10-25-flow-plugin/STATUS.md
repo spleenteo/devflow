@@ -2,7 +2,7 @@
 status: open
 phase: slice
 slice: V4
-step: plan
+step: execute
 work: flow-plugin
 stack: generic
 updated: 2026-10-25

@@ -1,9 +1,9 @@
 ---
 name: changelog
-description: Use when a work run with devflow is finished and about to land on main. Triggers include "/devflow-docs", "update docs", "write the changelog", "bump the version". Records the changelog entry and the version; touches neither the code nor the work's documents.
+description: Use when a work run with `/flow:dev` is finished and about to land on main. Triggers include "/flow:changelog", "write the changelog", "bump the version". Records the changelog entry and the version; touches neither the code nor the work's documents.
 ---
 
-# Devflow Docs
+# Flow: changelog
 
 Records a finished work in `docs/CHANGELOG.md`, before it lands on `main`.
 
@@ -13,8 +13,8 @@ Binding list. If you feel like doing one of these, don't.
 
 | Doesn't | Why | Where it lives instead |
 |---|---|---|
-| Touch `docs/work/` | `STATUS.md` and `slices.md` are closed by `devflow` during the work | The slice loop |
-| Create files in `docs/decisions-log/` | A decision is written when taken, not when summarised | `devflow`, closing each step |
+| Touch `docs/work/` | `STATUS.md` and `slices.md` are closed by `/flow:dev` during the work | The slice loop |
+| Create files in `docs/decisions-log/` | A decision is written when taken, not when summarised | `/flow:dev`, closing each step |
 | Describe migrations, backfills, secrets | The changelog says what changed, not what to do in production | The slice's plan and `STATUS.md` |
 | Publish anything outward | Landing pages, public release notes, posts: the user decides | Outside the repo |
 | Propose a major version | A product generation is a human decision | Step 2 |
@@ -22,9 +22,9 @@ Binding list. If you feel like doing one of these, don't.
 
 ## When it runs
 
-On explicit invocation, or from devflow's closing sequence after the user has confirmed the work is complete. Never on its own: if at the end of a session the work looks finished, say so in one line and stop. The user knows whether it's done or continues tomorrow.
+On explicit invocation, or from `/flow:dev`'s closing sequence after the user has confirmed the work is complete. Never on its own: if at the end of a session the work looks finished, say so in one line and stop. The user knows whether it's done or continues tomorrow.
 
-> "The work looks finished: update the changelog? (`/devflow-docs`)"
+> "The work looks finished: update the changelog? (`/flow:changelog`)"
 
 ## Conventions
 
@@ -34,7 +34,7 @@ On explicit invocation, or from devflow's closing sequence after the user has co
 | Version | `.version` at the repo root: one line, e.g. `1.4.2` | Created in Step 4, after asking the user for the current version |
 | Decisions | `docs/decisions-log/` | The "Decision" bullet is omitted |
 
-A `.devflow.yml` at the root with `changelog` and `version_file` overrides the first two (a changelog under another name, say `docs/change-log.md`, goes there); `root` moves `docs/`. Read if present, never created here.
+Configuration lives in `.flow.yml` at the project root. If it's absent and a `.devflow.yml` exists, read that instead: same keys. A `.flow.yml` at the root with `changelog` and `version_file` overrides the first two (a changelog under another name, say `docs/change-log.md`, goes there); `root` moves `docs/`. Read if present, never created here.
 
 `package.json` is not touched: its `version` tracks the package, not the application.
 
@@ -125,8 +125,8 @@ Briefly:
 - title of the entry written;
 - missing decisions: choices made during the work that no file explains;
 - what remains to be done by hand after the merge, if the plan says so (backfills, secrets, migrations), as a reminder in the report and never in the changelog;
-- a reminder that the work's `STATUS.md` must say `status: closed`, and that the next step, on the same branch, is `/devflow-archive`.
+- a reminder that the work's `STATUS.md` must say `status: closed`, and that the next step, on the same branch, is `/flow:archive`.
 
 ## Relation to archiving
 
-The changelog entry is what survives archiving: when `/devflow-archive` moves a work to `docs/work/archive/`, its content becomes unreadable in session and only the changelog and the decisions remain. Write the entry for someone who will read it when the rest is gone: it must stand on its own.
+The changelog entry is what survives archiving: when `/flow:archive` moves a work to `docs/work/archive/`, its content becomes unreadable in session and only the changelog and the decisions remain. Write the entry for someone who will read it when the rest is gone: it must stand on its own.

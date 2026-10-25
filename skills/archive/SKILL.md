@@ -1,11 +1,11 @@
 ---
 name: archive
-description: Use to archive a devflow work that is finished and already recorded in the changelog. Triggers include "/devflow-archive", "archive the work X", "put X away". Never archives on its own initiative.
+description: Use to archive a `/flow:dev` work that is finished and already recorded in the changelog. Triggers include "/flow:archive", "archive the work X", "put X away". Never archives on its own initiative.
 ---
 
-# Devflow Archive
+# Flow: archive
 
-Moves a finished work to `docs/work/archive/` and repairs its references. Runs on the work's branch, after `devflow-docs` and before the merge, so the archived folder lands on `main` together with the code. Invoked on its own or from devflow's closing sequence, always after the user confirms. Paths assume the default root; with `root` in `.devflow.yml`, substitute it for `docs`.
+Moves a finished work to `docs/work/archive/` and repairs its references. Runs on the work's branch, after `/flow:changelog` and before the merge, so the archived folder lands on `main` together with the code. Invoked on its own or from `/flow:dev`'s closing sequence, always after the user confirms. Configuration lives in `.flow.yml` at the project root. If it's absent and a `.devflow.yml` exists, read that instead: same keys. Paths assume the default root; with `root` in `.flow.yml`, substitute it for `docs`.
 
 ## Why
 
@@ -57,7 +57,7 @@ description: "Index of the works archived in docs/work/archive/, a folder Claude
 
 # Archived works
 
-> `docs/work/archive/` holds finished works. Claude doesn't read it: `.claude/settings.json` denies `Read` and `Grep` on that path. This file lives outside and says where each work's outcome is. Updated by `/devflow-archive`.
+> `docs/work/archive/` holds finished works. Claude doesn't read it: `.claude/settings.json` denies `Read` and `Grep` on that path. This file lives outside and says where each work's outcome is. Updated by `/flow:archive`.
 
 | Work | Closed | What it did | Where the outcome is |
 |---|---|---|---|
@@ -79,7 +79,7 @@ Only works with `status: closed` and `phase: done` are candidates. If the user p
 
 Archiving is safe only if what needs knowing is already outside.
 
-- **In the changelog**: `rg "<slug>" docs/CHANGELOG.md`. If the work doesn't appear, its outcome is recorded nowhere: flag it and propose `/devflow-docs` first.
+- **In the changelog**: `rg "<slug>" docs/CHANGELOG.md`. If the work doesn't appear, its outcome is recorded nowhere: flag it and propose `/flow:changelog` first.
 - **In the decisions**: `rg -l "<slug>" docs/decisions-log/ 2>/dev/null`. They stay out of the archive and are the memory of the why.
 
 If either is missing, don't block: report what's missing and ask whether to archive anyway.

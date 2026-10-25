@@ -1,184 +1,126 @@
-# devflow
+# flow
 
-Claude Code skills that run a piece of work from idea to done, one slice at a time. Two conductors on one skeleton:
+A Claude Code plugin that runs a piece of work from idea to done, one slice at a time, and keeps its state on disk so a work resumes days later in a new session. `/flow:dev` takes software work in a repository to a branch ready to merge; `/flow:project` runs a project that people carry out over weeks or months, in a folder outside any repo. The repository is named `devflow`; the plugin and its marketplace are both named `flow`.
 
-- **`devflow`** for software: the executor is code, written by subagents in a repo.
-- **`projectflow`** for everything else: the executor is people, over weeks or months, in a folder.
+Shaping produces the slices. The detailed plan of each slice is written right before it starts, so it carries what the previous slices taught. Plans are reviewed by a fresh head, and the flow returns to you at two points per slice. `/flow:dev` works with any stack and adds nothing to your project's `CLAUDE.md`.
 
-Shaping produces the slices. The detailed plan of each slice is written right before it starts, so it carries what the previous slices taught. Plans are reviewed by a fresh head, and the flow returns to you at two points per slice. State lives on disk: a work resumes from where it stopped, days later, in a new session.
-
-`devflow` works with any stack and adds nothing to your project's `CLAUDE.md`. `projectflow` lives in a folder of your choice, outside any code repo.
+How it fits together: [`docs/architecture.md`](docs/architecture.md).
 
 ## Install
 
-```bash
-npx skills add spleenteo/devflow -g
-```
-
-That installs `devflow`, `devflow-docs`, `devflow-archive` and `projectflow`. Then the skills they invoke:
+Once per machine, at user scope, so the plugin is available in every project ([install scopes](https://code.claude.com/docs/en/plugins/install#choose-an-install-scope)):
 
 ```bash
-npx skills add rjs/shaping-skills -g -s shaping -s breadboarding -s framing-doc
-npx skills add mattpocock/skills -g -s grill-me
-claude plugin install superpowers@claude-plugins-official
+claude plugin marketplace add spleenteo/devflow --scope user
+claude plugin install flow@flow --scope user
 ```
 
-Check: open Claude Code in any directory and type `/devflow`.
+Recent versions also accept one step that adds the marketplace and installs the plugin. The session form below needs Claude Code 2.1.275 or later; the shell form, `claude plugin install flow --marketplace spleenteo/devflow`, needs 2.1.292 or later ([add a marketplace and install in one command](https://code.claude.com/docs/en/plugins/install#add-a-marketplace-and-install-in-one-command)).
 
-### From a clone
+```text
+/plugin install flow --marketplace spleenteo/devflow
+```
+
+**Dependencies.** The flow hands the thinking, planning and execution to skills from two other plugins, superpowers and shaping-skills. It checks for them but never installs them. Run `/flow:dev` in any directory: the start check lists what's missing, with the commands to run. From a clone, `./install.sh` does the same check from the shell and installs nothing:
 
 ```bash
-git clone https://github.com/spleenteo/devflow.git
-cd devflow && ./install.sh
+git clone https://github.com/spleenteo/devflow.git flow
+flow/install.sh
 ```
 
-`install.sh` symlinks the four skills into `~/.claude/skills/` (so `git pull` updates them), checks every dependency, and asks before installing a missing one or updating an existing one.
+The list, with the commands at user and project scope: [`dependencies.md`](dependencies.md).
 
-```bash
-./install.sh --check   # report only
-./install.sh --yes     # no prompts
+## Use in a project
+
+To give a team the flow, commit this `.claude/settings.json` in the project. It declares the marketplace, with no `ref`, and enables the plugin:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "flow": { "source": { "source": "github", "repo": "spleenteo/devflow" } }
+  },
+  "enabledPlugins": { "flow@flow": true }
+}
 ```
+
+What a teammate gets, from the docs:
+
+- The marketplace is registered only after they accept the workspace trust dialog for the folder ([`extraKnownMarketplaces`](https://code.claude.com/docs/en/settings-reference#extraknownmarketplaces)).
+- A plugin enabled only in project settings is not fetched onto a machine where it isn't installed, unless its marketplace entry has a relative-path source, as `flow` does ([enabled in project settings but not installed](https://code.claude.com/docs/en/plugins/loading#enabled-in-project-settings-but-not-installed)). So trust alone brings `flow`.
+- The dependencies are not enabled by the file. The first `/flow:dev` tells the teammate what to install.
+
+Leave out `ref`: whatever is on `main` of this repository is a release. A project that must stay behind can set `"ref": "v0.4.0"` (a branch or tag) in its `source`. The entry from the highest-precedence settings file is used whole, and project settings sit above user settings ([`extraKnownMarketplaces`](https://code.claude.com/docs/en/settings-reference#extraknownmarketplaces), [precedence](https://code.claude.com/docs/en/settings#settings-precedence)), so that project's `ref` wins. This is documented behaviour, not yet tried on a real project. Why no `ref` by default: [projects declare the marketplace without a ref](docs/decisions-log/2026-10-25-projects-declare-marketplace-without-ref.md).
 
 ## Usage
 
-Open Claude Code inside the project and type:
+Plugin skills are invoked as `/plugin-name:skill-name` ([skills](https://code.claude.com/docs/en/skills)).
 
-```
-/devflow
-```
+| Skill | What it does |
+|---|---|
+| [`/flow:dev`](skills/dev/SKILL.md) | Software work in a repo: opening, definition phases (frame, shaping, breadboard, slicing, impact), then a plan, review, execute and close loop per slice |
+| [`/flow:project`](skills/project/SKILL.md) | A project that people carry out: appetite, a reality check in place of impact, plans of actions, a report at the end |
+| [`/flow:changelog`](skills/changelog/SKILL.md) | The changelog entry and the `.version` bump for a finished work, on its branch |
+| [`/flow:archive`](skills/archive/SKILL.md) | Moves a finished work to `docs/work/archive/` and repairs the links |
 
-**First run in a repo.** If `docs/` doesn't exist, devflow creates `docs/work/`. If it does, devflow says what it will add inside it (`work/`, `decisions-log/`, `development-guidelines.md`, `CHANGELOG.md`), reports collisions, and asks whether to keep `docs/` (recommended) or use a top-level `devflow/` folder (discouraged: documentation ends up in two places). It then offers to create `docs/development-guidelines.md` from a template.
+Open Claude Code inside the project and type `/flow:dev`, or say "resume mobile-menu". A work goes like this:
 
-**Opening.** One message with five questions and the answers devflow proposes: what to build, a code name, source material, whether the outcome is already clear in one sentence (technical work skips to slicing; product work starts from the frame), whether the problem is clear. Previous developments in the same area, found in the project memory, are flagged in the same message. Then `docs/work/<date>-<slug>/STATUS.md` is created and the path is declared.
+- **Opening.** One message with five questions and the answers it proposes: what to build, a code name, source material, whether the outcome is already clear in one sentence (technical work skips to slicing; product work starts from the frame), whether the problem is clear.
+- **Definition.** Each phase writes one document in `docs/work/<date>-<slug>/`, commits, and stops. Impact has two subagents read the slices against the real code and report in one ranked message.
+- **Slice loop.** Plan, review by a fresh subagent, **first stop**; execute, close with the Done and the gate verified, lessons written, **second stop**: "V3 closed. Plan V4, or stop here?"
+- **Resume.** It reloads the standing documents (`STATUS.md`, the frame's criterion, the guidelines that apply, `lessons.md`, the matching decisions, the current plan), says what it reloaded, and continues.
+- **Close.** It asks before each step: close the work, `/flow:changelog`, `/flow:archive`, then reports that the branch is ready to merge. It doesn't merge, push or tag.
 
-**Definition.** Each phase writes one document in the work's folder, commits, and stops:
+A bugfix is a one-slice work: straight to slicing, impact if it touches more than one file, the loop once.
 
-| Phase | Document | What happens |
-|---|---|---|
-| frame | `frame.md` | The problem worth solving, from dialogue or transcripts. Opens with `## The criterion`: problem, outcome, what it is less about, and the measure |
-| shaping | `shaping.md` | Requirements, solution options, fit check |
-| breadboard | `breadboard.md` | Parts and wiring |
-| slicing | `slices.md` | The slices: scope, Done criteria, gotchas |
-| impact | corrections in `slices.md` | Two subagents read the slices and the real code, one with the common lenses and one with the stack's, and report in one ranked message with a recommended fix per finding |
+**From `/flow:project` to `/flow:dev`.** When an action of a project is software, its plan row reads "flow:dev work `<slug>` in `<repo>` merged". You open that work with `/flow:dev` in its repo, in its own session, and the row closes when it is merged.
 
-**Slice loop.** For each slice, in order, with two stops:
+## What lands in a project
 
-1. `plan`: `writing-plans` writes `V<n>-plan.md` at task level (what, files, verification, done; dependencies and `critical` marks) from the slice, the guidelines and `lessons.md`. Deviations from the mandate are recorded in `slices.md`.
-2. `review`: a subagent checks the plan: mandate fidelity, ignored lessons, existence of what the plan names, guideline compliance. **First stop**: the plan in ten lines, the findings ranked with a recommended fix each, one question.
-3. `execute`: `subagent-driven-development` runs the plan, one subagent per task with a review each; task reviewers on a smaller model unless the task is `critical`; independent tasks in parallel.
-4. `close`: the gate is green, the narrative goes under the slice in `slices.md` and the rules into `lessons.md`, `STATUS.md` logs wall-clock and cost, commit. **Second stop**: "V3 closed. Plan V4, or stop here?"
-
-**Resume.** `/devflow` again, or "resume mobile-menu". The skill reloads the standing documents — `STATUS.md`, the frame's criterion, the applicable guidelines, `lessons.md`, the matching decision titles, the current plan — states what it reloaded, and offers to continue from `phase`, `slice` and `step`. Closed debates (shaping, breadboard, closed plans) stay closed.
-
-**Bugfix.** Same skill, short path: one slice, impact if it touches more than one file, the loop once.
-
-**Cost.** Every subagent in a slice gets the same context packet (slice section, `lessons.md`, the guideline sections that apply) placed verbatim at the top of its prompt, so identical prefixes hit the prompt cache. `ultrathink` only at impact and on plans with more than five tasks. Each `STATUS.md` Log line records wall-clock and cost, so tuning is a comparison.
-
-**Close.** When the last slice is closed and you confirm the work is complete, devflow runs the closing sequence, asking before each step:
-
-1. `devflow-docs`: changelog entry and `.version`, committed on the branch.
-2. `devflow-archive`: the work folder moves to `docs/work/archive/`, committed on the branch.
-3. The branch is ready to merge into `main`. Devflow doesn't merge or push.
-
-Code, changelog, version and archived work land on `main` in one changeset. Both skills can also be invoked on their own:
-
-```
-/devflow-docs
-/devflow-archive
-```
-
-## Projectflow
-
-For a project that isn't software: a renovation, a client engagement, a strategy, a personal plan. Open Claude Code anywhere and type:
-
-```
-/projectflow
-```
-
-**Opening.** One message with seven questions and proposed answers: what to achieve, a name, where it lives (inside a Maestro instance, `<documents_path>/<Name>/`; elsewhere, a folder you name), the appetite (time and money as a box, with a stop when it's reached), who's involved, source material, whether the outcome is already clear in one sentence.
-
-**Definition.** `frame.md` from dialogue or transcripts (`framing-doc`), `shaping.md` with the appetite as a hard constraint, `kickoff.md` from the call with the people who will execute (`kickoff-doc`), `slices.md` with at most nine slices per level, each ending in something observable in the world. Then a reality check by two subagents: money, time, people, permissions; dependencies and points of no return, existence of what the slices name, and a pre-mortem.
-
-**Slice loop**, two stops per slice:
-
-1. `plan`: an action table written with you (who, when, needs, cost, done when), under sixty lines.
-2. `review`: a fresh head checks fidelity, ignored lessons, availability, constraints. First stop.
-3. `execute`: people act; you report; the skill updates the plan, logs what was spent, records surprises and proposes decisions as they happen.
-4. `close`: the Done verified with evidence, spent against budget, lessons into `lessons.md`. Second stop.
-
-**Handoffs.** An action that is software is written as "devflow work `<slug>` merged" and run with `devflow` in its repo. A slice that needs its own slices becomes a sub-project folder with its own `STATUS.md`.
-
-**Exit.** `report.md`: what was done, spent against the appetite, decisions, lessons, what was left out. Then, if you want, the folder moves to an `archive/` next to it.
-
-```
-<Project>/
-  STATUS.md
-  constraints.md
-  frame.md
-  shaping.md
-  slices.md
-  lessons.md
-  S1-plan.md
-  S2-plan.md
-  S3-plumbing/          # a sub-project
-    STATUS.md
-    slices.md
-  decisions/
-    2026-09-10-local-supplier-over-cheaper.md
-  report.md
-```
-
-`devflow` and `projectflow` share their skeleton by design and are kept in sync by hand: a change to one is a question for the other.
-
-## What lands in the repo (devflow)
+Markdown only, versioned with the code, under `docs/` by default:
 
 ```
 .version
 docs/
   CHANGELOG.md
   development-guidelines.md
+  impact-lenses.md
   decisions-log/
     2026-09-03-server-side-locale-detection.md
   work/
     archived.md
     2026-09-02-mobile-menu/
       STATUS.md
-      shaping.md
       slices.md
       lessons.md
-      spike-view-transitions.md
       V1-plan.md
-      V2-plan.md
     archive/
-      2026-08-20-list-filter/
 ```
 
-Markdown only, versioned with the code. `docs/` is the project's memory: what shipped (`CHANGELOG.md`, `work/archived.md`), why (`decisions-log/`), how code is written here (`development-guidelines.md`). Devflow searches it at the opening of every work and reads what matches. `.version` holds the application version, one line, at the root; `package.json` is left alone, its version tracks the package. On the first archive, `devflow-archive` offers to add a `deny` on `docs/work/archive/**` to `.claude/settings.json`, so closed works stop consuming context. You can decline.
+`docs/` is the project's memory: what shipped, why, and how code is written here. `/flow:dev` searches it at the opening of every work. The plugin's own files (skills, templates, lenses, `dependencies.md`) stay in the plugin copy; a template reaches the project only when you accept it. Who writes and reads each path: [What a project holds](docs/architecture.md#what-a-project-holds).
 
-## Skills
+## Project lenses
 
-| Skill | Role |
-|---|---|
-| `devflow` | Conductor: opening, definition phases, slice loop |
-| `devflow-docs` | Changelog entry and version bump |
-| `devflow-archive` | Archive a closed work, repair links |
-| `projectflow` | Conductor for projects that aren't software: appetite, reality check, action plans, people as executors |
+`docs/impact-lenses.md` holds the project's own lenses: what a change here can break that the code alone doesn't show, such as public URLs that need redirects or an export other teams import. `/flow:dev` applies them at impact and in every plan review, on top of the lenses for the stack ([`skills/dev/lenses.md`](skills/dev/lenses.md)). Coding rules go in the guidelines, not here.
 
-Impact lenses per stack (Rails, Astro, React, Node, generic): [`skills/dev/lenses.md`](skills/dev/lenses.md).
+At the first run in a repo, `/flow:dev` offers to create the file from its template, [`skills/dev/impact-lenses.template.md`](skills/dev/impact-lenses.template.md). In a repo that is already past that first run, ask `/flow:dev` to create `docs/impact-lenses.md` from its template, then fill it in.
 
-## Development guidelines
+## Plan review lenses
 
-`docs/development-guidelines.md` is where you write the rules plans and code must follow: how tests are written, naming, how functions are split, where code goes, what a commit contains, and the `## Gate` (the commands that must be green before a slice closes). Devflow passes it to every plan, review and execution; the review checks compliance. Template: [`skills/dev/development-guidelines.template.md`](skills/dev/development-guidelines.template.md). Keep it short and checkable.
+Every slice plan is checked by a fresh subagent with five lenses:
 
-## Decisions log
+1. **Mandate fidelity**: the plan does only what the slice calls for and covers its Done.
+2. **Ignored lessons**: a rule in `lessons.md` the plan doesn't follow.
+3. **Existence**: the files and symbols the plan names exist and do what it assumes.
+4. **Guideline compliance**: tests, naming and placement follow `docs/development-guidelines.md`.
+5. **Project lenses**: the lenses in `docs/impact-lenses.md`; "project lenses: none" when the file is absent.
 
-`docs/decisions-log/` keeps the *why*: one dated file per decision, with context, the decision, the alternatives discarded and the consequences. Written only when a real alternative was discarded, a known problem was deferred on purpose, or the behaviour will surprise whoever reads the code. Devflow proposes one at the close of every step and never writes it unasked. Decisions outlive works: archiving leaves them in place, and the changelog links them. Format and criterion: [`skills/dev/decisions-log.md`](skills/dev/decisions-log.md).
+The guidelines template is [`skills/dev/development-guidelines.template.md`](skills/dev/development-guidelines.template.md); the decisions format is [`skills/dev/decisions-log.md`](skills/dev/decisions-log.md).
 
 ## Configuration
 
-None required. Defaults: `docs/` as the root for work, decisions, guidelines and changelog; `.version` at the repo root; stack detected from `Gemfile`, `astro.config.*` or `package.json`.
+None required. Defaults: `docs/` as the root, `.version` at the repo root, the stack detected from `Gemfile`, `astro.config.*` or `package.json`.
 
-Optional `.devflow.yml` at the project root:
+Optional `.flow.yml` at the project root:
 
 ```yaml
 root: docs              # where work/, decisions-log/ and development-guidelines.md live
@@ -187,35 +129,46 @@ changelog: docs/CHANGELOG.md
 version_file: .version
 ```
 
-The skills read it if present. Devflow writes it in one case only: when you choose a non-default root at first run.
+`/flow:dev` writes it in one case only: when you choose a non-default root at the first run. When `.flow.yml` is absent and a `.devflow.yml` exists, the skills read that instead, with the same keys, and `/flow:dev` suggests renaming it.
 
-## Dependencies
+## Migrating from the symlink skills
 
-devflow conducts; the work is done by other skills, installed once at user level.
+If you used the four skills installed as symlinks or with `npx skills`:
 
-| Skill | Used for | Source |
-|---|---|---|
-| `shaping`, `breadboarding`, `framing-doc` | Frame, shaping, breadboard, slicing | [rjs/shaping-skills](https://github.com/rjs/shaping-skills) |
-| `grill-me` | Tightening a vague point | [mattpocock/skills](https://github.com/mattpocock/skills) |
-| `brainstorming`, `writing-plans`, `subagent-driven-development` | Frame dialogue, slice plans, execution | [obra/superpowers](https://github.com/obra/superpowers), as a Claude Code plugin |
+1. **Install the plugin first** (see [Install](#install)). Until the old skills are removed, both load: `/devflow` and `/flow:dev` are two copies of the conductor.
+2. **Then remove the old skills.** Symlinks: `rm ~/.claude/skills/{devflow,devflow-docs,devflow-archive,projectflow}`. For `npx` installs: `npx skills remove -g devflow devflow-docs devflow-archive projectflow`.
+3. **New names:** `/devflow` → `/flow:dev`, `/projectflow` → `/flow:project`, `/devflow-docs` → `/flow:changelog`, `/devflow-archive` → `/flow:archive`.
+4. **Configuration:** rename `.devflow.yml` to `.flow.yml` when convenient. The old name is still read.
+5. **Personal copies of the dependencies.** If you installed `shaping`, `breadboarding`, `framing-doc` or the superpowers skills as personal skills, they still count as present and do no harm, but each skill shows twice in the listing (`shaping` and `shaping-skills:shaping`). To drop a personal copy, remove its folder or symlink under `~/.claude/skills/`, or for `npx` installs `npx skills remove -g shaping breadboarding framing-doc`.
+6. **Existing projects.** Their `docs/` is unchanged. A `docs/work/archived.md` header that cites `/devflow-archive` can stay as it is or be edited by hand.
 
-A missing dependency doesn't block start-up: devflow reports it when the phase that needs it arrives. The behaviour described here matches superpowers 6.3.
+## Develop the plugin
+
+```bash
+git clone https://github.com/spleenteo/devflow.git flow
+claude --plugin-dir ./flow
+```
+
+`--plugin-dir` loads the clone for one session in place of the installed `flow` ([flags that load a plugin for one session](https://code.claude.com/docs/en/plugins/cli-reference#flags-that-load-a-plugin-for-one-session)).
+
+Read the [Releases](docs/development-guidelines.md#releases) rules before changing anything. A merge into `main` is a release, because projects declare the marketplace without a `ref`. Never add the marketplace from the clone you are editing: a local marketplace loads in place, so every session would run the conductor from the files you are editing. The guidelines, the Gate and the commit rules: [`docs/development-guidelines.md`](docs/development-guidelines.md).
 
 ## Update
 
+Third-party marketplaces don't auto-update by default ([keep plugins updated](https://code.claude.com/docs/en/plugins/install#keep-plugins-updated)). To pick up a release:
+
 ```bash
-npx skills update devflow devflow-docs devflow-archive projectflow -g   # npx install
-git -C <clone> pull                                          # clone install
+claude plugin marketplace update flow
+claude plugin update flow@flow
 ```
 
 ## Uninstall
 
 ```bash
-npx skills remove devflow devflow-docs devflow-archive projectflow
-# or, for a clone: rm ~/.claude/skills/{devflow,devflow-docs,devflow-archive,projectflow}
+claude plugin uninstall flow@flow
 ```
 
-Projects are untouched: `docs/work/` is plain markdown.
+Projects are untouched: `docs/` is plain Markdown.
 
 ## License
 

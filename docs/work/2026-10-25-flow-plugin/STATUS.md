@@ -1,8 +1,8 @@
 ---
 status: open
 phase: slice
-slice: V4
-step: execute
+slice: V5
+step: plan
 work: flow-plugin
 stack: generic
 updated: 2026-10-25
@@ -27,7 +27,7 @@ Source material: [`brief.md`](brief.md); the review of both briefs, [`../../brie
 - [x] V1 — The plugin skeleton
 - [x] V2 — The rename inside the skills
 - [x] V3 — Soft dependencies
-- [ ] V4 — Project impact lenses
+- [x] V4 — Project impact lenses
 - [ ] V5 — Architecture documentation
 - [ ] V6 — README, migration, release discipline
 
@@ -41,3 +41,4 @@ Source material: [`brief.md`](brief.md); the review of both briefs, [`../../brie
 - 10-25 — V1 — skeleton: manifests, skills under skills/, link check; isolated install, session demo and Gate green; 5 lessons — V2 plan — 40 min — n/a
 - 10-25 — V2 — rename inside the skills: four skills speak as `flow:*`, `.flow.yml` with `.devflow.yml` fallback, `${CLAUDE_SKILL_DIR}` paths, dependency naming settled by T0; demo and Gate green; 2 lessons — V3 plan — n/a (spans a context reset) — n/a
 - 10-25 — V3 — soft dependencies: dependencies.md, start and phase checks in dev and project, install.sh as a checker; grill-me dropped on the owner's call; demo and Gate green; 2 lessons — V4 plan — n/a — n/a
+- 10-25 — V4 — project impact lenses: template, lenses.md section, dev reads them at impact, in the slice packet and as the fifth review row; trap demo with and without the file; Gate green; 2 lessons — V5 plan — n/a — n/a

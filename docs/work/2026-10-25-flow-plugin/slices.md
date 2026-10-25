@@ -129,6 +129,13 @@ The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-pl
 - A fixture repo holding a one-slice work at `phase: impact` (`STATUS.md`, `slices.md`) and `docs/impact-lenses.md` with one lens and a deliberate trap: a stream-json run of the impact phase shows the lens in the subagent's input and a finding on the trap.
 - Without the file, the same run shows no project lenses.
 
+**V4 — done on 2026-10-25**
+- `skills/dev/impact-lenses.template.md` (two invented lenses) and a `## Project lenses` section in `lenses.md`. `/flow:dev` names the file in Conventions, Step 0 (in the `ls`, the add-list as optional, the template offer), Cost discipline rule 1, the impact packet, the slice packet and a fifth plan-review row; absent file: "project lenses: none", not a finding.
+- The lenses travel as text, verbatim, in the shared packet: both impact subagents receive them, only the stack-lens one (or the single one) runs them.
+- Demo on a fixture whose slice renames a field that names a CSV column: with the lens, the Agent input carries it verbatim and the report raises a blocker on the partner contract (sign-off, transition period); without it, the input says "project lenses: none" and the report flags the header change but no contract. `-p` went straight to impact, no resume question.
+- Gate (README excluded): validate passes; old-name grep only the 7 allowed lines; link check empty.
+- Rulings: T1 and T2 to one implementer (two commits); the fix round held until the demo ended, since the demo read the same files. Review: both verdicts ✅, one Important (which subagent runs the lenses) and three minors, all fixed.
+
 ## V5 — Architecture documentation
 
 **In**

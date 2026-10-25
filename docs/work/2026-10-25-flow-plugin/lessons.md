@@ -9,3 +9,5 @@
 - `skillOverrides` match exact names: hiding `subagent-driven-development` leaves `superpowers:subagent-driven-development` visible. List the plugin form too when a demo must hide it.
 - Before naming a skill as a dependency the flow invokes, read its frontmatter: `disable-model-invocation: true` makes it user-only, absent from the model's listing and impossible to invoke.
 - `enabledPlugins: {"<id>": false}` in a scratch repo's `settings.local.json` disables a user-scope plugin for `-p` demos.
+- A demo trap must be one the code alone can't reveal, and the demo compares runs with and without the feature: otherwise a common lens finds it and the demo proves nothing.
+- Don't edit files a running demo reads: hold the fix round until it ends.

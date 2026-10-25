@@ -1,6 +1,6 @@
 ---
 status: open
-phase: slicing
+phase: impact
 slice: null
 step: null
 work: flow-plugin
@@ -24,9 +24,16 @@ Source material: [`brief.md`](brief.md); the review of both briefs, [`../../brie
 
 ## Slices
 
-- [ ] (defined during slicing)
+- [ ] V1 — The plugin skeleton
+- [ ] V2 — The rename inside the skills
+- [ ] V3 — Soft dependencies
+- [ ] V4 — Project impact lenses
+- [ ] V5 — Architecture documentation
+- [ ] V6 — README, migration, release discipline
 
 ## Log
 
 <!-- date — step — done — remaining — wall-clock — cost -->
 - 10-25 — opening — home, guidelines, briefs saved — spike, slicing — 1 h 5 min (brief review included) — n/a
+- 10-25 — spike — names, shaping-skills entry, validate verified; soft dependencies and no-ref pinning decided from the docs, authenticated test skipped by choice — slicing — 45 min — n/a
+- 10-25 — slicing — six slices; fidelity check skipped (no frame) — impact — 15 min — n/a

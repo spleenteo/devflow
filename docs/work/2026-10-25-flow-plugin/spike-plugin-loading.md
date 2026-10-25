@@ -35,7 +35,9 @@ Consequence for the design, to settle before slicing:
 - **B. Projects declare `ref: <tag>`** and that wins in the project (per-project pinning, as in the original brief). The cost is a re-fetch and a `/reload-plugins` notice when switching between projects on different tags.
 - **C. Release channel by marketplace name** (`flow` = latest release on `main`, `flow-edge` = development), as `plugins/host-marketplace` suggests for channels.
 
-Recommended: **A**, with B as the documented escape hatch for a project that must stay behind. Confirm with one authenticated session (below) before writing it down.
+Recommended: **A**, with B as the documented escape hatch for a project that must stay behind.
+
+**Decided on 2026-10-25: A, from the docs, without the authenticated test.** Projects declare the marketplace without a `ref`; `main` holds released states only (work on branches, merge = release, tag `v<version>` on the merge commit). A user-scope pin is optional; a project-level `ref` is the documented escape hatch. Risk accepted: the precedence and re-fetch behaviour is read from the docs, not observed. The README states it as documented behaviour, and the first real project that adopts the plugin is the test.
 
 ## Dependencies
 
@@ -54,9 +56,9 @@ Recommended: **A**, with B as the documented escape hatch for a project that mus
 
 This closes 4b and 4c.
 
-## Still open: one authenticated session
+## Not run: one authenticated session
 
-Run once, in a logged-in configuration (yours, with throwaway names, or the isolated one after `/login`):
+Skipped by choice on 2026-10-25 (see Pinning). Left here as the test to run if the documented behaviour turns out wrong; item 3 is checked instead in the slice that rewrites the references, by reading the session's skill list:
 
 1. Open `repoA` (project pins `ref: v0.0.1`) with the user scope at `v0.0.3`: which marker does `/flow:dev` print, and does the "Plugins changed" notice appear? Then `repoB` (`v0.0.2`).
 2. A fresh configuration opening `repoA`: does `flow` load with trust only, and do its dependencies install without `/reload-plugins`?

@@ -23,6 +23,7 @@ Same skeleton as `/flow:dev`: the high-level plan is the slice list produced by 
 | Apply corrections on its own | Verifications report in one ranked message with a recommendation per finding; the user decides with one answer |
 | Write code or run `/flow:dev` itself | A slice that is software becomes a `/flow:dev` work in its repo; this skill keeps the Done |
 | Touch files outside the project's home | It writes only inside the folder chosen at opening |
+| Install its dependencies | It prints the commands from `dependencies.md`; the user runs them |
 
 **The rule that matters most**: a long session where the skill barrels ahead is worse than no skill. At the two stops of every slice, return to the user.
 
@@ -50,7 +51,17 @@ Few subagents here: two at the reality check, one per plan review. The cost is t
 2. **One message per verification.** Findings ranked by severity, each with a recommended action, one question at the end.
 3. **Packets, not documents.** A subagent gets the slice's section of `slices.md`, `lessons.md`, `constraints.md`, the matching decisions, and the plan. Not `shaping.md` unless the slice's section points to it.
 
+## Dependencies
+
+Runs first, on every invocation: before anything else in this skill and before any file is written. The skills this one hands work to are listed in `${CLAUDE_PLUGIN_ROOT}/dependencies.md` (in the repo: [dependencies.md](../../dependencies.md)). Read it and compare it with the skills listed in the session: a dependency is present when a listed skill has its name, or its segment after `:` equals it.
+
+If any are missing, report them in one message, required first, then optional. For each: the install commands from `dependencies.md` at user and project scope (for `grill-me`, the plugin route at both scopes plus the `npx` alternative) and the phase that needs it. Never install anything. If the next phase doesn't need what's missing, carry on.
+
+At a phase that invokes a dependency, check again: if a required one isn't listed, stop that phase and give its commands from `dependencies.md`; don't do its job without it.
+
 ## On start: open or resume
+
+The dependency check (`## Dependencies`) has already run.
 
 ```bash
 rg "^phase:" <home>/STATUS.md <home>/*/STATUS.md 2>/dev/null
@@ -138,6 +149,8 @@ For each phase: invoke the tool telling it where to save, update `phase:`, stop.
 | `slicing` | Always, even with one slice | `shaping` (slicing section) | `slices.md` |
 | `reality` | Always, after slicing | Two subagents (below) | Corrections in `slices.md` |
 
+If a phase's tool isn't listed in the session (`kickoff-doc` included), stop that phase and give its commands from `dependencies.md`.
+
 ### The criterion
 
 `frame.md` opens, right under the frontmatter, with a block of at most ten lines:
@@ -165,7 +178,7 @@ A frame written before this convention gets the block added at the top of its ne
 
 **The criterion travels with every invocation.** `shaping`, `framing-doc`, `kickoff-doc` and `grill-me` don't know the project: put the `## The criterion` block and `constraints.md` verbatim at the top of the prompt, above the path instruction. Without them a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
 
-**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `grill-me` on that point before moving on.
+**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `grill-me` on that point before moving on. It's optional: if it isn't listed, give its commands from `dependencies.md` and settle the point in dialogue.
 
 **If an unknown is factual** (does the permit apply, what does the supplier charge, is the person available), it's a spike: a `spike-<topic>.md` with questions and answers, done before the plan that depends on it. A plan is not written on top of a guess.
 
@@ -210,7 +223,7 @@ Written in session with the user: the plan needs what only they know (who, when,
 <from the reality check, plus what the previous slices taught>
 
 ## To settle before starting
-<open questions; grill-me on each if they don't close in dialogue>
+<open questions; grill-me on each, if listed, when they don't close in dialogue>
 ```
 
 An action that is software is written as *"flow:dev work `<slug>` in `<repo>` merged"* (rows written as *"devflow work … merged"* are read the same), and that work is opened in its repo with `/flow:dev` when its turn comes. A slice that needs its own plan of several slices becomes a sub-project: `S<n>-<slug>/` with its own `STATUS.md` and `parent:` set; the parent slice's Done becomes "sub-project done".

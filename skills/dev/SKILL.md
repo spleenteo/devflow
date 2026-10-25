@@ -26,6 +26,7 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Pass whole documents to subagents | Each subagent gets a context packet: what it needs, nothing else |
 | Touch `CLAUDE.md` or write config on its own | `.flow.yml` is written only to record a layout the user chose at first run (Step 0) |
 | Write the changelog or archive itself | It invokes `/flow:changelog` and `/flow:archive` in the closing sequence (Step 6), each after asking |
+| Install its dependencies | It prints the commands from `dependencies.md`; the user runs them |
 
 **The rule that matters most**: a long session where the skill barrels ahead is worse than no skill. At the two stops of every slice, return to the user.
 
@@ -67,7 +68,17 @@ Token cost comes from fresh contexts rereading the same documents. Wall-clock co
 
 And measure: every Log line in `STATUS.md` carries wall-clock and cost (from `/cost`), so the next tuning is a comparison, not an opinion.
 
+## Dependencies
+
+Runs first, on every invocation: before anything else in this skill and before any file is written. The skills this one hands work to are listed in `${CLAUDE_PLUGIN_ROOT}/dependencies.md` (in the repo: [dependencies.md](../../dependencies.md)). Read it and compare it with the skills listed in the session: a dependency is present when a listed skill has its name, or its segment after `:` equals it.
+
+If any are missing, report them in one message, required first, then optional. For each: the install commands from `dependencies.md` at user and project scope (for `grill-me`, the plugin route at both scopes plus the `npx` alternative) and the phase that needs it. Never install anything. If the next phase doesn't need what's missing, carry on.
+
+At a phase that invokes a dependency, check again: if a required one isn't listed, stop that phase and give its commands from `dependencies.md`; don't do its job without it.
+
 ## Step 0 — First run in a repo
+
+The dependency check (`## Dependencies`) has already run.
 
 Runs once: when there is no `docs/work/`, no `.flow.yml` and no `.devflow.yml`.
 
@@ -85,6 +96,8 @@ ls -d docs docs/work docs/decisions-log docs/development-guidelines.md docs/CHAN
 Then, if `docs/development-guidelines.md` is missing, offer to create it from `${CLAUDE_SKILL_DIR}/development-guidelines.template.md`. The user fills it in; if they decline, don't create it: an empty template is worse than none.
 
 ## On start: open or resume
+
+The dependency check (`## Dependencies`) has already run.
 
 ```bash
 rg "^phase:" docs/work/*/STATUS.md 2>/dev/null
@@ -171,6 +184,8 @@ For each phase: invoke the tool telling it where to save, commit, update `phase:
 | `slicing` | Always, even with one slice | `shaping` (slicing section) or `breadboarding` | `slices.md` |
 | `impact` | Always, after slicing | Two subagents (below) | Corrections in `slices.md` |
 
+If a phase's tool isn't listed in the session, stop that phase and give its commands from `dependencies.md`.
+
 ### The criterion
 
 `frame.md` opens, right under the frontmatter, with a block of at most ten lines:
@@ -196,7 +211,7 @@ A technical work that skipped the frame has no criterion, and nothing here appli
 
 **The criterion travels with every invocation.** `shaping`, `framing-doc`, `breadboarding` and `grill-me` don't know the work: put the `## The criterion` block verbatim at the top of the prompt, above the path instruction, with the guideline sections that bear on it. Without it a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
 
-**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `grill-me` on that point before moving on. It's a tool for tightening, not a phase.
+**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `grill-me` on that point before moving on. It's a tool for tightening, not a phase. It's optional: if it isn't listed, give its commands from `dependencies.md` and settle the point in dialogue.
 
 **If an unknown is technical** (how a library behaves, what a piece of code really does, whether a platform limit holds), it's a spike: a `spike-<topic>.md` with questions and outcomes, done before the plan of the slice that depends on it. A plan is not written on top of a guess.
 
@@ -222,7 +237,7 @@ From here `phase: slice`. For each slice, in `slices.md` order, four steps and t
 
 ### `step: plan`
 
-Invoke `writing-plans` with the packet and this instruction:
+If `writing-plans` isn't listed in the session, stop this step and give its commands from `dependencies.md`. Otherwise invoke it with the packet and this instruction:
 
 > Save the plan to `docs/work/2026-09-02-mobile-menu/V2-plan.md`. **Not** in `docs/superpowers/plans/`. Task level: for each task, what it does, which files it touches, how it's verified, what done means. No minute-by-minute steps: the implementer reads the code. TDD where the `## Tests` section of the guidelines requires it, not elsewhere. Mark dependencies between tasks (`depends on: T1`) and mark `critical` the tasks that touch shared or risky code. Aim for under 100 lines.
 
@@ -245,7 +260,7 @@ Approved fixes go into the plan in place. Reopen `writing-plans` only if the str
 
 ### `step: execute`
 
-`subagent-driven-development` on the plan, with the packet and these overrides stated in the instruction:
+If `subagent-driven-development` isn't listed in the session, stop this step and give its commands from `dependencies.md`. Otherwise run it on the plan, with the packet and these overrides stated in the instruction:
 
 - task reviewers on a smaller model, unless the task is marked `critical`;
 - tasks without pending dependencies dispatched in parallel;

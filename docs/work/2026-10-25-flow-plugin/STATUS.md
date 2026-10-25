@@ -1,6 +1,6 @@
 ---
-status: open
-phase: slice
+status: closed
+phase: done
 slice: null
 step: null
 work: flow-plugin
@@ -44,3 +44,4 @@ Source material: [`brief.md`](brief.md); the review of both briefs, [`../../brie
 - 10-25 — V4 — project impact lenses: template, lenses.md section, dev reads them at impact, in the slice packet and as the fifth review row; trap demo with and without the file; Gate green; 2 lessons — V5 plan — n/a — n/a
 - 10-25 — V5 — architecture.md with four Mermaid diagrams, every Claude Code claim linked; Releases in the guidelines; by-eye check and review fixes; Gate green; 2 lessons — V6 plan — n/a — n/a
 - 10-25 — V6 — README rewritten, migration in six points, Gate over the whole repo; install from a served git URL demonstrated; review fixes; 2 lessons — closing sequence (changelog, archive), merge on approval — n/a — n/a
+- 10-25 — close — repository references renamed to spleenteo/flow on the owner's request; work closed — changelog, archive, then merge, GitHub rename and tag on approval — n/a — n/a

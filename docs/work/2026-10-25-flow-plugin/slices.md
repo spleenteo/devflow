@@ -105,6 +105,15 @@ The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-pl
 - `install.sh` leaves the Gate's narrowing at V3, its owner; README stays excluded until V6.
 - Both conductors gain a row in `## What it does NOT do`: they don't install dependencies, they print the commands.
 - `install.sh` counts a skill present when its plugin is enabled or a folder of that name is in the personal or project skills, whether or not `claude` is on the path: the presence rule is by name.
+- `grill-me` dropped as a dependency, on the owner's decision after T4: upstream it is now user-only (`disable-model-invocation: true`), a shim that calls `grilling`, so the model could never invoke it. A vague point is settled in dialogue, one question at a time. The Done's "`grill-me` (optional)" no longer applies; `dependencies.md` keeps the required/optional column for future entries.
+
+**V3 — done on 2026-10-25**
+- `dependencies.md` at the plugin root: superpowers and shaping-skills, commands at user and project scope, project scope linked to the docs page, the shaping-skills hook left unwired with the reason.
+- `dev` and `project` open with a word-identical `## Dependencies` check (before Step 0 in `dev`), report missing ones in one message, never install, and stop only at the phase or step that needs what's missing; `project`'s plan and execute steps carry no check.
+- `install.sh` rewritten as a report-only checker that parses the table (8 lines of awk): owner's machine all `ok`, exit 0; empty `HOME`, no `claude` on the path: required `missing`, exit 1.
+- Demo: owner's setup reports nothing missing (after dropping `grill-me`); with superpowers disabled by `enabledPlugins` in `settings.local.json` and the personal copies off, one message names the three superpowers skills as required with both commands, shaping skills not reported; `${CLAUDE_PLUGIN_ROOT}` arrives expanded; nothing written. `npx skills add` without `-g` writes into the project's `.claude/skills/` and `.agents/skills/` (plus a stray `agent/` folder).
+- Gate (README excluded): validate passes; old-name grep only the 7 allowed lines; link check empty. Validate's advice suggests a one-step install line, `/plugin install flow --marketplace <owner>/<repo>`, on Claude Code 2.1.275 or later: for V6.
+- Rulings: T1, T3 and T2's fix reviewed by the controller; T2 reviewed by a subagent (both verdicts ✅, 5 minors, 4 fixed, the extra "What it does NOT do" row kept).
 
 ## V4 — Project impact lenses
 

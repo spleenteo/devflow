@@ -10,7 +10,6 @@ A dependency counts as present when a skill listed in the session has its name, 
 | superpowers | `superpowers@claude-plugins-official` | `writing-plans`, `subagent-driven-development` | required | `/flow:dev` slice loop |
 | shaping-skills | `shaping-skills@flow` | `shaping`, `breadboarding`, `framing-doc` | required for the definition phases | both flows |
 | shaping-skills | `shaping-skills@flow` | `kickoff-doc` | required for its phase | `/flow:project` only |
-| Matt Pocock's skills | `mattpocock-skills@mattpocock` | `grill-me` | optional | both flows |
 
 Project scope is shared with the team through the project's settings: it writes the plugin's entry to `.claude/settings.json`, which you commit. Committing it enables the plugin for collaborators but does not download it, so each one runs the project-scope command once. See [Choose an install scope](https://code.claude.com/docs/en/discover-plugins#choose-an-install-scope). Flags: `claude plugin install <plugin> --scope user|project|local` and `claude plugin marketplace add <source> --scope user|project|local`.
 
@@ -39,23 +38,6 @@ claude plugin install shaping-skills@flow --scope project
 ```
 
 The upstream ripple-check hook is not wired. It is opt-in upstream, needs `jq`, and interrupts every edit of a file with `shaping: true` in its frontmatter. To use it anyway, follow the upstream setup: <https://github.com/rjs/shaping-skills>.
-
-### mattpocock
-
-Provides `grill-me`, optional: the flows work without it and skip the grilling step. Two routes. The plugin route brings all 27 skills of the marketplace; the `npx` route brings only `grill-me`.
-
-```bash
-# plugin route, user scope
-claude plugin marketplace add mattpocock/skills --scope user
-claude plugin install mattpocock-skills@mattpocock --scope user
-# plugin route, project scope
-claude plugin marketplace add mattpocock/skills --scope project
-claude plugin install mattpocock-skills@mattpocock --scope project
-# single skill, user scope (-g)
-npx skills add mattpocock/skills -s grill-me -g
-# single skill, in this project
-npx skills add mattpocock/skills -s grill-me
-```
 
 ## How the conductors use this file
 

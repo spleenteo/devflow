@@ -11,7 +11,7 @@ Same skeleton as `/flow:dev`: the high-level plan is the slice list produced by 
 
 ## Why
 
-`brainstorming` (`superpowers:brainstorming`), `grill-me`, `framing-doc` (`shaping-skills:framing-doc`), `shaping` (`shaping-skills:shaping`) and `kickoff-doc` (`shaping-skills:kickoff-doc`) are thinking tools. They don't know each other, don't know where the project lives, and carry no state across weeks. A project that spans months needs three things on disk: where we are, what was decided and why, what the last slice taught. This skill keeps the thread and invokes each tool at the right moment, telling it where to write.
+`brainstorming` (`superpowers:brainstorming`), `framing-doc` (`shaping-skills:framing-doc`), `shaping` (`shaping-skills:shaping`) and `kickoff-doc` (`shaping-skills:kickoff-doc`) are thinking tools. They don't know each other, don't know where the project lives, and carry no state across weeks. A project that spans months needs three things on disk: where we are, what was decided and why, what the last slice taught. This skill keeps the thread and invokes each tool at the right moment, telling it where to write.
 
 ## What it does NOT do
 
@@ -55,7 +55,7 @@ Few subagents here: two at the reality check, one per plan review. The cost is t
 
 Runs first, on every invocation: before anything else in this skill and before any file is written. The skills this one hands work to are listed in `${CLAUDE_PLUGIN_ROOT}/dependencies.md` (in the repo: [dependencies.md](../../dependencies.md)). Read it and compare it with the skills listed in the session: a dependency is present when a listed skill has its name, or its segment after `:` equals it.
 
-If any are missing, report them in one message, required first, then optional. For each: the install commands from `dependencies.md` at user and project scope (for `grill-me`, the plugin route at both scopes plus the `npx` alternative) and the phase that needs it (from this skill's tables). Never install anything, and don't block the start: the check at each phase stops it if needed.
+If any are missing, report them in one message, required first, then optional. For each: the install commands from `dependencies.md` at user and project scope and the phase that needs it (from this skill's tables). Never install anything, and don't block the start: the check at each phase stops it if needed.
 
 At a phase or step that invokes a dependency, check again: if a required one isn't listed, stop that phase and give its commands from `dependencies.md`; don't do its job without it.
 
@@ -176,9 +176,9 @@ A frame written before this convention gets the block added at the top of its ne
 
 > Save to `<home>/shaping.md`. Don't use default paths.
 
-**The criterion travels with every invocation.** `shaping`, `framing-doc`, `kickoff-doc` and `grill-me` don't know the project: put the `## The criterion` block and `constraints.md` verbatim at the top of the prompt, above the path instruction. Without them a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
+**The criterion travels with every invocation.** `shaping`, `framing-doc` and `kickoff-doc` don't know the project: put the `## The criterion` block and `constraints.md` verbatim at the top of the prompt, above the path instruction. Without them a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
 
-**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `grill-me` on that point before moving on. It's optional: if it isn't listed, give its commands from `dependencies.md` and settle the point in dialogue.
+**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), settle that point in dialogue before moving on: one question at a time, each with the answer you'd propose, until it closes or the user parks it as an open question.
 
 **If an unknown is factual** (does the permit apply, what does the supplier charge, is the person available), it's a spike: a `spike-<topic>.md` with questions and answers, done before the plan that depends on it. A plan is not written on top of a guess.
 
@@ -223,7 +223,7 @@ Written in session with the user: the plan needs what only they know (who, when,
 <from the reality check, plus what the previous slices taught>
 
 ## To settle before starting
-<open questions; grill-me on each, if listed, when they don't close in dialogue>
+<open questions; settle each in dialogue, one question at a time>
 ```
 
 An action that is software is written as *"flow:dev work `<slug>` in `<repo>` merged"* (rows written as *"devflow work … merged"* are read the same), and that work is opened in its repo with `/flow:dev` when its turn comes. A slice that needs its own plan of several slices becomes a sub-project: `S<n>-<slug>/` with its own `STATUS.md` and `parent:` set; the parent slice's Done becomes "sub-project done".

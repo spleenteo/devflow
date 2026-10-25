@@ -72,7 +72,7 @@ And measure: every Log line in `STATUS.md` carries wall-clock and cost (from `/c
 
 Runs first, on every invocation: before anything else in this skill and before any file is written. The skills this one hands work to are listed in `${CLAUDE_PLUGIN_ROOT}/dependencies.md` (in the repo: [dependencies.md](../../dependencies.md)). Read it and compare it with the skills listed in the session: a dependency is present when a listed skill has its name, or its segment after `:` equals it.
 
-If any are missing, report them in one message, required first, then optional. For each: the install commands from `dependencies.md` at user and project scope (for `grill-me`, the plugin route at both scopes plus the `npx` alternative) and the phase that needs it (from this skill's tables). Never install anything, and don't block the start: the check at each phase stops it if needed.
+If any are missing, report them in one message, required first, then optional. For each: the install commands from `dependencies.md` at user and project scope and the phase that needs it (from this skill's tables). Never install anything, and don't block the start: the check at each phase stops it if needed.
 
 At a phase or step that invokes a dependency, check again: if a required one isn't listed, stop that phase and give its commands from `dependencies.md`; don't do its job without it.
 
@@ -209,9 +209,9 @@ A technical work that skipped the frame has no criterion, and nothing here appli
 
 > Save to `docs/work/2026-09-02-mobile-menu/shaping.md`. Don't use default paths.
 
-**The criterion travels with every invocation.** `shaping`, `framing-doc`, `breadboarding` and `grill-me` don't know the work: put the `## The criterion` block verbatim at the top of the prompt, above the path instruction, with the guideline sections that bear on it. Without it a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
+**The criterion travels with every invocation.** `shaping`, `framing-doc` and `breadboarding` don't know the work: put the `## The criterion` block verbatim at the top of the prompt, above the path instruction, with the guideline sections that bear on it. Without it a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
 
-**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `grill-me` on that point before moving on. It's a tool for tightening, not a phase. It's optional: if it isn't listed, give its commands from `dependencies.md` and settle the point in dialogue.
+**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), settle that point in dialogue before moving on: one question at a time, each with the answer you'd propose, until it closes or the user parks it as an open question. It's tightening, not a phase.
 
 **If an unknown is technical** (how a library behaves, what a piece of code really does, whether a platform limit holds), it's a spike: a `spike-<topic>.md` with questions and outcomes, done before the plan of the slice that depends on it. A plan is not written on top of a guess.
 
@@ -314,6 +314,6 @@ Code, changelog, version and archived work land on `main` in one changeset. If t
 | Changelog and version | `/flow:changelog` | the `flow` plugin |
 | Archiving | `/flow:archive` | the `flow` plugin |
 
-`shaping`, `breadboarding`, `framing-doc`, `brainstorming`, `grill-me` aren't in the table because they aren't moments: they're tools this skill picks up when needed.
+`shaping`, `breadboarding`, `framing-doc`, `brainstorming` aren't in the table because they aren't moments: they're tools this skill picks up when needed.
 
 A work run with this skill can be one action of a `/flow:project` plan: the project's row says *"flow:dev work `<slug>` merged"* (the older *"devflow work … merged"* means the same), this skill runs the work in its repo, and the row closes at the merge. The two skills share their skeleton and are kept in sync by hand.

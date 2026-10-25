@@ -1,9 +1,9 @@
 ---
 name: dev
-description: Use when opening a development work in a repo, resuming an interrupted one, or moving to the next slice. Triggers include "/devflow", "open the work X", "resume X", "next slice", "where were we on X". Stack-agnostic; needs nothing in the project's CLAUDE.md.
+description: Use when opening a development work in a repo, resuming an interrupted one, or moving to the next slice. Triggers include "/flow:dev", "open the work X", "resume X", "next slice", "where were we on X". Stack-agnostic; needs nothing in the project's CLAUDE.md.
 ---
 
-# Devflow
+# Flow: dev
 
 Runs a development work from idea to code, one slice at a time.
 
@@ -11,7 +11,7 @@ The high-level plan is the slice list, produced by shaping. The detailed plan of
 
 ## Why
 
-The skills that do the actual work (`shaping`, `breadboarding`, `framing-doc`, `writing-plans`, `subagent-driven-development`) come from outside, don't know each other and don't know the repo's paths: `writing-plans` saves to `docs/superpowers/plans/`, `brainstorming` to `docs/superpowers/specs/`, `shaping` wherever it lands. Without a conductor, every work restarts the debate about which phases apply and where files go, state is lost when the session ends, and the return to the user between steps disappears.
+The skills that do the actual work (`shaping` (`shaping-skills:shaping`), `breadboarding` (`shaping-skills:breadboarding`), `framing-doc` (`shaping-skills:framing-doc`), `writing-plans` (`superpowers:writing-plans`), `subagent-driven-development` (`superpowers:subagent-driven-development`)) come from outside, don't know each other and don't know the repo's paths: `writing-plans` saves to `docs/superpowers/plans/`, `brainstorming` (`superpowers:brainstorming`) to `docs/superpowers/specs/`, `shaping` wherever it lands. Without a conductor, every work restarts the debate about which phases apply and where files go, state is lost when the session ends, and the return to the user between steps disappears.
 
 This skill keeps the thread: it opens the work's home, picks the path, invokes each tool at the right moment telling it where to write and what to read, records progress on disk, and has plans verified by someone else before executing.
 
@@ -24,8 +24,8 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Skip steps silently | When it skips one, it says which and why |
 | Apply corrections on its own | Verifications report in one ranked message with a recommendation per finding; the user decides with one answer |
 | Pass whole documents to subagents | Each subagent gets a context packet: what it needs, nothing else |
-| Touch `CLAUDE.md` or write config on its own | `.devflow.yml` is written only to record a layout the user chose at first run (Step 0) |
-| Write the changelog or archive itself | It invokes `devflow-docs` and `devflow-archive` in the closing sequence (Step 6), each after asking |
+| Touch `CLAUDE.md` or write config on its own | `.flow.yml` is written only to record a layout the user chose at first run (Step 0) |
+| Write the changelog or archive itself | It invokes `/flow:changelog` and `/flow:archive` in the closing sequence (Step 6), each after asking |
 
 **The rule that matters most**: a long session where the skill barrels ahead is worse than no skill. At the two stops of every slice, return to the user.
 
@@ -33,20 +33,20 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 
 | What | Convention | Detection |
 |---|---|---|
-| Root | `docs/` | Everything devflow writes lives under it: `docs/work/`, `docs/decisions-log/`, `docs/development-guidelines.md`, `docs/CHANGELOG.md`. Checked at first run (Step 0) |
+| Root | `docs/` | Everything this skill writes lives under it: `docs/work/`, `docs/decisions-log/`, `docs/development-guidelines.md`, `docs/CHANGELOG.md`. Checked at first run (Step 0) |
 | Stack | `rails`, `astro`, `react`, `node`, `generic` | `Gemfile` + `config/application.rb` → rails; `astro.config.*` → astro; `package.json` with `react` in dependencies → react; `package.json` without → node; else generic |
-| Guidelines | `docs/development-guidelines.md` | Read if present; its relevant sections go into every context packet. Template in `development-guidelines.template.md` next to this skill |
-| Decisions | `docs/decisions-log/` | Read by impact and review; written on request at the close of a step. Format in `decisions-log.md` next to this skill |
-| Changelog | `docs/CHANGELOG.md` | Written by `devflow-docs`; read at opening. An existing one is adopted, not replaced |
-| Impact lenses | Per stack, in `lenses.md` next to this skill | Chosen from the detected stack |
+| Guidelines | `docs/development-guidelines.md` | Read if present; its relevant sections go into every context packet. Template in `${CLAUDE_SKILL_DIR}/development-guidelines.template.md` |
+| Decisions | `docs/decisions-log/` | Read by impact and review; written on request at the close of a step. Format in `${CLAUDE_SKILL_DIR}/decisions-log.md` |
+| Changelog | `docs/CHANGELOG.md` | Written by `/flow:changelog`; read at opening. An existing one is adopted, not replaced |
+| Impact lenses | Per stack, in `${CLAUDE_SKILL_DIR}/lenses.md` | Chosen from the detected stack |
 
-A project can override the defaults with `.devflow.yml` at its root: keys `root`, `stack`, `changelog`, `version_file`. Read if present. The skill writes it in one case only: Step 0, to record a non-default root the user chose. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
+Configuration lives in `.flow.yml` at the project root. If it's absent and a `.devflow.yml` exists, read that instead: same keys. When it reads `.devflow.yml`, say so once in the session and suggest renaming it. A project can override the defaults with it: keys `root`, `stack`, `changelog`, `version_file`. Read if present. The skill writes it in one case only: Step 0, to record a non-default root the user chose. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
 
 ## Project memory
 
-`docs/` is the project's memory, and devflow reads it before writing anything new:
+`docs/` is the project's memory, and this skill reads it before writing anything new:
 
-| File | What it holds | When devflow reads it |
+| File | What it holds | When this skill reads it |
 |---|---|---|
 | `docs/CHANGELOG.md` | What shipped, by version, with the work slug | At opening, to see whether the request touches something already built |
 | `docs/decisions-log/` | Why things are the way they are: alternatives discarded, problems deferred | At opening, in the impact lens "Memory and debt", in every plan review |
@@ -69,20 +69,20 @@ And measure: every Log line in `STATUS.md` carries wall-clock and cost (from `/c
 
 ## Step 0 — First run in a repo
 
-Runs once: when there is no `docs/work/` and no `.devflow.yml`.
+Runs once: when there is no `docs/work/`, no `.flow.yml` and no `.devflow.yml`.
 
 ```bash
-ls -d docs docs/work docs/decisions-log docs/development-guidelines.md docs/CHANGELOG.md .devflow.yml 2>/dev/null
+ls -d docs docs/work docs/decisions-log docs/development-guidelines.md docs/CHANGELOG.md .flow.yml .devflow.yml 2>/dev/null
 ```
 
 **`docs/` doesn't exist** → create `docs/work/` and say so in one line.
 
-**`docs/` exists** → it's already someone's namespace. Say what devflow will add inside it (`work/`, `decisions-log/`, `development-guidelines.md`, `CHANGELOG.md`), report any collision (one of those paths already present with content devflow didn't write; an existing `CHANGELOG.md` is adopted, not a collision), and ask:
+**`docs/` exists** → it's already someone's namespace. Say what this skill will add inside it (`work/`, `decisions-log/`, `development-guidelines.md`, `CHANGELOG.md`), report any collision (one of those paths already present with content this skill didn't write; an existing `CHANGELOG.md` is adopted, not a collision), and ask:
 
-1. **Keep `docs/` (recommended).** Devflow's folders sit next to the existing ones. If something collides, the user moves or renames it first: devflow never moves files it doesn't own.
-2. **Use a top-level `devflow/` folder (discouraged).** Documentation splits in two places, and readers look in `docs/` first. If chosen, write `.devflow.yml` with `root: devflow` and say so.
+1. **Keep `docs/` (recommended).** The flow's folders sit next to the existing ones. If something collides, the user moves or renames it first: the flow never moves files it doesn't own.
+2. **Use a top-level `flow/` folder (discouraged).** Documentation splits in two places, and readers look in `docs/` first. If chosen, write `.flow.yml` with `root: flow` and say so.
 
-Then, if `docs/development-guidelines.md` is missing, offer to create it from `development-guidelines.template.md` next to this skill. The user fills it in; if they decline, don't create it: an empty template is worse than none.
+Then, if `docs/development-guidelines.md` is missing, offer to create it from `${CLAUDE_SKILL_DIR}/development-guidelines.template.md`. The user fills it in; if they decline, don't create it: an empty template is worse than none.
 
 ## On start: open or resume
 
@@ -107,7 +107,7 @@ Open with what you reloaded, in five lines — work, phase and slice, cost so fa
 
 ## Step 1 — Opening
 
-One message, five questions, each with the answer devflow proposes from what it already knows. The user corrects what's wrong and answers what's missing.
+One message, five questions, each with the answer this skill proposes from what it already knows. The user corrects what's wrong and answers what's missing.
 
 1. **What do you want to build?** In the user's words. Becomes `description` in the frontmatter.
 2. **Code name?** Propose a short lowercase slug with hyphens, checked against `docs/work/` and `docs/work/archived.md`.
@@ -204,7 +204,7 @@ A technical work that skipped the frame has no criterion, and nothing here appli
 
 ### `phase: impact`, once, on `slices.md`
 
-The slices against the real code, before the first plan. Two subagents in parallel, both with `ultrathink` in the prompt: one with the common lenses, one with the detected stack's lenses (`lenses.md`). On a one-slice work, one subagent with all of them. Packet: `slices.md` in full (here it is the object under review), the descriptions of `docs/decisions-log/` files that match the work's key words, the guidelines. The code they read themselves.
+The slices against the real code, before the first plan. Two subagents in parallel, both with `ultrathink` in the prompt: one with the common lenses, one with the detected stack's lenses (`${CLAUDE_SKILL_DIR}/lenses.md`; the packet says "pass the expanded absolute path"). On a one-slice work, one subagent with all of them. Packet: `slices.md` in full (here it is the object under review), the descriptions of `docs/decisions-log/` files that match the work's key words, the guidelines. The code they read themselves.
 
 Not in session: whoever just ran the shaping is the worst head for seeing what breaks elsewhere.
 
@@ -251,7 +251,7 @@ Approved fixes go into the plan in place. Reopen `writing-plans` only if the str
 - tasks without pending dependencies dispatched in parallel;
 - the final whole-branch review only if the plan has more than four tasks or touches files shared with other slices.
 
-That skill runs without stopping between tasks and settles conflicts with rulings in its ledger: it stops only for its own four reasons (irreversible operations, security, side effects outside the worktree, a plan broken beyond guessing). Devflow doesn't interrupt it to fix the plan; the rulings are read at the close.
+That skill runs without stopping between tasks and settles conflicts with rulings in its ledger: it stops only for its own four reasons (irreversible operations, security, side effects outside the worktree, a plan broken beyond guessing). This skill doesn't interrupt it to fix the plan; the rulings are read at the close.
 
 ### `step: close`
 
@@ -277,9 +277,9 @@ Applies to frame, shaping, breadboard, slicing and impact. Five moves, in order:
 When the last slice is closed and the user confirms the work is complete, run the closing sequence. Each step asks before running; the user may stop at any point.
 
 1. **Close the work.** `phase: done`, `status: closed`, final Log line, commit.
-2. **Docs.** Ask, then invoke `devflow-docs`: changelog entry and `.version`, committed on the branch.
-3. **Archive.** Ask, then invoke `devflow-archive`: the work folder moves to `docs/work/archive/`, committed on the branch.
-4. **Report.** Where the work lived, phases done and skipped (with why), slice count, what the verifications found, version assigned, total wall-clock and cost from the Log. Then say it plainly: the branch is ready to merge into `main`. Devflow doesn't merge or push.
+2. **Docs.** Ask, then invoke `/flow:changelog`: changelog entry and `.version`, committed on the branch.
+3. **Archive.** Ask, then invoke `/flow:archive`: the work folder moves to `docs/work/archive/`, committed on the branch.
+4. **Report.** Where the work lived, phases done and skipped (with why), slice count, what the verifications found, version assigned, total wall-clock and cost from the Log. Then say it plainly: the branch is ready to merge into `main`. This skill doesn't merge or push.
 
 Code, changelog, version and archived work land on `main` in one changeset. If the merge review asks for changes that need the work's documents, move them back with `git mv`: they're plain files in git.
 
@@ -293,12 +293,12 @@ Code, changelog, version and archived work land on `main` in one changeset. If t
 
 | Moment | Skill | Owner |
 |---|---|---|
-| Opening, definition, slice loop | `devflow` | this repo |
+| Opening, definition, slice loop | `/flow:dev` | the `flow` plugin |
 | A slice's plan | `writing-plans` | superpowers |
 | A plan's execution | `subagent-driven-development` | superpowers |
-| Changelog and version | `devflow-docs` | this repo |
-| Archiving | `devflow-archive` | this repo |
+| Changelog and version | `/flow:changelog` | the `flow` plugin |
+| Archiving | `/flow:archive` | the `flow` plugin |
 
 `shaping`, `breadboarding`, `framing-doc`, `brainstorming`, `grill-me` aren't in the table because they aren't moments: they're tools this skill picks up when needed.
 
-A devflow work can be one action of a `projectflow` plan: the project's row says *"devflow work `<slug>` merged"*, this skill runs the work in its repo, and the row closes at the merge. The two skills share their skeleton and are kept in sync by hand.
+A work run with this skill can be one action of a `/flow:project` plan: the project's row says *"flow:dev work `<slug>` merged"* (the older *"devflow work … merged"* means the same), this skill runs the work in its repo, and the row closes at the merge. The two skills share their skeleton and are kept in sync by hand.

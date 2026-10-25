@@ -13,7 +13,7 @@ Write a decision when:
 
 Don't write one for choices without alternatives, for style preferences (they belong in `development-guidelines.md`), or for what the code already says by itself.
 
-**Propose, never write unasked**: *"This choice discarded X. Record it in `decisions-log/`?"* Devflow asks at the close of every step. Decisions are written when taken, never in bulk at the end: by then the reason has faded.
+**Propose, never write unasked**: *"This choice discarded X. Record it in `decisions-log/`?"* `/flow:dev` asks at the close of every step. Decisions are written when taken, never in bulk at the end: by then the reason has faded.
 
 ## File
 
@@ -68,5 +68,5 @@ History stays readable. The question in six months is "why didn't we do X?", and
 |---|---|
 | Impact lens "Memory and debt" | Before the first plan: does the work contradict or obsolete a decision? |
 | Plan review | Every plan: does it repeat a choice differently from a recorded decision? |
-| `devflow-docs` | Links the work's decisions from the changelog entry |
-| `devflow-archive` | Leaves them in place: they outlive the work |
+| `/flow:changelog` | Links the work's decisions from the changelog entry |
+| `/flow:archive` | Leaves them in place: they outlive the work |

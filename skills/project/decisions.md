@@ -11,7 +11,7 @@
 
 Not for choices without alternatives, preferences (they belong in `constraints.md`), or what the plan already says by itself.
 
-**Propose, never write unasked**: *"This choice discarded X. Record it?"* Projectflow asks at the close of every step and during execution when it sees one. Decisions are written when taken, never in bulk at the end.
+**Propose, never write unasked**: *"This choice discarded X. Record it?"* `/flow:project` asks at the close of every step and during execution when it sees one. Decisions are written when taken, never in bulk at the end.
 
 ## File
 

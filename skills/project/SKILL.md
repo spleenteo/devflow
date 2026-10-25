@@ -1,5 +1,5 @@
 ---
-name: projectflow
+name: project
 description: Use when planning and running a project that isn't software, where people do the work over weeks or months. A renovation, a client engagement, a strategy, a personal plan. Triggers include "/projectflow", "let's plan X", "open the project X", "resume X", "next slice of X". Lives in a folder, never in a code repo; a slice that turns out to be software hands off to devflow.
 ---
 

@@ -164,15 +164,15 @@ Markdown only, versioned with the code. `docs/` is the project's memory: what sh
 | `devflow-archive` | Archive a closed work, repair links |
 | `projectflow` | Conductor for projects that aren't software: appetite, reality check, action plans, people as executors |
 
-Impact lenses per stack (Rails, Astro, React, Node, generic): [`devflow/lenses.md`](devflow/lenses.md).
+Impact lenses per stack (Rails, Astro, React, Node, generic): [`skills/dev/lenses.md`](skills/dev/lenses.md).
 
 ## Development guidelines
 
-`docs/development-guidelines.md` is where you write the rules plans and code must follow: how tests are written, naming, how functions are split, where code goes, what a commit contains, and the `## Gate` (the commands that must be green before a slice closes). Devflow passes it to every plan, review and execution; the review checks compliance. Template: [`devflow/development-guidelines.template.md`](devflow/development-guidelines.template.md). Keep it short and checkable.
+`docs/development-guidelines.md` is where you write the rules plans and code must follow: how tests are written, naming, how functions are split, where code goes, what a commit contains, and the `## Gate` (the commands that must be green before a slice closes). Devflow passes it to every plan, review and execution; the review checks compliance. Template: [`skills/dev/development-guidelines.template.md`](skills/dev/development-guidelines.template.md). Keep it short and checkable.
 
 ## Decisions log
 
-`docs/decisions-log/` keeps the *why*: one dated file per decision, with context, the decision, the alternatives discarded and the consequences. Written only when a real alternative was discarded, a known problem was deferred on purpose, or the behaviour will surprise whoever reads the code. Devflow proposes one at the close of every step and never writes it unasked. Decisions outlive works: archiving leaves them in place, and the changelog links them. Format and criterion: [`devflow/decisions-log.md`](devflow/decisions-log.md).
+`docs/decisions-log/` keeps the *why*: one dated file per decision, with context, the decision, the alternatives discarded and the consequences. Written only when a real alternative was discarded, a known problem was deferred on purpose, or the behaviour will surprise whoever reads the code. Devflow proposes one at the close of every step and never writes it unasked. Decisions outlive works: archiving leaves them in place, and the changelog links them. Format and criterion: [`skills/dev/decisions-log.md`](skills/dev/decisions-log.md).
 
 ## Configuration
 

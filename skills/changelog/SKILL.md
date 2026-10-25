@@ -1,5 +1,5 @@
 ---
-name: devflow-docs
+name: changelog
 description: Use when a work run with devflow is finished and about to land on main. Triggers include "/devflow-docs", "update docs", "write the changelog", "bump the version". Records the changelog entry and the version; touches neither the code nor the work's documents.
 ---
 

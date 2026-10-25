@@ -1,5 +1,5 @@
 ---
-name: devflow-archive
+name: archive
 description: Use to archive a devflow work that is finished and already recorded in the changelog. Triggers include "/devflow-archive", "archive the work X", "put X away". Never archives on its own initiative.
 ---
 

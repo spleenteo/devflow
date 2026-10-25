@@ -54,7 +54,11 @@ Future extensions (for example documentation or design) join the same namespace 
    a dependency checker. Outside a repo (always the case for `/flow:project`) the plugin is installed
    at user scope: `claude plugin marketplace add spleenteo/devflow` and
    `claude plugin install flow@flow --scope user`.
-4. **Dependencies**, as far as the platform allows (verified facts below):
+4. **Dependencies**, as far as the platform allows (verified facts below).
+   > **Superseded on 2026-10-25** by soft dependencies: no `dependencies` field; a list next to the
+   > skills and a check at start that invites the user to install what's missing, at user or project
+   > scope. See [`spike-plugin-loading.md`](spike-plugin-loading.md#dependencies). The text below is
+   > the original mandate.
    - superpowers (`brainstorming`, `writing-plans`, `subagent-driven-development`): a `dependencies`
      entry on `claude-plugins-official`, plus `allowCrossMarketplaceDependenciesOn` in `marketplace.json`;
    - `grill-me`: it ships in the `mattpocock-skills` plugin (marketplace `mattpocock`, MIT): same

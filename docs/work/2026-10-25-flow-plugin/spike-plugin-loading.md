@@ -44,6 +44,16 @@ Recommended: **A**, with B as the documented escape hatch for a project that mus
 - Options for `grill-me`: (a) keep the cross-marketplace dependency and say in the README to add `mattpocock/skills` first; (b) an entry in our marketplace for `mattpocock/skills` pinned to a `sha` (MIT), same mechanism as shaping-skills — but a user who already has `mattpocock-skills@mattpocock` gets a second copy; (c) drop `grill-me` from the hard dependencies, since devflow uses it only "if a point stays vague", and report it missing when needed, as today.
 - Recommended: superpowers as a cross-marketplace dependency (official marketplace, present by default); shaping-skills as a pinned same-marketplace entry; `grill-me` per (c).
 
+**Decided on 2026-10-25: soft dependencies.** Hard `dependencies` make `flow` fail to load whenever one is missing, and pull in marketplaces the user hasn't chosen. Instead:
+
+- `plugin.json` declares no `dependencies`: `flow` always loads.
+- A list next to the skills names each dependency: the skills it provides, where it comes from, whether it's required or optional, and the install commands at user scope and at project scope.
+- At the start of `/flow:dev` and `/flow:project`, the skill compares the list with the skills available in the session (plugin or personal installs alike) and reports what's missing in one message, with the commands. It never installs anything. A missing dependency needed only later doesn't block the start; the check runs again at the phase that needs it.
+- `shaping-skills` stays as an entry of our marketplace pinned to a commit: a separate plugin the user installs when invited (`shaping-skills@flow`), not a dependency.
+- `grill-me` is optional.
+
+This closes 4b and 4c.
+
 ## Still open: one authenticated session
 
 Run once, in a logged-in configuration (yours, with throwaway names, or the isolated one after `/login`):

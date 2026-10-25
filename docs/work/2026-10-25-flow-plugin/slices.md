@@ -103,6 +103,8 @@ The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-pl
 - `grill-me` now ships in a plugin too (`mattpocock-skills@mattpocock`, 27 skills); `dependencies.md` offers both that and the single-skill `npx skills add` route. The presence rule (name or segment after `:`) covers both, so the Naming rule keeps it bare.
 - The Done's demo also checks shaping skills are not reported (present as personal skills in the owner's setup), and that `${CLAUDE_PLUGIN_ROOT}` expands in skill text.
 - `install.sh` leaves the Gate's narrowing at V3, its owner; README stays excluded until V6.
+- Both conductors gain a row in `## What it does NOT do`: they don't install dependencies, they print the commands.
+- `install.sh` counts a skill present when its plugin is enabled or a folder of that name is in the personal or project skills, whether or not `claude` is on the path: the presence rule is by name.
 
 ## V4 — Project impact lenses
 

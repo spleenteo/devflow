@@ -40,7 +40,7 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Changelog | `docs/CHANGELOG.md` | Written by `/flow:changelog`; read at opening. An existing one is adopted, not replaced |
 | Impact lenses | Per stack, in `${CLAUDE_SKILL_DIR}/lenses.md` | Chosen from the detected stack |
 
-Configuration lives in `.flow.yml` at the project root. If it's absent and a `.devflow.yml` exists, read that instead: same keys. When it reads `.devflow.yml`, say so once in the session and suggest renaming it. A project can override the defaults with it: keys `root`, `stack`, `changelog`, `version_file`. Read if present. The skill writes it in one case only: Step 0, to record a non-default root the user chose. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
+Configuration lives in `.flow.yml` at the project root. If it's absent and a `.devflow.yml` exists, read that instead: same keys. When it reads `.devflow.yml`, say so once in the session and suggest renaming it. A project can override the defaults with `.flow.yml`: keys `root`, `stack`, `changelog`, `version_file`. Read if present. The skill writes it in one case only: Step 0, to record a non-default root the user chose. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
 
 ## Project memory
 
@@ -204,7 +204,7 @@ A technical work that skipped the frame has no criterion, and nothing here appli
 
 ### `phase: impact`, once, on `slices.md`
 
-The slices against the real code, before the first plan. Two subagents in parallel, both with `ultrathink` in the prompt: one with the common lenses, one with the detected stack's lenses (`${CLAUDE_SKILL_DIR}/lenses.md`; the packet says "pass the expanded absolute path"). On a one-slice work, one subagent with all of them. Packet: `slices.md` in full (here it is the object under review), the descriptions of `docs/decisions-log/` files that match the work's key words, the guidelines. The code they read themselves.
+The slices against the real code, before the first plan. Two subagents in parallel, both with `ultrathink` in the prompt: one with the common lenses, one with the detected stack's lenses (`${CLAUDE_SKILL_DIR}/lenses.md`: put its expanded absolute path in the packet, never the variable). On a one-slice work, one subagent with all of them. Packet: `slices.md` in full (here it is the object under review), the descriptions of `docs/decisions-log/` files that match the work's key words, the guidelines. The code they read themselves.
 
 Not in session: whoever just ran the shaping is the worst head for seeing what breaks elsewhere.
 

@@ -24,7 +24,14 @@ The repository root is a marketplace: [`.claude-plugin/marketplace.json`](../.cl
 - **`flow`** has the source `./`, the marketplace root itself, so the plugin is the repository. Its manifest is [`.claude-plugin/plugin.json`](../.claude-plugin/plugin.json); its skills are under [`skills/`](../skills).
 - **`shaping-skills`** points at the GitHub repository `rjs/shaping-skills` and pins it with a full commit `sha`: Claude Code checks out that commit ([plugin sources](https://code.claude.com/docs/en/plugins/marketplace-reference#plugin-sources)). It is listed here so the dependency can be installed as `shaping-skills@flow`; see [the soft-dependency decision](decisions-log/2026-10-25-soft-dependencies.md).
 
-A plugin's install id is the entry name, `@`, and the marketplace name: `flow@flow`. A user installs it once at user scope, which records it under `enabledPlugins` in `~/.claude/settings.json` and makes it available in every project on the machine ([install scopes](https://code.claude.com/docs/en/plugins/install#choose-an-install-scope)). The commands are in [`dependencies.md`](../dependencies.md) for the dependencies; the plugin itself installs the same way.
+A plugin's install id is the entry name, `@`, and the marketplace name: `flow@flow`. A user installs it once at user scope, which records it under `enabledPlugins` in `~/.claude/settings.json` and makes it available in every project on the machine ([install scopes](https://code.claude.com/docs/en/plugins/install#choose-an-install-scope)). The plugin itself:
+
+```bash
+claude plugin marketplace add spleenteo/devflow --scope user
+claude plugin install flow@flow --scope user
+```
+
+The dependencies' commands are in [`dependencies.md`](../dependencies.md).
 
 A project that adopts the flow commits a `.claude/settings.json` that declares the marketplace and enables the plugin, with no `ref`:
 
@@ -70,7 +77,9 @@ flowchart TD
   frame -->|"STOP"| shaping
   shaping -->|"STOP"| bread
   bread -->|"STOP"| slicing
+  shaping -->|"STOP, no breadboard"| slicing
   slicing -->|"STOP"| impact
+  impact -.->|"a fix splits or reorders slices"| slicing
   subgraph loop["slice loop, Step 4, once per slice"]
     plan["plan: writing-plans"]
     review["review: one subagent"]
@@ -91,7 +100,7 @@ flowchart TD
   close -->|"STOP 2, last slice"| cw
   cw --> cl --> ar --> rep
   rep -.->|"user approves"| merge["user: merge into main, push, tag vVERSION"]
-  projrow["/flow:project: action row, flow:dev work SLUG merged"] -->|"opened in its repo"| open
+  projrow["/flow:project: action row, flow:dev work SLUG in REPO merged"] -->|"opened in its repo"| open
   merge -.->|"the row closes"| projrow
 ```
 
@@ -99,8 +108,8 @@ Taken from [`skills/dev/SKILL.md`](../skills/dev/SKILL.md). Solid arrows are wha
 
 - **Dependency check.** It runs first on every invocation, before any file is written. It reports what's missing in one message and doesn't block the start; each phase checks again and stops if its tool is absent ([Where the plugin ends](#where-the-plugin-ends)).
 - **Step 0** runs once, when the repo has no `docs/work/` and no configuration file. It settles where the flow writes and offers the guidelines and the project lenses templates; it creates them only on a yes.
-- **Open or resume.** A work whose `phase:` isn't `done` is offered for resume. Resuming reloads the standing documents only: `STATUS.md`, the frame's criterion, the guidelines that apply, `lessons.md`, the matching decisions, the current plan.
-- **Definition phases.** The opening's visible-outcome test picks the entry: product work starts at the frame (or at shaping when the problem is clear), technical work goes straight to slicing. Frame, shaping and breadboard are optional, and a skipped phase is named with its reason. Slicing and impact always run. Every phase ends with Step 5: fidelity check, commit, `STATUS.md`, decision candidate, stop. Each phase hands off to a dependency skill, with the path to save to: `framing-doc` or `brainstorming` (superpowers), `shaping`, `breadboarding` (shaping-skills). Impact runs two subagents (one on a one-slice work) on `slices.md` against the real code.
+- **Open or resume.** A work whose `phase:` isn't `done` is offered for resume. Resuming reloads the standing documents only: `STATUS.md`, the frame's criterion, the guidelines that apply, `lessons.md`, the description line of the matching decisions, the current plan.
+- **Definition phases.** The opening's visible-outcome test picks the entry: product work starts at the frame (or at shaping when the problem is clear), technical work goes straight to slicing. Frame, shaping and breadboard are optional, and a skipped phase is named with its reason. Slicing always runs; impact is always proposed, and on a one-slice work the user may skip it. Every phase ends with Step 5: fidelity check, commit, `STATUS.md`, decision candidate, stop. Each phase hands off to a dependency skill, with the path to save to: `brainstorming` (superpowers); `framing-doc`, `shaping`, `breadboarding` (shaping-skills). Impact runs two subagents (one on a one-slice work) on `slices.md` against the real code.
 - **Slice loop.** Per slice: `writing-plans` writes the plan, a fresh subagent reviews it, then the **first stop**. `subagent-driven-development` executes it, the close verifies the Done and the gate, writes lessons and commits, then the **second stop**.
 - **Closing sequence.** Close the work, `/flow:changelog` (entry and `.version`), `/flow:archive` (moves the work under `docs/work/archive/`), report. Each step asks first. All of it is committed on the work's branch, so code, changelog, version and archived work land on `main` in one changeset.
 - **Outside the skill.** `/flow:dev` doesn't merge, push or tag. The report says the branch is ready to merge; the user does the rest.
@@ -178,7 +187,7 @@ flowchart LR
   deplist -->|"read at start"| check
   listed --> check
   check -->|"missing: prints the commands"| usr["user runs claude plugin install"]
-  skilldir -.->|"template copied on a yes, Step 0"| docs
+  skilldir -->|"template copied on a yes, Step 0"| docs
   skilldir -->|"lenses path, expanded, in the impact packet"| check2["impact subagents"]
 ```
 

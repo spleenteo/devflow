@@ -151,6 +151,12 @@ The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-pl
 - Every diagram renders with `npx -y @mermaid-js/mermaid-cli` (`mmdc`; first run downloads Chromium) and is checked by eye.
 - Every statement about Claude Code links to a docs page.
 
+**V5 — done on 2026-10-25**
+- `docs/architecture.md`: distribution, the `/flow:dev` lifecycle, what a project holds, where the plugin ends; one Mermaid diagram each, all rendered with `mmdc` and checked by eye. Every Claude Code statement links to a `code.claude.com` page (17 links fetched, the supported sentence quoted in the task report); claims no page supports are stated as this repo's rules.
+- `## Releases` in the guidelines: branches, a merge into `main` is a release tagged `v<.version>`, develop with `--plugin-dir`, never with the marketplace added from the clone.
+- Gate (README excluded): validate passes (expected warnings now listed in the Gate comment: version, icon, marketplace manifest in the same folder, README install line); old-name grep: the 7 allowed lines plus the two V5 adds in `architecture.md`; link check empty; no personal names.
+- Fixes after the by-eye check and the review: the lifecycle diagram gained "problem already clear → shaping", "shaping → slicing without breadboard", impact back to slicing on a split; `framing-doc` attributed to shaping-skills; impact described as always proposed, skippable on one slice; install commands for the plugin itself. `mmdc` needed `chrome-headless-shell` in `~/.cache/puppeteer`, installed by the implementer.
+
 ## V6 — README and migration
 
 **In**

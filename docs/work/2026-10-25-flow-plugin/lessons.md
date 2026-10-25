@@ -11,3 +11,5 @@
 - `enabledPlugins: {"<id>": false}` in a scratch repo's `settings.local.json` disables a user-scope plugin for `-p` demos.
 - A demo trap must be one the code alone can't reveal, and the demo compares runs with and without the feature: otherwise a common lens finds it and the demo proves nothing.
 - Don't edit files a running demo reads: hold the fix round until it ends.
+- Check rendered diagrams by eye against the skill text, not only for render errors: missing edges (a skippable phase, a loop back) render without complaint.
+- A document that summarises a skill is reviewed against the skill's own lines, quoted side by side: attribution slips (which plugin provides a skill) survive a read-through.

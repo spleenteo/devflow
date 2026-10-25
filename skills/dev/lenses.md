@@ -1,6 +1,6 @@
 # Impact lenses
 
-Two subagents in parallel, both with `ultrathink` in the prompt: one runs the common lenses, the other the detected stack's lenses. On a one-slice work, one subagent runs all of them. Each gets the same packet (`slices.md` in full, the matching decisions' descriptions, the guidelines) and reads the code the slices touch on its own. Each reports one entry per problem, by severity: what · where (`file:line`) · why · recommended fix, and names the lenses that found nothing.
+Two subagents in parallel, both with `ultrathink` in the prompt: one runs the common lenses, the other the detected stack's lenses. On a one-slice work, one subagent runs all of them. Each gets the same packet (`slices.md` in full, the matching decisions' descriptions, the guidelines, the project lenses when present) and reads the code the slices touch on its own. Each reports one entry per problem, by severity: what · where (`file:line`) · why · recommended fix, and names the lenses that found nothing.
 
 The common lenses always run. On a small work, pick one or two stack lenses, saying which are skipped and why.
 
@@ -53,3 +53,16 @@ The common lenses always run. On a small work, pick one or two stack lenses, say
 ## `generic`
 
 The three common lenses suffice. If the repo has a recognisable stack this table doesn't cover, say so and write two or three ad-hoc lenses in the prompt, same format.
+
+## Project lenses
+
+A project adds its own lenses in `docs/impact-lenses.md` (under the root `.flow.yml` sets, if any). Template: `impact-lenses.template.md`, next to this file. Same format as the tables above: `| Lens | Looks for |`, lens names in bold, optionally split under `##` headings.
+
+They add to the stack lenses, never replace them. Who reads them:
+
+| When | Who | How |
+|---|---|---|
+| Impact | The stack-lens subagent, or the single one on a one-slice work | The file's contents travel verbatim in the packet; each project lens is run like a stack lens and named in the report when it found nothing |
+| Every plan review | The review subagent | Fifth row, **Project lenses**, applied to the plan |
+
+When the file is absent, the report says "project lenses: none" in one line: not a finding.

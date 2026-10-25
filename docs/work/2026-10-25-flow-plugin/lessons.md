@@ -13,3 +13,5 @@
 - Don't edit files a running demo reads: hold the fix round until it ends.
 - Check rendered diagrams by eye against the skill text, not only for render errors: missing edges (a skippable phase, a loop back) render without complaint.
 - A document that summarises a skill is reviewed against the skill's own lines, quoted side by side: attribution slips (which plugin provides a skill) survive a read-through.
+- `claude plugin marketplace add` takes `owner/repo`, `https://…` or a path, not `git://`: to test the user's install path locally, serve a bare repo over smart HTTP.
+- A README instruction to run a conductor "anywhere" must account for what its first step writes: check the skill's Step 0 before telling users where to run it.

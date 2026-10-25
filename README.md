@@ -21,7 +21,7 @@ Recent versions also accept one step that adds the marketplace and installs the 
 /plugin install flow --marketplace spleenteo/devflow
 ```
 
-**Dependencies.** The flow hands the thinking, planning and execution to skills from two other plugins, superpowers and shaping-skills. It checks for them but never installs them. Run `/flow:dev` in any directory: the start check lists what's missing, with the commands to run. From a clone, `./install.sh` does the same check from the shell and installs nothing:
+**Dependencies.** The flow hands the thinking, planning and execution to skills from two other plugins, superpowers and shaping-skills. It checks for them but never installs them. Run `/flow:dev` in the project you'll work in: before anything else, the start check lists what's missing, with the commands to run. To check without opening a project, `install.sh` from a clone does the same from the shell, writing and installing nothing:
 
 ```bash
 git clone https://github.com/spleenteo/devflow.git flow
@@ -49,7 +49,7 @@ What a teammate gets, from the docs:
 - A plugin enabled only in project settings is not fetched onto a machine where it isn't installed, unless its marketplace entry has a relative-path source, as `flow` does ([enabled in project settings but not installed](https://code.claude.com/docs/en/plugins/loading#enabled-in-project-settings-but-not-installed)). So trust alone brings `flow`.
 - The dependencies are not enabled by the file. The first `/flow:dev` tells the teammate what to install.
 
-Leave out `ref`: whatever is on `main` of this repository is a release. A project that must stay behind can set `"ref": "v0.4.0"` (a branch or tag) in its `source`. The entry from the highest-precedence settings file is used whole, and project settings sit above user settings ([`extraKnownMarketplaces`](https://code.claude.com/docs/en/settings-reference#extraknownmarketplaces), [precedence](https://code.claude.com/docs/en/settings#settings-precedence)), so that project's `ref` wins. This is documented behaviour, not yet tried on a real project. Why no `ref` by default: [projects declare the marketplace without a ref](docs/decisions-log/2026-10-25-projects-declare-marketplace-without-ref.md).
+Leave out `ref`: whatever is on `main` of this repository is a release. A project that must stay behind can set `"ref": "v0.4.0"` (a branch or tag) in its `source`. The entry from the highest-precedence settings file is used whole, and project settings sit above user settings ([`extraKnownMarketplaces`](https://code.claude.com/docs/en/settings-reference#extraknownmarketplaces), [precedence](https://code.claude.com/docs/en/settings#settings-precedence)), so that project's `ref` wins; the cost is that switching between projects on different tags re-fetches the single copy each time. This is documented behaviour, not yet tried on a real project. Why no `ref` by default: [projects declare the marketplace without a ref](docs/decisions-log/2026-10-25-projects-declare-marketplace-without-ref.md).
 
 ## Usage
 
@@ -136,10 +136,10 @@ version_file: .version
 If you used the four skills installed as symlinks or with `npx skills`:
 
 1. **Install the plugin first** (see [Install](#install)). Until the old skills are removed, both load: `/devflow` and `/flow:dev` are two copies of the conductor.
-2. **Then remove the old skills.** Symlinks: `rm ~/.claude/skills/{devflow,devflow-docs,devflow-archive,projectflow}`. For `npx` installs: `npx skills remove -g devflow devflow-docs devflow-archive projectflow`.
+2. **Then remove the old skills.** Symlinks: `rm ~/.claude/skills/{devflow,devflow-docs,devflow-archive,projectflow}` (`rm -r` if they are copied folders, not symlinks). For `npx` installs: `npx skills remove -g devflow devflow-docs devflow-archive projectflow`.
 3. **New names:** `/devflow` → `/flow:dev`, `/projectflow` → `/flow:project`, `/devflow-docs` → `/flow:changelog`, `/devflow-archive` → `/flow:archive`.
 4. **Configuration:** rename `.devflow.yml` to `.flow.yml` when convenient. The old name is still read.
-5. **Personal copies of the dependencies.** If you installed `shaping`, `breadboarding`, `framing-doc` or the superpowers skills as personal skills, they still count as present and do no harm, but each skill shows twice in the listing (`shaping` and `shaping-skills:shaping`). To drop a personal copy, remove its folder or symlink under `~/.claude/skills/`, or for `npx` installs `npx skills remove -g shaping breadboarding framing-doc`.
+5. **Personal copies of the dependencies.** If you installed `shaping`, `breadboarding`, `framing-doc` or the superpowers skills as personal skills, they still count as present and do no harm, but each skill shows twice in the listing (`shaping` and `shaping-skills:shaping`). To drop a personal copy, remove its folder or symlink under `~/.claude/skills/`, or for `npx` installs `npx skills remove -g <names>` (for example `shaping breadboarding framing-doc`, and the superpowers skills by their own names).
 6. **Existing projects.** Their `docs/` is unchanged. A `docs/work/archived.md` header that cites `/devflow-archive` can stay as it is or be edited by hand.
 
 ## Develop the plugin

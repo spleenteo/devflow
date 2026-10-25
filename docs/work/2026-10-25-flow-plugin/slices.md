@@ -173,6 +173,12 @@ The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-pl
 - The Done's demo covers the isolated install only; the project snippet is stated as documented behaviour, not run: a `-p` run needs the owner's logged-in configuration and would register the marketplace in it.
 - No Claude Code version is given for the one-step install unless a docs page states it.
 
+**V6 — done on 2026-10-25**
+- README rewritten for the plugin (175 lines): install at user scope in two commands, the one-step form with the versions the docs page states (2.1.275 in session, 2.1.292 in the shell); dependencies through the start check or `install.sh`; the project snippet without `ref`, the `ref` escape hatch as documented, untried behaviour; usage, project lenses, the five review lenses, configuration, migration in six points, development with `--plugin-dir`, update and uninstall. No `npx` install, no symlinks, no `grill-me`.
+- The Gate runs over the whole repo with no exclusions: validate passes (warnings: version, icon, marketplace manifest in the same folder); old-name grep 16 allowed lines; link check empty.
+- Demo: the branch served over smart HTTP (`git http-backend` behind a Python CGI handler); with an isolated configuration, the README's commands add the marketplace and install `flow@flow`, `details` lists `archive, changelog, dev, project`; `marketplace update` and `uninstall` work. `git://` URLs are rejected by `marketplace add`.
+- Review: spec ✅; one Important (the README sent users to run `/flow:dev` "in any directory", where Step 0 creates `docs/work/`) and three minors, all fixed. `npx skills remove` carries `-g`, as the old installs did.
+
 ## After V6: closing sequence
 
 1. From the worktree session, with the frozen skills of the main checkout: `devflow-docs` (answer the current version as `0.0.0`, so the minor bump gives `0.1.0`), then `devflow-archive`.

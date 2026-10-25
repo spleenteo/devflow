@@ -1,8 +1,8 @@
 ---
 status: open
 phase: slice
-slice: V6
-step: execute
+slice: null
+step: null
 work: flow-plugin
 stack: generic
 updated: 2026-10-25
@@ -29,7 +29,7 @@ Source material: [`brief.md`](brief.md); the review of both briefs, [`../../brie
 - [x] V3 — Soft dependencies
 - [x] V4 — Project impact lenses
 - [x] V5 — Architecture documentation
-- [ ] V6 — README, migration, release discipline
+- [x] V6 — README, migration, release discipline
 
 ## Log
 
@@ -43,3 +43,4 @@ Source material: [`brief.md`](brief.md); the review of both briefs, [`../../brie
 - 10-25 — V3 — soft dependencies: dependencies.md, start and phase checks in dev and project, install.sh as a checker; grill-me dropped on the owner's call; demo and Gate green; 2 lessons — V4 plan — n/a — n/a
 - 10-25 — V4 — project impact lenses: template, lenses.md section, dev reads them at impact, in the slice packet and as the fifth review row; trap demo with and without the file; Gate green; 2 lessons — V5 plan — n/a — n/a
 - 10-25 — V5 — architecture.md with four Mermaid diagrams, every Claude Code claim linked; Releases in the guidelines; by-eye check and review fixes; Gate green; 2 lessons — V6 plan — n/a — n/a
+- 10-25 — V6 — README rewritten, migration in six points, Gate over the whole repo; install from a served git URL demonstrated; review fixes; 2 lessons — closing sequence (changelog, archive), merge on approval — n/a — n/a

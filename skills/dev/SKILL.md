@@ -40,6 +40,7 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Decisions | `docs/decisions-log/` | Read by impact and review; written on request at the close of a step. Format in `${CLAUDE_SKILL_DIR}/decisions-log.md` |
 | Changelog | `docs/CHANGELOG.md` | Written by `/flow:changelog`; read at opening. An existing one is adopted, not replaced |
 | Impact lenses | Per stack, in `${CLAUDE_SKILL_DIR}/lenses.md` | Chosen from the detected stack |
+| Project lenses | `docs/impact-lenses.md` | Read if present by impact and every plan review, on top of the stack lenses. Template in `${CLAUDE_SKILL_DIR}/impact-lenses.template.md` |
 
 Configuration lives in `.flow.yml` at the project root. If it's absent and a `.devflow.yml` exists, read that instead: same keys. When it reads `.devflow.yml`, say so once in the session and suggest renaming it. A project can override the defaults with `.flow.yml`: keys `root`, `stack`, `changelog`, `version_file`. Read if present. The skill writes it in one case only: Step 0, to record a non-default root the user chose. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
 
@@ -60,7 +61,7 @@ Search before reading: `rg -il "<keywords>" docs/CHANGELOG.md docs/decisions-log
 
 Token cost comes from fresh contexts rereading the same documents. Wall-clock cost comes from waiting for the user. Five rules, applied in every step below:
 
-1. **Context packets, not documents.** A subagent gets the slice's section of `slices.md`, `lessons.md`, the guideline sections that apply to it, and its own task or plan. Not `slices.md` in full, not `shaping.md` or `breadboard.md` unless the slice's section points to them.
+1. **Context packets, not documents.** A subagent gets the slice's section of `slices.md`, `lessons.md`, the guideline sections that apply to it, the project lenses when `docs/impact-lenses.md` exists, and its own task or plan. Not `slices.md` in full, not `shaping.md` or `breadboard.md` unless the slice's section points to them.
 2. **Same packet, same position.** Within a slice, the packet is one verbatim text placed at the top of every subagent prompt, with the specific instruction after it. Identical prefixes hit the prompt cache.
 3. **Two stops per slice.** After the reviewed plan, and after the close. Plan and review run back to back.
 4. **One message per verification.** Findings ranked by severity, each with a recommended action, one question at the end. Never one finding at a time.
@@ -83,17 +84,19 @@ The dependency check (`## Dependencies`) has already run.
 Runs once: when there is no `docs/work/`, no `.flow.yml` and no `.devflow.yml`.
 
 ```bash
-ls -d docs docs/work docs/decisions-log docs/development-guidelines.md docs/CHANGELOG.md .flow.yml .devflow.yml 2>/dev/null
+ls -d docs docs/work docs/decisions-log docs/development-guidelines.md docs/impact-lenses.md docs/CHANGELOG.md .flow.yml .devflow.yml 2>/dev/null
 ```
 
 **`docs/` doesn't exist** → create `docs/work/` and say so in one line.
 
-**`docs/` exists** → it's already someone's namespace. Say what this skill will add inside it (`work/`, `decisions-log/`, `development-guidelines.md`, `CHANGELOG.md`), report any collision (one of those paths already present with content this skill didn't write; an existing `CHANGELOG.md` is adopted, not a collision), and ask:
+**`docs/` exists** → it's already someone's namespace. Say what this skill will add inside it (`work/`, `decisions-log/`, `development-guidelines.md`, `CHANGELOG.md`, and optionally `impact-lenses.md`), report any collision (one of those paths already present with content this skill didn't write; an existing `CHANGELOG.md` is adopted, not a collision), and ask:
 
 1. **Keep `docs/` (recommended).** The flow's folders sit next to the existing ones. If something collides, the user moves or renames it first: the flow never moves files it doesn't own.
 2. **Use a top-level `flow/` folder (discouraged).** Documentation splits in two places, and readers look in `docs/` first. If chosen, write `.flow.yml` with `root: flow` and say so.
 
 Then, if `docs/development-guidelines.md` is missing, offer to create it from `${CLAUDE_SKILL_DIR}/development-guidelines.template.md`. The user fills it in; if they decline, don't create it: an empty template is worse than none.
+
+Then, if `docs/impact-lenses.md` is missing, offer to create it the same way from `${CLAUDE_SKILL_DIR}/impact-lenses.template.md`, under the chosen root: the project's own lenses, applied at impact and in every plan review. The user fills it in; declined → not created.
 
 ## On start: open or resume
 
@@ -219,11 +222,11 @@ A technical work that skipped the frame has no criterion, and nothing here appli
 
 ### `phase: impact`, once, on `slices.md`
 
-The slices against the real code, before the first plan. Two subagents in parallel, both with `ultrathink` in the prompt: one with the common lenses, one with the detected stack's lenses (`${CLAUDE_SKILL_DIR}/lenses.md`: put its expanded absolute path in the packet, never the variable). On a one-slice work, one subagent with all of them. Packet: `slices.md` in full (here it is the object under review), the descriptions of `docs/decisions-log/` files that match the work's key words, the guidelines. The code they read themselves.
+The slices against the real code, before the first plan. Two subagents in parallel, both with `ultrathink` in the prompt: one with the common lenses, one with the detected stack's lenses (`${CLAUDE_SKILL_DIR}/lenses.md`: put its expanded absolute path in the packet, never the variable). On a one-slice work, one subagent with all of them. Packet: `slices.md` in full (here it is the object under review), the descriptions of `docs/decisions-log/` files that match the work's key words, the guidelines, and the contents of `docs/impact-lenses.md` verbatim when present: the project lenses, which the stack-lens subagent (or the single one) runs on top of the stack lenses, same report format. The code they read themselves.
 
 Not in session: whoever just ran the shaping is the worst head for seeing what breaks elsewhere.
 
-Report in one message: findings ranked by severity, each as **what** · **where** (`file:line`) · **why it's a problem** · **recommended fix**; lenses that found nothing named as such; one question at the end: *"Apply the recommended fixes? Say which to skip."* Silence on a lens reads as "didn't run".
+Report in one message: findings ranked by severity, each as **what** · **where** (`file:line`) · **why it's a problem** · **recommended fix**; lenses that found nothing named as such, project lenses included; when `docs/impact-lenses.md` is absent, one line "project lenses: none", not a finding; one question at the end: *"Apply the recommended fixes? Say which to skip."* Silence on a lens reads as "didn't run".
 
 Approved corrections go into `slices.md`. If a correction splits or reorders slices, go back to `phase: slicing`.
 
@@ -233,7 +236,7 @@ On a one-slice work, impact is often the check that saves you: the twenty-line f
 
 From here `phase: slice`. For each slice, in `slices.md` order, four steps and two stops. `step:` in `STATUS.md` says which.
 
-**The slice packet**, built once per slice and placed verbatim at the top of every subagent prompt in it: the `## The criterion` block when the work has one; the slice's section of `slices.md`; `lessons.md`; the sections of `docs/development-guidelines.md` that apply (tests, naming, placement, gate); the descriptions of matching decisions. `shaping.md` and `breadboard.md` only if the slice's section points to them.
+**The slice packet**, built once per slice and placed verbatim at the top of every subagent prompt in it: the `## The criterion` block when the work has one; the slice's section of `slices.md`; `lessons.md`; the sections of `docs/development-guidelines.md` that apply (tests, naming, placement, gate); the descriptions of matching decisions; the contents of `docs/impact-lenses.md` when present. `shaping.md` and `breadboard.md` only if the slice's section points to them.
 
 ### `step: plan`
 
@@ -253,6 +256,7 @@ Right after the plan, one subagent, never in session: whoever just wrote the pla
 | **Ignored lessons** | A rule in `lessons.md` the plan doesn't follow; the same mistake already made and documented |
 | **Existence** | The files, symbols and methods the plan names exist, and do what the plan assumes |
 | **Guideline compliance** | Tests, naming, function size and code placement in the plan follow the guidelines |
+| **Project lenses** | The project's own lenses from `docs/impact-lenses.md`, applied to the plan: what this change breaks in this project, not how its code is written. When the file is absent, one line "project lenses: none", not a finding |
 
 **First stop.** One message: the plan in ten lines, the findings ranked with a recommended fix each, the deviations recorded, one question: *"Apply the recommended fixes and execute? Say which to skip."*
 

@@ -15,7 +15,7 @@ Every behaviour of Claude Code a document states is either verified in a spike o
 ## Naming
 
 - A skill's folder is its `name:`, kebab-case: `skills/dev/SKILL.md` has `name: dev`.
-- Skills are cited as `/flow:<skill>` in every document. Dependency skills by bare name with the plugin form in brackets: `writing-plans` (`superpowers:writing-plans`), so the reference holds for plugin and personal installs alike. The brackets go only at a dependency's first mention in each skill, bare afterwards; `grill-me` stays bare (no plugin). Checked: with only the plugin copy visible, a session resolves the bare name to the plugin skill.
+- Skills are cited as `/flow:<skill>` in every document. Dependency skills by bare name with the plugin form in brackets: `writing-plans` (`superpowers:writing-plans`), so the reference holds for plugin and personal installs alike. The brackets go only at a dependency's first mention in each skill, bare afterwards; `grill-me` stays bare because the presence rule (a listed name, or its segment after `:`) covers both the plugin and the personal install. Checked: with only the plugin copy visible, a session resolves the bare name to the plugin skill.
 - No names of specific user projects or personal tools anywhere. Examples use invented names.
 
 ## Language

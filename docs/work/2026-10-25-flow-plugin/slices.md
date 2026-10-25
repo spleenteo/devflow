@@ -99,6 +99,11 @@ The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-pl
 - Demo, dependencies turned off (setup above): one message reporting superpowers (required) and `grill-me` (optional), each with both install commands.
 - `dependencies.md` linked from both skills.
 
+**Deviations found while planning V3**
+- `grill-me` now ships in a plugin too (`mattpocock-skills@mattpocock`, 27 skills); `dependencies.md` offers both that and the single-skill `npx skills add` route. The presence rule (name or segment after `:`) covers both, so the Naming rule keeps it bare.
+- The Done's demo also checks shaping skills are not reported (present as personal skills in the owner's setup), and that `${CLAUDE_PLUGIN_ROOT}` expands in skill text.
+- `install.sh` leaves the Gate's narrowing at V3, its owner; README stays excluded until V6.
+
 ## V4 — Project impact lenses
 
 **In**

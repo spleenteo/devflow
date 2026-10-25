@@ -1,6 +1,6 @@
-# Impact lenses
+# Project impact lenses
 
-This project's own lenses: what a change here can break that the code alone doesn't show. `/flow:dev` reads this file at impact and in every plan review, and applies each lens on top of the stack lenses. Write a lens as a question about what this project breaks, not as a coding rule: coding rules go in `development-guidelines.md`. Delete the examples and keep only lenses that are true here.
+This project's own lenses: what a change here can break that the code alone doesn't show. `/flow:dev` reads this file at impact and in every plan review, and applies each lens on top of the built-in checks `/flow:dev` runs for the project's stack (Rails, Astro, …). Write a lens as a question about what this project breaks, not as a coding rule: coding rules go in `development-guidelines.md`. Delete the examples and keep only lenses that are true here.
 
 | Lens | Looks for |
 |---|---|

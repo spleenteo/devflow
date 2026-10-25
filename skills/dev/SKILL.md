@@ -222,7 +222,7 @@ A technical work that skipped the frame has no criterion, and nothing here appli
 
 ### `phase: impact`, once, on `slices.md`
 
-The slices against the real code, before the first plan. Two subagents in parallel, both with `ultrathink` in the prompt: one with the common lenses, one with the detected stack's lenses (`${CLAUDE_SKILL_DIR}/lenses.md`: put its expanded absolute path in the packet, never the variable). On a one-slice work, one subagent with all of them. Packet: `slices.md` in full (here it is the object under review), the descriptions of `docs/decisions-log/` files that match the work's key words, the guidelines, and the contents of `docs/impact-lenses.md` verbatim when present: the project lenses, which the stack-lens subagent (or the single one) runs on top of the stack lenses, same report format. The code they read themselves.
+The slices against the real code, before the first plan. Two subagents in parallel, both with `ultrathink` in the prompt: one with the common lenses, one with the detected stack's lenses (`${CLAUDE_SKILL_DIR}/lenses.md`: put its expanded absolute path in the packet, never the variable) and the project lenses, same report format. The common-lens subagent receives the project lenses in the packet but doesn't run them. On a one-slice work, one subagent with all of them. Packet: `slices.md` in full (here it is the object under review), the descriptions of `docs/decisions-log/` files that match the work's key words, the guidelines, and the contents of `docs/impact-lenses.md` verbatim when present. The code they read themselves.
 
 Not in session: whoever just ran the shaping is the worst head for seeing what breaks elsewhere.
 

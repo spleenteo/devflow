@@ -62,7 +62,7 @@ They add to the stack lenses, never replace them. Who reads them:
 
 | When | Who | How |
 |---|---|---|
-| Impact | The stack-lens subagent, or the single one on a one-slice work | The file's contents travel verbatim in the packet; each project lens is run like a stack lens and named in the report when it found nothing |
+| Impact | The stack-lens subagent, or the single one on a one-slice work | The file's contents travel verbatim in the packet: both impact subagents receive them, only this one runs them; each project lens is run like a stack lens and named in the report when it found nothing |
 | Every plan review | The review subagent | Fifth row, **Project lenses**, applied to the plan |
 
 When the file is absent, the report says "project lenses: none" in one line: not a finding.

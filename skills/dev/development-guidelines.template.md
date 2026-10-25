@@ -1,6 +1,6 @@
 # Development guidelines
 
-Rules the plans and the code must follow. Devflow passes this file to every plan, review and execution. Keep it short and checkable: a rule nobody can verify isn't a rule. Delete the sections you don't need.
+Rules the plans and the code must follow. `/flow:dev` passes this file to every plan, review and execution. Keep it short and checkable: a rule nobody can verify isn't a rule. Delete the sections you don't need.
 
 ## Tests
 

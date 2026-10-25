@@ -1,17 +1,17 @@
 ---
-name: projectflow
-description: Use when planning and running a project that isn't software, where people do the work over weeks or months. A renovation, a client engagement, a strategy, a personal plan. Triggers include "/projectflow", "let's plan X", "open the project X", "resume X", "next slice of X". Lives in a folder, never in a code repo; a slice that turns out to be software hands off to devflow.
+name: project
+description: Use when planning and running a project that isn't software, where people do the work over weeks or months. A renovation, a client engagement, a strategy, a personal plan. Triggers include "/flow:project", "let's plan X", "open the project X", "resume X", "next slice of X". Lives in a folder, never in a code repo; a slice that turns out to be software hands off to /flow:dev.
 ---
 
-# Projectflow
+# Flow: project
 
 Runs a project from idea to done, one slice at a time, when the executor is people rather than code.
 
-Same skeleton as `devflow`: the high-level plan is the slice list produced by shaping; each slice's action plan is written right before it starts, after the previous one is closed, because the world changes between slices and a plan written months earlier ignores it. What changes: the home is a folder, execution happens in the world and the skill records it, verification checks reality (money, time, people, permissions) instead of code.
+Same skeleton as `/flow:dev`: the high-level plan is the slice list produced by shaping; each slice's action plan is written right before it starts, after the previous one is closed, because the world changes between slices and a plan written months earlier ignores it. What changes: the home is a folder, execution happens in the world and the skill records it, verification checks reality (money, time, people, permissions) instead of code.
 
 ## Why
 
-`brainstorming`, `grill-me`, `framing-doc`, `shaping` and `kickoff-doc` are thinking tools. They don't know each other, don't know where the project lives, and carry no state across weeks. A project that spans months needs three things on disk: where we are, what was decided and why, what the last slice taught. This skill keeps the thread and invokes each tool at the right moment, telling it where to write.
+`brainstorming` (`superpowers:brainstorming`), `framing-doc` (`shaping-skills:framing-doc`), `shaping` (`shaping-skills:shaping`) and `kickoff-doc` (`shaping-skills:kickoff-doc`) are thinking tools. They don't know each other, don't know where the project lives, and carry no state across weeks. A project that spans months needs three things on disk: where we are, what was decided and why, what the last slice taught. This skill keeps the thread and invokes each tool at the right moment, telling it where to write.
 
 ## What it does NOT do
 
@@ -21,8 +21,9 @@ Same skeleton as `devflow`: the high-level plan is the slice list produced by sh
 | Execute anything | People do. It records what happened, and asks |
 | Run past a stop | Two stops per slice: after the reviewed plan, after the close |
 | Apply corrections on its own | Verifications report in one ranked message with a recommendation per finding; the user decides with one answer |
-| Write code or run `devflow` itself | A slice that is software becomes a `devflow` work in its repo; projectflow keeps the Done |
+| Write code or run `/flow:dev` itself | A slice that is software becomes a `/flow:dev` work in its repo; this skill keeps the Done |
 | Touch files outside the project's home | It writes only inside the folder chosen at opening |
+| Install its dependencies | It prints the commands from `dependencies.md`; the user runs them |
 
 **The rule that matters most**: a long session where the skill barrels ahead is worse than no skill. At the two stops of every slice, return to the user.
 
@@ -30,10 +31,10 @@ Same skeleton as `devflow`: the high-level plan is the slice list produced by sh
 
 | What | Convention |
 |---|---|
-| Home | Inside a Maestro instance: `<documents_path>/<Project name>/`. Elsewhere: the folder the user names at opening. Never a code repo's `docs/` |
+| Home | The folder the user names at opening; inside a documents vault, propose `<vault>/<Name>/`. Never a code repo's `docs/` |
 | Files | `STATUS.md`, `frame.md`, `shaping.md`, `kickoff.md`, `slices.md`, `lessons.md`, `S<n>-plan.md`, `constraints.md`, `decisions/`, `report.md` |
-| Constraints | `constraints.md`: appetite, non-negotiables, people and roles, calendar. Template in `constraints.template.md` next to this skill |
-| Decisions | `decisions/YYYY-MM-DD-<slug>.md`. Criterion and format in `decisions.md` next to this skill |
+| Constraints | `constraints.md`: appetite, non-negotiables, people and roles, calendar. Template in `${CLAUDE_SKILL_DIR}/constraints.template.md` |
+| Decisions | `decisions/YYYY-MM-DD-<slug>.md`. Criterion and format in `${CLAUDE_SKILL_DIR}/decisions.md` |
 | Sub-projects | A slice too big for one plan becomes `S<n>-<slug>/` inside the home, with its own `STATUS.md` (`parent:` set) and its own slices |
 
 Slices are at most nine per level. More than nine means the level is wrong: group them, and open sub-projects when their turn comes.
@@ -50,7 +51,17 @@ Few subagents here: two at the reality check, one per plan review. The cost is t
 2. **One message per verification.** Findings ranked by severity, each with a recommended action, one question at the end.
 3. **Packets, not documents.** A subagent gets the slice's section of `slices.md`, `lessons.md`, `constraints.md`, the matching decisions, and the plan. Not `shaping.md` unless the slice's section points to it.
 
+## Dependencies
+
+Runs first, on every invocation: before anything else in this skill and before any file is written. The skills this one hands work to are listed in `${CLAUDE_PLUGIN_ROOT}/dependencies.md` (in the repo: [dependencies.md](../../dependencies.md)). Read it and compare it with the skills listed in the session: a dependency is present when a listed skill has its name, or its segment after `:` equals it.
+
+If any are missing, report them in one message, required first, then optional. For each: the install commands from `dependencies.md` at user and project scope and the phase that needs it (from this skill's tables). Never install anything, and don't block the start: the check at each phase stops it if needed.
+
+At a phase or step that invokes a dependency, check again: if a required one isn't listed, stop that phase and give its commands from `dependencies.md`; don't do its job without it.
+
 ## On start: open or resume
+
+The dependency check (`## Dependencies`) has already run.
 
 ```bash
 rg "^phase:" <home>/STATUS.md <home>/*/STATUS.md 2>/dev/null
@@ -59,7 +70,7 @@ rg "^phase:" <home>/STATUS.md <home>/*/STATUS.md 2>/dev/null
 - No `STATUS.md` → new project (Step 1).
 - `phase:` other than `done` → say so and ask:
 
-> "`Cerbaia` is at slice **S3**, step **execute**, last log 2026-08-28. Resume there, or open a new project?"
+> "`Kitchen-renovation` is at slice **S3**, step **execute**, last log 2026-08-28. Resume there, or open a new project?"
 
 Resuming reloads the **standing documents**, and nothing else:
 
@@ -73,11 +84,11 @@ Open with what you reloaded, in five lines — project, phase and slice, spent a
 
 ## Step 1 — Opening
 
-One message, seven questions, each with the answer projectflow proposes from what it already knows. The user corrects what's wrong and answers what's missing.
+One message, seven questions, each with the answer this skill proposes from what it already knows. The user corrects what's wrong and answers what's missing.
 
 1. **What do you want to achieve?** In the user's words. Becomes `description` in the frontmatter.
 2. **Name?** The folder name. Check it doesn't exist.
-3. **Where does it live?** Inside a Maestro instance, propose `<documents_path>/<Name>/`; elsewhere, ask for the folder.
+3. **Where does it live?** Ask for the folder; inside a documents vault, propose `<vault>/<Name>/`.
 4. **Appetite.** How much time and how much money, as a box, not an estimate: *"three months and 20k, then we stop and look."* Becomes `appetite:` in the frontmatter and the first section of `constraints.md`.
 5. **Who's involved?** People and roles: who does, who decides, who must be asked. Goes into `constraints.md`.
 6. **Source material?** Call transcripts, notes, messages, documents. If yes, the frame starts from them with `framing-doc`.
@@ -138,6 +149,8 @@ For each phase: invoke the tool telling it where to save, update `phase:`, stop.
 | `slicing` | Always, even with one slice | `shaping` (slicing section) | `slices.md` |
 | `reality` | Always, after slicing | Two subagents (below) | Corrections in `slices.md` |
 
+If the tool the row picks for the case at hand isn't listed in the session (`kickoff-doc` included), stop that phase and give its commands from `dependencies.md`. Never swap in another tool (`brainstorming` in place of a missing `framing-doc`).
+
 ### The criterion
 
 `frame.md` opens, right under the frontmatter, with a block of at most ten lines:
@@ -155,7 +168,7 @@ Everything else in the frame is body: sources, transcripts, numbers, the history
 
 A frame written before this convention gets the block added at the top of its next update, built from what it already says and confirmed with the user.
 
-`breadboarding` is not in the table: it maps places and affordances of a system. Use it only when the project *is* a system (a service process, a workflow between people and tools), and say so.
+`breadboarding` (`shaping-skills:breadboarding`) is not in the table: it maps places and affordances of a system. Use it only when the project *is* a system (a service process, a workflow between people and tools), and say so.
 
 **`slices.md` is the high-level plan.** Per slice: what's in, what's out, the **Done** as something observable in the world (a document signed, a room usable, a client's yes, a delivery received), the known gotchas, and its order. Order by what unlocks or de-risks the rest first, then by dependency. A slice with no observable outcome is a phase, not a slice.
 
@@ -163,9 +176,9 @@ A frame written before this convention gets the block added at the top of its ne
 
 > Save to `<home>/shaping.md`. Don't use default paths.
 
-**The criterion travels with every invocation.** `shaping`, `framing-doc`, `kickoff-doc` and `grill-me` don't know the project: put the `## The criterion` block and `constraints.md` verbatim at the top of the prompt, above the path instruction. Without them a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
+**The criterion travels with every invocation.** `shaping`, `framing-doc` and `kickoff-doc` don't know the project: put the `## The criterion` block and `constraints.md` verbatim at the top of the prompt, above the path instruction. Without them a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
 
-**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `grill-me` on that point before moving on.
+**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), settle that point in dialogue before moving on: one question at a time, each with the answer you'd propose, until it closes or the user parks it as an open question.
 
 **If an unknown is factual** (does the permit apply, what does the supplier charge, is the person available), it's a spike: a `spike-<topic>.md` with questions and answers, done before the plan that depends on it. A plan is not written on top of a guess.
 
@@ -210,10 +223,10 @@ Written in session with the user: the plan needs what only they know (who, when,
 <from the reality check, plus what the previous slices taught>
 
 ## To settle before starting
-<open questions; grill-me on each if they don't close in dialogue>
+<open questions; settle each in dialogue, one question at a time>
 ```
 
-An action that is software is written as *"devflow work `<slug>` in `<repo>` merged"*, and that work is opened in its repo with `devflow` when its turn comes. A slice that needs its own plan of several slices becomes a sub-project: `S<n>-<slug>/` with its own `STATUS.md` and `parent:` set; the parent slice's Done becomes "sub-project done".
+An action that is software is written as *"flow:dev work `<slug>` in `<repo>` merged"* (rows written as *"devflow work … merged"* are read the same), and that work is opened in its repo with `/flow:dev` when its turn comes. A slice that needs its own plan of several slices becomes a sub-project: `S<n>-<slug>/` with its own `STATUS.md` and `parent:` set; the parent slice's Done becomes "sub-project done".
 
 Writing the plan surfaces deviations from the mandate: an action that belongs to another slice, a Done that can't be observed, a cost the appetite doesn't cover. Record them in `slices.md` under **"Deviations found while planning S<n>"** and carry on to the review without stopping.
 
@@ -241,7 +254,7 @@ People act; the skill records. The user reports as things happen: *"actions 1 to
 - proposes a decision when a real alternative is discarded on the spot (*"you chose the local supplier over the cheaper one: record why?"*);
 - flags when the slice's budget or the appetite is about to be exceeded, before it happens.
 
-If an action is a `devflow` work, it's run in its repo in its own session; here it's a row that closes when that work is merged.
+If an action is a `/flow:dev` work, it's run in its repo in its own session; here it's a row that closes when that work is merged.
 
 ### `step: close`
 
@@ -258,7 +271,7 @@ Applies to frame, shaping, kickoff, slicing and reality. Four moves, in order:
 
 1. **Fidelity check**, before anything is reported. For each requirement, shape or slice just produced: which line of the criterion does it serve? Whatever traces back to nothing is named in the report, with what it would take to keep it. On `shaping.md` and `slices.md` — the documents the rest of the project inherits, and the ones the client reads — a subagent runs it, with a packet of the criterion, `constraints.md` and the document alone. On the others, in session. The frame phase checks itself differently: that the criterion block exists and that the body doesn't contradict it.
 2. **Update `STATUS.md`**: `phase:`, `updated:`, Log line.
-3. **Decision candidate** in the same report, when `decisions.md` says so: a real alternative discarded, a known problem deferred on purpose, a choice that will surprise whoever reads the plan later. Propose `decisions/YYYY-MM-DD-<slug>.md`; never write it unasked.
+3. **Decision candidate** in the same report, when `${CLAUDE_SKILL_DIR}/decisions.md` says so: a real alternative discarded, a known problem deferred on purpose, a choice that will surprise whoever reads the plan later. Propose `decisions/YYYY-MM-DD-<slug>.md`; never write it unasked.
 4. **Stop and ask** before the next phase.
 
 If the home is under version control, commit at each of these points, with explicit paths. If it's a plain folder (a vault, a shared drive), the files are the record.
@@ -275,6 +288,6 @@ When the last slice is closed and the user confirms the project is complete:
 
 **A small project is a one-slice project.** Same skill: the visible-outcome test sends it straight to slicing (`slices.md` with S1 and its Done), the reality check if money or third parties are involved, then the loop once.
 
-## Relation to devflow
+## Relation to /flow:dev
 
-Same skeleton, kept in sync by hand: opening, home and state, definition phases, slicing as the high-level plan, just-in-time detail, review by a fresh head, close with lessons, decisions, memory. Different in the middle: here people execute, plans are actions, verification is reality. A slice that is software leaves this flow at its action row and comes back when the `devflow` work is merged.
+Same skeleton, kept in sync by hand: opening, home and state, definition phases, slicing as the high-level plan, just-in-time detail, review by a fresh head, close with lessons, decisions, memory. Different in the middle: here people execute, plans are actions, verification is reality. A slice that is software leaves this flow at its action row and comes back when the `/flow:dev` work is merged.

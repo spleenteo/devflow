@@ -1,0 +1,10 @@
+{
+  "name": "flow",
+  "description": "Conductors for software work (dev) and for non-software projects (project), one slice at a time.",
+  "author": {
+    "name": "Matteo Papadopoulos"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/spleenteo/flow",
+  "repository": "https://github.com/spleenteo/flow"
+}

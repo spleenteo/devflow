@@ -1,0 +1,24 @@
+{
+  "name": "flow",
+  "owner": {
+    "name": "Matteo Papadopoulos"
+  },
+  "description": "The flow plugin and the skills it conducts.",
+  "plugins": [
+    {
+      "name": "flow",
+      "source": "./",
+      "description": "Conductors for software work (dev) and for non-software projects (project), one slice at a time."
+    },
+    {
+      "name": "shaping-skills",
+      "description": "rjs/shaping-skills: shaping, breadboarding, framing-doc and kickoff-doc, pinned to a commit.",
+      "source": {
+        "source": "github",
+        "repo": "rjs/shaping-skills",
+        "sha": "23e32c1ee2293595906d0d55f44424427afa7bac"
+      },
+      "skills": ["./shaping", "./breadboarding", "./framing-doc", "./kickoff-doc"]
+    }
+  ]
+}

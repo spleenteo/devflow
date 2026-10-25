@@ -37,6 +37,11 @@ The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-pl
 - The plugin root is the repo root: `README.md`, `install.sh`, `docs/` land in the plugin cache. Harmless; V5 says so.
 - The main checkout keeps the old folders on `main`, so the symlinks keep working until the merge.
 
+**Deviations found while planning V1**
+- V1's Done says "Gate green", but the old-name grep can't be clean until V2 rewrites the skills' text. At V1 the grep's count is recorded, not required to be zero; validate and the link check must be green.
+- The link check had no command; V1 writes it into the Gate (it's the first slice that runs it).
+- `shaping-skills` hook: not wired (opt-in upstream, needs `jq`, interrupts every edit of a `shaping: true` file); the reason goes to V3's `dependencies.md`.
+
 ## V2 — The rename inside the skills
 
 **In**

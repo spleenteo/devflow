@@ -72,9 +72,9 @@ And measure: every Log line in `STATUS.md` carries wall-clock and cost (from `/c
 
 Runs first, on every invocation: before anything else in this skill and before any file is written. The skills this one hands work to are listed in `${CLAUDE_PLUGIN_ROOT}/dependencies.md` (in the repo: [dependencies.md](../../dependencies.md)). Read it and compare it with the skills listed in the session: a dependency is present when a listed skill has its name, or its segment after `:` equals it.
 
-If any are missing, report them in one message, required first, then optional. For each: the install commands from `dependencies.md` at user and project scope (for `grill-me`, the plugin route at both scopes plus the `npx` alternative) and the phase that needs it. Never install anything. If the next phase doesn't need what's missing, carry on.
+If any are missing, report them in one message, required first, then optional. For each: the install commands from `dependencies.md` at user and project scope (for `grill-me`, the plugin route at both scopes plus the `npx` alternative) and the phase that needs it (from this skill's tables). Never install anything, and don't block the start: the check at each phase stops it if needed.
 
-At a phase that invokes a dependency, check again: if a required one isn't listed, stop that phase and give its commands from `dependencies.md`; don't do its job without it.
+At a phase or step that invokes a dependency, check again: if a required one isn't listed, stop that phase and give its commands from `dependencies.md`; don't do its job without it.
 
 ## Step 0 — First run in a repo
 
@@ -184,7 +184,7 @@ For each phase: invoke the tool telling it where to save, commit, update `phase:
 | `slicing` | Always, even with one slice | `shaping` (slicing section) or `breadboarding` | `slices.md` |
 | `impact` | Always, after slicing | Two subagents (below) | Corrections in `slices.md` |
 
-If a phase's tool isn't listed in the session, stop that phase and give its commands from `dependencies.md`.
+If the tool the row picks for the case at hand isn't listed in the session, stop that phase and give its commands from `dependencies.md`. Never swap in another tool (`brainstorming` in place of a missing `framing-doc`).
 
 ### The criterion
 

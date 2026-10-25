@@ -45,8 +45,8 @@ Future extensions (for example documentation or design) join the same namespace 
    say so in one line. The non-default root offered at first run becomes `flow/` instead of `devflow/`.
    Paths written into projects (`docs/work/`, `docs/decisions-log/`, `docs/development-guidelines.md`,
    `docs/CHANGELOG.md`, `.version`) don't change.
-   References to personal tools and projects are removed: `projectflow` names Maestro and
-   `<documents_path>` (`projectflow/SKILL.md:33`, `:80`, `README.md:98`) and a real project in an
+   References to personal tools and projects are removed: `projectflow` names a personal tool and
+   its path variable (`projectflow/SKILL.md:33`, `:80`, `README.md:98`) and a real project in an
    example (`projectflow/SKILL.md:62`). The home becomes "the folder the user names at opening";
    examples use invented names.
 3. **The plugin is the only install path.** The symlink install goes, and so does `npx skills add`
@@ -151,7 +151,7 @@ The outcomes settle the open points above; slicing starts after.
   spike-inside-the-loop.
 - **Step 0**: accept the guidelines template and write a `## Gate`:
   `claude plugin validate .`; a grep for the old names
-  (`rg -n '/devflow|devflow-docs|devflow-archive|/projectflow|\.devflow\.yml|Maestro' --glob '!docs/work/**' --glob '!docs/CHANGELOG.md'`)
+  (`rg -n '/devflow|devflow-docs|devflow-archive|/projectflow|\.devflow\.yml' --glob '!docs/work/**' --glob '!docs/CHANGELOG.md'`)
   that returns only the migration note and the fallback read; a Markdown link check. No `CLAUDE.md`
   at the repo root.
 - **Impact**: the stack is `generic`. Ad-hoc lenses: names and namespace (every old name, trigger,

@@ -15,7 +15,7 @@ Every behaviour of Claude Code a document states is either verified in a spike o
 ## Naming
 
 - A skill's folder is its `name:`, kebab-case: `skills/dev/SKILL.md` has `name: dev`.
-- Skills are cited as `/flow:<skill>` in every document. Dependency skills with their plugin namespace when they come from a plugin (`superpowers:writing-plans`).
+- Skills are cited as `/flow:<skill>` in every document. Dependency skills by bare name with the plugin form in brackets: `writing-plans` (`superpowers:writing-plans`), so the reference holds for plugin and personal installs alike.
 - No names of specific user projects or personal tools anywhere. Examples use invented names.
 
 ## Language
@@ -31,9 +31,13 @@ Imperative mood, English, one concern per commit. Explicit `git add <paths>`, ne
 Green before a slice closes, in order:
 
 ```bash
-claude plugin validate .        # once .claude-plugin/ exists
-# from the rename slice on: old names appear only in the migration note and the .devflow.yml fallback
-rg -n '/devflow|devflow-docs|devflow-archive|/projectflow|\.devflow\.yml|Maestro' \
-  --glob '!docs/work/**' --glob '!docs/briefs/**' --glob '!docs/CHANGELOG.md'
-# every relative Markdown link resolves
+claude plugin validate .        # passes; the only warnings are the missing version
+# old names: only the allowed matches remain (the .devflow.yml fallback sentence,
+# the repository URL, the README migration note and the repo-vs-plugin sentence)
+rg -n -i '\bdevflow\b|devflow-(docs|archive)|projectflow|\.devflow\.yml' \
+  --glob '!docs/work/**' --glob '!docs/briefs/**' --glob '!docs/CHANGELOG.md' \
+  --glob '!docs/development-guidelines.md' | rg -v 'spleenteo/devflow'
+# every relative Markdown link resolves (command set in the first slice that runs it)
 ```
+
+While a work is in progress, its `slices.md` may narrow the Gate (for example, files a later slice rewrites); the narrowing ends with that work.

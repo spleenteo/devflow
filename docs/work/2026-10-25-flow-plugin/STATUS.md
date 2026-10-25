@@ -1,8 +1,8 @@
 ---
 status: open
-phase: impact
-slice: null
-step: null
+phase: slice
+slice: V1
+step: plan
 work: flow-plugin
 stack: generic
 updated: 2026-10-25
@@ -37,3 +37,4 @@ Source material: [`brief.md`](brief.md); the review of both briefs, [`../../brie
 - 10-25 — opening — home, guidelines, briefs saved — spike, slicing — 1 h 5 min (brief review included) — n/a
 - 10-25 — spike — names, shaping-skills entry, validate verified; soft dependencies and no-ref pinning decided from the docs, authenticated test skipped by choice — slicing — 45 min — n/a
 - 10-25 — slicing — six slices; fidelity check skipped (no frame) — impact — 15 min — n/a
+- 10-25 — impact — 2 subagents: 2 blockers (Gate unreachable before V6, grep misses old names), 6 major, 12 minor; all applied to slices.md and the guidelines; personal names scrubbed from docs/; 2 decisions recorded — V1 plan — 25 min — n/a

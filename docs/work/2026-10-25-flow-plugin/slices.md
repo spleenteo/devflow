@@ -4,109 +4,120 @@ shaping: true
 
 # Flow plugin — Slices
 
-The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-plugin-loading.md`](spike-plugin-loading.md): soft dependencies (no `dependencies` field), and projects that declare the marketplace without a `ref`, with `main` holding released states only. No frame (technical work), no shaping or breadboard (the shape is the brief; the work changes existing Markdown skills and adds no places).
+The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-plugin-loading.md`](spike-plugin-loading.md): soft dependencies (no `dependencies` field), and projects that declare the marketplace without a `ref`, with `main` holding released states only. No frame (technical work), no shaping or breadboard (the shape is the brief; the work changes existing Markdown skills and adds no places). Impact corrections of 2026-10-25 applied.
 
-**How slices are demonstrated.** No session can start in an isolated configuration (not logged in), but `claude -p --plugin-dir <worktree>` runs in the owner's logged-in configuration without registering anything: that's how a slice shows a skill's behaviour. Installation paths are shown with `claude plugin` commands in an isolated `CLAUDE_CONFIG_DIR`, which need no login.
+**How slices are demonstrated.**
 
-**Old names.** References to `devflow`, `devflow-docs`, `devflow-archive`, `projectflow`, `.devflow.yml` appear today in `devflow/SKILL.md` (21), `projectflow/SKILL.md` (9), `devflow-docs/SKILL.md` (9), `devflow-archive/SKILL.md` (5), `devflow/decisions-log.md` (2), `install.sh` (5), `README.md` (36).
+- Skill behaviour: `claude -p --plugin-dir /Users/spleenteo/Sites/me/devflow-flow` from a scratch repo, in the owner's logged-in configuration (nothing gets registered). The scratch repo's `.claude/settings.local.json` sets `skillOverrides` to `"off"` for the personal `devflow`, `devflow-docs`, `devflow-archive`, `projectflow`, so the old conductors can't answer instead of the new ones. Where a demo is about dependencies, it also turns off the personal `brainstorming`, `writing-plans`, `subagent-driven-development`, `grill-me`, `shaping`, `breadboarding`, `framing-doc`, `kickoff-doc` and sets `enabledPlugins` `superpowers@claude-plugins-official: false`. Check in the run that turning off a bare name doesn't hide `superpowers:<name>`.
+- What a subagent received: `--output-format stream-json --verbose`, then grep the Agent `tool_use` input.
+- Installation: `claude plugin` commands in an isolated `CLAUDE_CONFIG_DIR` (no login needed). A marketplace added from a local path loads in place, skipping the clone and the cache; the path real users take is exercised with the worktree served as a git URL, as in the spike.
+- The branch's README is wrong from V1 to V6: don't hand the branch to anyone before V6.
+
+**The Gate during the work.** The guidelines' Gate covers the whole repo; until V6 closes, its old-name grep and link check also exclude `README.md` and `install.sh` (V6 removes the exclusion; `install.sh` is rewritten in V3 and rejoins then). Allowed matches, written down: the `.devflow.yml` fallback sentence in `dev`, `changelog`, `archive`; `spleenteo/devflow` (repository URL); after V6, the README migration note and the sentence on repo `devflow` vs plugin `flow`.
+
+**Old names today** (`rg -c -i '\bdevflow\b|devflow-(docs|archive)|projectflow|\.devflow\.yml'` outside `docs/`): `devflow/SKILL.md` 24, `projectflow/SKILL.md` 13, `devflow-docs/SKILL.md` 10, `devflow-archive/SKILL.md` 6, `devflow/decisions-log.md` 3, `devflow/development-guidelines.template.md` 1, `projectflow/decisions.md` 1, `install.sh` 5, `README.md` 40.
 
 ## V1 — The plugin skeleton
 
 **In**
-- `.claude-plugin/plugin.json`: `name: flow`, `description`, `author`, `license: MIT`, `homepage`, `repository`. No `version`, no `dependencies`.
-- `.claude-plugin/marketplace.json`: `name: flow`, `owner`, `description`; entry `flow` with `source: "./"`; entry `shaping-skills` with a `github` source on `rjs/shaping-skills` pinned by `sha`, listing `./shaping`, `./breadboarding`, `./framing-doc`, `./kickoff-doc` (`project` uses `kickoff-doc`).
-- `git mv` the four folders to `skills/dev`, `skills/project`, `skills/changelog`, `skills/archive`; set `name:` in each frontmatter to the folder name. Supporting files (`lenses.md`, `decisions-log.md`, templates) move with their skill.
+- `.claude-plugin/plugin.json`: `name: flow`, `description`, `author`, `license: MIT`, `homepage`, `repository`. No `version`, no `dependencies`, no `skills` key (the default `skills/` scan suffices).
+- `.claude-plugin/marketplace.json`: `name: flow`, `owner`, `description`; entry `flow` with `source: "./"`; entry `shaping-skills` with a `github` source on `rjs/shaping-skills` pinned by the full `sha` from the remote (`23e32c1ee2293595906d0d55f44424427afa7bac`, which contains `kickoff-doc`), listing `./shaping`, `./breadboarding`, `./framing-doc`, `./kickoff-doc`. Its ripple-check hook (`hooks/shaping-ripple.sh`): wire it in the entry, or leave it out and say why in `dependencies.md` (V3).
+- `git mv` the four folders to `skills/dev`, `skills/project`, `skills/changelog`, `skills/archive`; set `name:` in each frontmatter to the folder name. Supporting files move with their skill.
+- Repoint the three README links to the moved files (`README.md:167,171,175`).
 
-**Out**: any change to the skills' text beyond `name:` (V2); `install.sh` and README (V6).
+**Out**: the skills' text beyond `name:` (V2); `install.sh` (V3); the rest of the README (V6).
 
 **Done**
 - `claude plugin validate .` passes; the only warnings are the missing `version`.
-- In an isolated configuration: `claude plugin marketplace add <worktree>` then `claude plugin details flow@flow` lists `archive, changelog, dev, project`; `claude plugin install shaping-skills@flow` lists `breadboarding, framing-doc, kickoff-doc, shaping`.
-- `claude -p --plugin-dir <worktree> "list the skills of the flow plugin"` names `flow:dev`, `flow:project`, `flow:changelog`, `flow:archive`.
+- Isolated configuration: `claude plugin marketplace add <worktree>`; `claude plugin details flow@flow` lists `archive, changelog, dev, project`; `claude plugin install shaping-skills@flow`, then `claude plugin details shaping-skills@flow` lists `breadboarding, framing-doc, kickoff-doc, shaping`.
+- `claude -p --plugin-dir` (demo setup above) names `flow:dev`, `flow:project`, `flow:changelog`, `flow:archive`.
+- Gate green (with the exclusions above).
 
 **Gotchas**
-- The plugin root is the repo root: `README.md`, `install.sh`, `docs/` are copied into the plugin cache. Harmless; the architecture doc says so (V5).
-- The main checkout keeps the old folders on `main`, so the symlinks keep working until the migration.
-- Check that `flow` isn't rejected or warned on as a marketplace or plugin name.
+- The plugin root is the repo root: `README.md`, `install.sh`, `docs/` land in the plugin cache. Harmless; V5 says so.
+- The main checkout keeps the old folders on `main`, so the symlinks keep working until the merge.
 
 ## V2 — The rename inside the skills
 
 **In**
-- Frontmatter descriptions and triggers (`/flow:dev`, "open the work X", …) in all four skills.
-- Cross-references: `dev` invokes `/flow:changelog` and `/flow:archive`; `project` hands off to `/flow:dev`; the lifecycle table and "Relation to" sections.
-- Config: `.flow.yml`, read first; `.devflow.yml` read when `.flow.yml` is absent, with a one-line notice. Same keys. The non-default root offered at Step 0 becomes `flow/`.
-- References to dependency skills: written so they resolve whether the skill comes from a plugin (`superpowers:writing-plans`) or a personal install (`writing-plans`). Verify how the session lists them before choosing the wording (spike, "Not run", item 3).
-- Agnostic: remove Maestro and `<documents_path>` from `project` (home = the folder the user names; inside a documents vault, propose `<vault>/<Name>/`); replace `Cerbaia` with an invented name.
+- Frontmatter descriptions and triggers in all four skills. Drop "update docs" from `changelog`'s triggers (it would collide with the future `flow:docs`).
+- Prose and headings: a skill refers to itself as "this skill" or `/flow:<name>`, to the family as "the flow"; `# Devflow` becomes `# Flow: dev`, and so on. Includes `development-guidelines.template.md:3`, `decisions-log.md`, `project`'s `decisions.md:14`, "Relation to devflow".
+- Cross-references: `dev` invokes `/flow:changelog` and `/flow:archive`; `project` hands off to `/flow:dev` and still accepts the old phrase "devflow work `<slug>` merged" in existing plans. The lifecycle table's Owner column says "the `flow` plugin", not "this repo".
+- Supporting files cited as `${CLAUDE_SKILL_DIR}/lenses.md`, `…/decisions-log.md`, `…/development-guidelines.template.md` (`project`: `…/constraints.template.md`, `…/decisions.md`). Packets hand subagents the expanded absolute path.
+- Config: `.flow.yml`, read first; `.devflow.yml` read when `.flow.yml` is absent. The same fallback sentence, worded identically, in `dev`, `changelog`, `archive`; the one-line notice is printed once, by `dev`. Step 0's condition and its `ls` check both files. The non-default root offered at Step 0 becomes `flow/`.
+- Dependency skills cited by bare name with the plugin form in brackets: `writing-plans` (`superpowers:writing-plans`), `shaping` (`shaping-skills:shaping`). Verify in the demo how the session lists them (spike, "Not run", item 3) before settling the wording, and align the Naming rule in the guidelines.
+- Agnostic: in `project`, the home becomes the folder the user names (inside a documents vault, propose `<vault>/<Name>/`), with no personal tool or path variable; the resume example uses an invented project name.
 
-**Out**: README and `install.sh` (V6); new behaviour (V3, V4).
+**Out**: README (V6); `install.sh` (V3); new behaviour (V3, V4).
 
 **Done**
-- The Gate grep returns nothing outside `docs/work/`, `docs/briefs/`, and the `.devflow.yml` fallback line.
-- `claude -p --plugin-dir <worktree>` in a scratch repo: asked to "open a work", the session invokes `flow:dev` and its first message refers to `/flow:changelog` and `/flow:archive` by those names.
+- Gate green: the old-name grep over the repo (exclusions above) returns only the allowed matches.
+- The personal tool, path variable and project name that `projectflow/SKILL.md:33,62,80` and `README.md:98` cite today appear nowhere in `skills/` (README in V6).
+- Demo: asked to "open a work", the session invokes `flow:dev`, and the skill text it loaded refers to `/flow:changelog` and `/flow:archive`; `${CLAUDE_SKILL_DIR}/lenses.md` resolves to an existing file.
 
 **Gotchas**
 - `dev` and `project` are kept in sync by hand: every edit to one is checked against the other.
-- Examples inside the skills (`/devflow`, `devflow work <slug> merged`) are part of the rename.
 
 ## V3 — Soft dependencies
 
 **In**
-- `dependencies.md` at the plugin root: one row per dependency (plugin or source, skills it provides, required or optional, which flow and which phase needs it, install commands at user scope and at project scope). superpowers: required for `dev` (`brainstorming`, `writing-plans`, `subagent-driven-development`); `shaping-skills@flow` (`shaping`, `breadboarding`, `framing-doc`, `kickoff-doc`): required for the definition phases of `dev` and `project`; `grill-me`: optional.
-- A start check in `dev` and `project`: compare the list with the skills available in the session; report what's missing in one message with the commands; never install; don't block a start whose first phases don't need the missing piece; check again at the phase that needs it.
-- `install.sh` reduced to a dependency checker for the terminal, reading the same list, or removed if the start check makes it redundant (decide in the plan, say why).
+- `dependencies.md` at the plugin root, one row per dependency (source, skills it provides, required or optional, which flow and phase needs it, install commands at user and at project scope):
+  - superpowers: `brainstorming` (frame, both flows), `writing-plans` and `subagent-driven-development` (`dev` slice loop): required;
+  - `shaping-skills@flow`: `shaping`, `breadboarding`, `framing-doc` (both flows), `kickoff-doc` (`project` only): required for the definition phases; the hook decision from V1;
+  - `grill-me` (both flows): optional.
+- A start check in `dev` and `project`: compare the list with the skills listed in the session; a dependency is present when a listed name, or its segment after `:`, equals it. Report what's missing in one message with the commands; never install; don't block a start whose first phases don't need it; check again at the phase that needs it. Cited as `${CLAUDE_PLUGIN_ROOT}/dependencies.md`.
+- `install.sh`: owned here. Rewritten as a terminal dependency checker reading `dependencies.md`, or removed if the start check makes it redundant; removal is a deviation from the brief, recorded with the reason.
 
-**Out**: any `dependencies` field in `plugin.json`.
+**Out**: any `dependencies` field in `plugin.json`; the README (V6).
 
 **Done**
-- In a scratch repo, `claude -p --plugin-dir <worktree>` with the owner's setup reports no missing dependency.
-- The missing case: with the superpowers plugin disabled for that run (`.claude/settings.local.json` in the scratch repo, `false` for it) and a skill list that then lacks it, the start check shows the one-message report with both install commands. If the personal copies still satisfy the check, say so and show the report for `grill-me` instead.
-- `dependencies.md` is linked from both skills and from the README (V6).
-
-**Gotchas**
-- The owner's machine has personal copies of `brainstorming`, `writing-plans`, `subagent-driven-development` beside the superpowers plugin: the check must count either as present.
-- `${CLAUDE_PLUGIN_ROOT}` resolves in plugin skill content; since the plugin is the only install path, the skills can cite `${CLAUDE_PLUGIN_ROOT}/dependencies.md`.
+- Demo, owner's setup: no missing dependency reported.
+- Demo, dependencies turned off (setup above): one message reporting superpowers (required) and `grill-me` (optional), each with both install commands.
+- `dependencies.md` linked from both skills.
 
 ## V4 — Project impact lenses
 
 **In**
 - `skills/dev/impact-lenses.template.md`: the `| Lens | Looks for |` table, optional `##` groups, two invented examples.
-- `lenses.md`: a "Project lenses" section saying where the file lives (`<root>/impact-lenses.md`), its format, and who reads it.
-- `dev/SKILL.md`: Conventions table row; impact packet of the stack-lens subagent (or the single subagent) includes the file; plan review gets a fifth row, **Project lenses**; Step 0 mentions the file and offers the template, never creates it unasked; the slice packet includes it.
+- `lenses.md`: a "Project lenses" section: where the file lives (`<root>/impact-lenses.md`), its format, who reads it.
+- `dev/SKILL.md`: Conventions row; the impact packet of the stack-lens subagent (or the single subagent) includes the file; plan review gets a fifth row, **Project lenses**; the slice packet includes it; Step 0 mentions the file and offers the template (`${CLAUDE_SKILL_DIR}/impact-lenses.template.md`), never creates it unasked.
 - No config key. `project` untouched.
 
-**Out**: the lenses of any real project.
+**Out**: the lenses of any real project; the README section (V6).
 
 **Done**
-- A fixture repo with `docs/impact-lenses.md` holding one lens with a deliberate trap: a `claude -p --plugin-dir <worktree>` run that asks for the impact packet of a one-slice work shows the lens in the subagent prompt and a finding on the trap.
-- Without the file, the same run shows no mention of project lenses.
+- A fixture repo holding a one-slice work at `phase: impact` (`STATUS.md`, `slices.md`) and `docs/impact-lenses.md` with one lens and a deliberate trap: a stream-json run of the impact phase shows the lens in the subagent's input and a finding on the trap.
+- Without the file, the same run shows no project lenses.
 
 ## V5 — Architecture documentation
 
 **In**
-- `docs/architecture.md`, Mermaid diagrams GitHub renders, built from the spike's verified facts and the decisions:
-  - distribution: repo → marketplace `flow` → plugin `flow` (skills) and `shaping-skills`; user scope install; a project's `.claude/settings.json` declaring the marketplace without `ref` and enabling the plugin; tags on `main`;
-  - the `flow:dev` lifecycle: opening, definition phases, slice loop with its two stops, closing sequence, and the hand-offs to `flow:changelog`, `flow:archive` and the dependency skills; `flow:project` hand-off to `flow:dev`;
+- `docs/architecture.md`, Mermaid diagrams GitHub renders:
+  - distribution: repo → marketplace `flow` → plugins `flow` and `shaping-skills`; user-scope install; a project's `.claude/settings.json` declaring the marketplace without `ref` and enabling the plugin; releases as merges to `main` with tags;
+  - the `flow:dev` lifecycle: opening, definition phases, slice loop with its two stops, closing sequence, hand-offs to `flow:changelog`, `flow:archive` and the dependency skills; `flow:project` handing off to `flow:dev`;
   - what is read and written in a project (`docs/` as memory, guidelines, project lenses, `.flow.yml`);
-  - where the plugin ends: dependencies and the start check; what lands in the plugin cache.
-- Linked from the README (V6).
+  - where the plugin ends: the dependency list and the start check; what lands in the plugin cache.
+- `docs/development-guidelines.md`: a `## Releases` section: work on branches; a merge into `main` is a release; tag `v<.version>` on the merge commit; develop with `--plugin-dir`, never by adding the marketplace from the clone being edited (it would load in place and the conductor would edit itself).
+- Claude Code behaviour is linked to the official docs pages, not to the spike (the spike gets archived and walled).
 
 **Done**
-- Every diagram renders: `npx -y @mermaid-js/mermaid-cli` turns each block into an SVG without errors, and the rendered SVGs are checked by eye.
-- Every behaviour of Claude Code the document states links to the docs page or the spike.
+- Every diagram renders with `npx -y @mermaid-js/mermaid-cli` (`mmdc`; first run downloads Chromium) and is checked by eye.
+- Every statement about Claude Code links to a docs page.
 
-## V6 — README, migration, release discipline
+## V6 — README and migration
 
 **In**
-- Install: `claude plugin marketplace add spleenteo/devflow` + `claude plugin install flow@flow --scope user`; the project snippet (`extraKnownMarketplaces` without `ref`, `enabledPlugins`); what a teammate gets from trust alone and what the start check will ask them to install; the project-level `ref` as an escape hatch, documented as behaviour read from the docs.
-- Dependencies (link to `dependencies.md`), project lenses, local development (`claude --plugin-dir .`), the architecture doc link, one sentence on repo `devflow` vs plugin `flow`.
-- Migration note: `/devflow` → `/flow:dev` and the other three; `.devflow.yml` → `.flow.yml` (still read); remove `~/.claude/skills/{devflow,devflow-docs,devflow-archive,projectflow}` and duplicate personal copies of the dependency skills.
-- Remove the `npx skills add` path and the symlink install.
-- `docs/development-guidelines.md`: a `## Releases` section: work on branches; a merge into `main` is a release; tag `v<.version>` on the merge commit.
+- Install: `claude plugin marketplace add spleenteo/devflow` + `claude plugin install flow@flow --scope user`; the project snippet (`extraKnownMarketplaces` without `ref`, `enabledPlugins`); what a teammate gets from trust alone and what the start check will ask them to install; a project-level `ref` as an escape hatch, stated as documented behaviour.
+- Links to `dependencies.md` and `docs/architecture.md`; project lenses (including how a repo already past Step 0 adds the file); local development (`claude --plugin-dir .`, and the warning from `## Releases`); the review lenses now five; one sentence on repo `devflow` vs plugin `flow`.
+- Migration note: `/devflow` → `/flow:dev` and the other three; `.devflow.yml` → `.flow.yml` (still read); remove the symlinks (`~/.claude/skills/{devflow,devflow-docs,devflow-archive,projectflow}`) or, for `npx` installs, `npx skills remove devflow devflow-docs devflow-archive projectflow`; duplicate personal copies of the dependency skills; existing `docs/work/archived.md` headers that cite `/devflow-archive` can stay or be edited by hand.
+- Remove the `npx skills add` path and the symlink install. The Gate exclusions for `README.md` and `install.sh` go.
 
 **Done**
-- In a fresh isolated configuration, following the README's commands literally (with the local worktree path in place of `spleenteo/devflow`) ends with `claude plugin details flow@flow` listing the four skills.
-- The Gate is green, links included.
+- A fresh isolated configuration follows the README's commands, with the worktree served as a git URL in place of `spleenteo/devflow`, and ends with `claude plugin details flow@flow` listing the four skills.
+- The Gate is green over the whole repo, links included.
 
 ## After V6: closing sequence
 
-`devflow-docs` from the main checkout (the frozen conductor) creates `docs/CHANGELOG.md` and `.version` (`0.1.0`); `devflow-archive` archives the work. Merge and tag `v0.1.0` only on approval. Then the owner's machine migrates per the README.
+1. From the worktree session, with the frozen skills of the main checkout: `devflow-docs` (answer the current version as `0.0.0`, so the minor bump gives `0.1.0`), then `devflow-archive`.
+2. On approval only: merge into `main`, push, tag `v0.1.0`, push the tag.
+3. The owner migrates right after the merge, which removes the old folders under the symlinks: install from GitHub first, then remove the symlinks.

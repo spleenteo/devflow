@@ -1,7 +1,7 @@
 # Architecture
 
 `flow` is a Claude Code plugin that runs work one slice at a time and keeps its state on disk. `/flow:dev` takes software work in a repository from idea to a branch ready to merge, and `/flow:project` runs a project that people carry out over weeks or months; `/flow:changelog` and `/flow:archive` close a software work. The conductors hand the thinking, planning and execution to skills from other plugins, which they check for at start but never install.
-The repository is named `devflow`; the plugin and its marketplace are both named `flow`.
+The repository, the marketplace and the plugin are all named `flow`.
 
 The skills are the source of truth. This page describes them and links to them; where the two disagree, the skill wins. Plugin skills are invoked as `/plugin-name:skill-name`, hence `/flow:dev` ([skills](https://code.claude.com/docs/en/skills)).
 
@@ -27,7 +27,7 @@ The repository root is a marketplace: [`.claude-plugin/marketplace.json`](../.cl
 A plugin's install id is the entry name, `@`, and the marketplace name: `flow@flow`. A user installs it once at user scope, which records it under `enabledPlugins` in `~/.claude/settings.json` and makes it available in every project on the machine ([install scopes](https://code.claude.com/docs/en/plugins/install#choose-an-install-scope)). The plugin itself:
 
 ```bash
-claude plugin marketplace add spleenteo/devflow --scope user
+claude plugin marketplace add spleenteo/flow --scope user
 claude plugin install flow@flow --scope user
 ```
 
@@ -38,7 +38,7 @@ A project that adopts the flow commits a `.claude/settings.json` that declares t
 ```json
 {
   "extraKnownMarketplaces": {
-    "flow": { "source": { "source": "github", "repo": "spleenteo/devflow" } }
+    "flow": { "source": { "source": "github", "repo": "spleenteo/flow" } }
   },
   "enabledPlugins": { "flow@flow": true }
 }

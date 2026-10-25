@@ -1,6 +1,6 @@
 # flow
 
-A Claude Code plugin that runs a piece of work from idea to done, one slice at a time, and keeps its state on disk so a work resumes days later in a new session. `/flow:dev` takes software work in a repository to a branch ready to merge; `/flow:project` runs a project that people carry out over weeks or months, in a folder outside any repo. The repository is named `devflow`; the plugin and its marketplace are both named `flow`.
+A Claude Code plugin that runs a piece of work from idea to done, one slice at a time, and keeps its state on disk so a work resumes days later in a new session. `/flow:dev` takes software work in a repository to a branch ready to merge; `/flow:project` runs a project that people carry out over weeks or months, in a folder outside any repo.
 
 Shaping produces the slices. The detailed plan of each slice is written right before it starts, so it carries what the previous slices taught. Plans are reviewed by a fresh head, and the flow returns to you at two points per slice. `/flow:dev` works with any stack and adds nothing to your project's `CLAUDE.md`.
 
@@ -11,20 +11,20 @@ How it fits together: [`docs/architecture.md`](docs/architecture.md).
 Once per machine, at user scope, so the plugin is available in every project ([install scopes](https://code.claude.com/docs/en/plugins/install#choose-an-install-scope)):
 
 ```bash
-claude plugin marketplace add spleenteo/devflow --scope user
+claude plugin marketplace add spleenteo/flow --scope user
 claude plugin install flow@flow --scope user
 ```
 
-Recent versions also accept one step that adds the marketplace and installs the plugin. The session form below needs Claude Code 2.1.275 or later; the shell form, `claude plugin install flow --marketplace spleenteo/devflow`, needs 2.1.292 or later ([add a marketplace and install in one command](https://code.claude.com/docs/en/plugins/install#add-a-marketplace-and-install-in-one-command)).
+Recent versions also accept one step that adds the marketplace and installs the plugin. The session form below needs Claude Code 2.1.275 or later; the shell form, `claude plugin install flow --marketplace spleenteo/flow`, needs 2.1.292 or later ([add a marketplace and install in one command](https://code.claude.com/docs/en/plugins/install#add-a-marketplace-and-install-in-one-command)).
 
 ```text
-/plugin install flow --marketplace spleenteo/devflow
+/plugin install flow --marketplace spleenteo/flow
 ```
 
 **Dependencies.** The flow hands the thinking, planning and execution to skills from two other plugins, superpowers and shaping-skills. It checks for them but never installs them. Run `/flow:dev` in the project you'll work in: before anything else, the start check lists what's missing, with the commands to run. To check without opening a project, `install.sh` from a clone does the same from the shell, writing and installing nothing:
 
 ```bash
-git clone https://github.com/spleenteo/devflow.git flow
+git clone https://github.com/spleenteo/flow.git flow
 flow/install.sh
 ```
 
@@ -37,7 +37,7 @@ To give a team the flow, commit this `.claude/settings.json` in the project. It 
 ```json
 {
   "extraKnownMarketplaces": {
-    "flow": { "source": { "source": "github", "repo": "spleenteo/devflow" } }
+    "flow": { "source": { "source": "github", "repo": "spleenteo/flow" } }
   },
   "enabledPlugins": { "flow@flow": true }
 }
@@ -145,7 +145,7 @@ If you used the four skills installed as symlinks or with `npx skills`:
 ## Develop the plugin
 
 ```bash
-git clone https://github.com/spleenteo/devflow.git flow
+git clone https://github.com/spleenteo/flow.git flow
 claude --plugin-dir ./flow
 ```
 

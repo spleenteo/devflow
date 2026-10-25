@@ -34,11 +34,12 @@ Green before a slice closes, in order, from the repo root. The link check skips 
 claude plugin validate .        # passes; expected warnings: missing version and icon, the folder also holding a marketplace manifest
 # old names: only the allowed matches remain: the .devflow.yml fallback sentence in dev,
 # changelog, archive, architecture.md and the README's Configuration; dev's Step 0 condition
-# and ls; the "devflow work ... merged" notes in dev and project; the repo-vs-plugin sentence
-# in architecture.md and the README; the README migration note; the repository URL
-rg -n -i '\bdevflow\b|devflow-(docs|archive)|projectflow|\.devflow\.yml' \
+# and ls; the "devflow work ... merged" notes in dev and project; the README migration note.
+# --hidden so .claude-plugin/ is searched too
+rg -n -i --hidden '\bdevflow\b|devflow-(docs|archive)|projectflow|\.devflow\.yml' \
+  --glob '!.git' --glob '!.git/**' --glob '!.superpowers/**' \
   --glob '!docs/work/**' --glob '!docs/briefs/**' --glob '!docs/CHANGELOG.md' \
-  --glob '!docs/development-guidelines.md' . | rg -v 'spleenteo/devflow'
+  --glob '!docs/development-guidelines.md' .
 # every relative Markdown link resolves: prints "file -> target" per broken link, nothing when green.
 # Add --glob '!path' to the rg --files call for the narrowing a work's slices.md sets.
 rg --files --glob '*.md' --glob '!docs/work/archive/**' . | while read -r f; do

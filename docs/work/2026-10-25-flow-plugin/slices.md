@@ -181,6 +181,7 @@ The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-pl
 
 ## After V6: closing sequence
 
+0. Rename (owner's request at the close): repository `spleenteo/devflow` becomes `spleenteo/flow`. In the repo: every live reference (`plugin.json`, README, `dependencies.md`, `architecture.md`) points to `spleenteo/flow`; the repo-vs-plugin sentence goes; the Gate's old-name grep drops its `spleenteo/devflow` filter and searches hidden folders (it had missed `.claude-plugin/`). Historical documents (`docs/work/`, `docs/briefs/`, `docs/CHANGELOG.md` history) keep the old name: they record what was true.
 1. From the worktree session, with the frozen skills of the main checkout: `devflow-docs` (answer the current version as `0.0.0`, so the minor bump gives `0.1.0`), then `devflow-archive`.
-2. On approval only: merge into `main`, push, tag `v0.1.0`, push the tag.
-3. The owner migrates right after the merge, which removes the old folders under the symlinks: install from GitHub first, then remove the symlinks.
+2. On approval only: rename the GitHub repository (`gh repo rename flow`; GitHub redirects the old URLs), point `origin` at `git@github.com:spleenteo/flow.git`, merge into `main`, push, tag `v0.1.0`, push the tag.
+3. The owner migrates right after the merge, which removes the old folders under the symlinks: install from GitHub first, then remove the symlinks. Then the local folders: the main checkout `devflow` becomes `flow`, and the worktree is removed.

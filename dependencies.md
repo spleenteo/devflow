@@ -26,14 +26,14 @@ claude plugin install superpowers@claude-plugins-official --scope project
 
 ### shaping-skills
 
-Provides `shaping`, `breadboarding`, `framing-doc` and `kickoff-doc`. It is served by the `flow` marketplace, from the repository `spleenteo/devflow`, so the marketplace is added first.
+Provides `shaping`, `breadboarding`, `framing-doc` and `kickoff-doc`. It is served by the `flow` marketplace, from the repository `spleenteo/flow`, so the marketplace is added first.
 
 ```bash
 # user scope
-claude plugin marketplace add spleenteo/devflow --scope user
+claude plugin marketplace add spleenteo/flow --scope user
 claude plugin install shaping-skills@flow --scope user
 # project scope
-claude plugin marketplace add spleenteo/devflow --scope project
+claude plugin marketplace add spleenteo/flow --scope project
 claude plugin install shaping-skills@flow --scope project
 ```
 

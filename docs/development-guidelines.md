@@ -32,7 +32,8 @@ Green before a slice closes, in order, from the repo root. The link check skips 
 
 ```bash
 claude plugin validate .        # passes; the only warnings are the missing version
-# old names: only the allowed matches remain (the .devflow.yml fallback sentence,
+# old names: only the allowed matches remain (the .devflow.yml fallback sentence and
+# dev's notice, Step 0's condition and ls, the "devflow work ... merged" notes,
 # the repository URL, the README migration note and the repo-vs-plugin sentence)
 rg -n -i '\bdevflow\b|devflow-(docs|archive)|projectflow|\.devflow\.yml' \
   --glob '!docs/work/**' --glob '!docs/briefs/**' --glob '!docs/CHANGELOG.md' \

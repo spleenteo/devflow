@@ -70,6 +70,12 @@ The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-pl
 **Gotchas**
 - `dev` and `project` are kept in sync by hand: every edit to one is checked against the other.
 
+**Deviations found while planning V2**
+- Dependency skills get the plugin form in brackets only at their first mention in each skill, not every time: the text would double in length for no reader.
+- The plan-row phrase for a software action becomes *"flow:dev work `<slug>` merged"*; the old *"devflow work … merged"* is read the same.
+- Allowed old-name matches extended: besides the fallback sentence and `spleenteo/devflow`, `dev`'s one-time notice, Step 0's condition and `ls` (they must name `.devflow.yml`), and the old-phrase notes in `dev` and `project`.
+- The dependency-name check (spike "Not run", item 3) runs first, as T0, so it settles the wording before the text is written.
+
 ## V3 — Soft dependencies
 
 **In**

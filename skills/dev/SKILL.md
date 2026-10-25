@@ -256,7 +256,7 @@ That skill runs without stopping between tasks and settles conflicts with ruling
 ### `step: close`
 
 1. Verify the slice's Done as written in `slices.md`, plus the gate: the `## Gate` section of the guidelines if present, else tests green, typecheck or lint green, build green. If the slice is a refactor, the Done is a regression checklist written before starting and run by hand before committing.
-2. Lessons, in two places. The narrative under the slice in `slices.md`, as **"V<n> — done on <date>"**: what execution revealed, the rulings taken from the ledger. The rules, one line each, appended to `lessons.md`: *"before declaring something unused, grep all of `src`, value and setter, and say in the report where you looked."* A ruling that discarded a real alternative is a decision candidate (see `decisions-log.md`).
+2. Lessons, in two places. The narrative under the slice in `slices.md`, as **"V<n> — done on <date>"**: what execution revealed, the rulings taken from the ledger. The rules, one line each, appended to `lessons.md`: *"before declaring something unused, grep all of `src`, value and setter, and say in the report where you looked."* A ruling that discarded a real alternative is a decision candidate (see `${CLAUDE_SKILL_DIR}/decisions-log.md`).
 3. Tick the slice in `STATUS.md`, set `slice:` to the next one and `step:` to `plan`, add the Log line with wall-clock and cost.
 4. Commit. **Second stop.** One message: what closed, the gate result, the new rules, the decision candidate if any with the question whether to record it, and: *"V3 closed and committed. Plan V4, or stop here?"*
 
@@ -269,7 +269,7 @@ Applies to frame, shaping, breadboard, slicing and impact. Five moves, in order:
 1. **Fidelity check**, before the commit. For each requirement, shape or slice just produced: which line of the criterion does it serve? Whatever traces back to nothing is named in the report, with what it would take to keep it. On `shaping.md` and `slices.md` — the documents the rest of the work inherits — a subagent runs it, with a packet of the criterion, the applicable guidelines and the document alone. On the others, in session. Skipped entirely on a work with no frame, and said so.
 2. **Commit** the document just produced. Explicit `git add` on the touched files, never `-A` or `.`: the working tree may hold unrelated work. Imperative messages, in the language the repo already uses.
 3. **Update `STATUS.md`**: `phase:`, `updated:`, Log line with wall-clock and cost. After a verification the line states the outcome: *"09-02 — impact — 2 problems, fixed in V2 and V4 — 14 min — $2.10"*.
-4. **Decision candidate** in the same report, when `decisions-log.md` says so: a real alternative discarded, a known problem deferred on purpose, a behaviour that will surprise whoever reads the code. Propose `docs/decisions-log/YYYY-MM-DD-<slug>.md`; never write it unasked.
+4. **Decision candidate** in the same report, when `${CLAUDE_SKILL_DIR}/decisions-log.md` says so: a real alternative discarded, a known problem deferred on purpose, a behaviour that will surprise whoever reads the code. Propose `docs/decisions-log/YYYY-MM-DD-<slug>.md`; never write it unasked.
 5. **Stop and ask** before the next phase.
 
 ## Step 6 — Exit

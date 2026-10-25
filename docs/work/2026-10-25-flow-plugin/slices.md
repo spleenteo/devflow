@@ -42,6 +42,13 @@ The mandate is [`brief.md`](brief.md), as amended by the decisions in [`spike-pl
 - The link check had no command; V1 writes it into the Gate (it's the first slice that runs it).
 - `shaping-skills` hook: not wired (opt-in upstream, needs `jq`, interrupts every edit of a `shaping: true` file); the reason goes to V3's `dependencies.md`.
 
+**V1 — done on 2026-10-25** (commits `c820af7`, `f6d5c8b`, `d62b317`, plus the close)
+- Isolated install: `flow@flow` lists `archive, changelog, dev, project`; `shaping-skills@flow` lists `breadboarding, framing-doc, kickoff-doc, shaping`. Validate passes; its own warnings are only the missing `version` (the plugin-directory section adds icon and README-install advice).
+- Session demo, read from the `init` event of `claude -p --output-format stream-json --verbose`: with `skillOverrides: "off"` in the scratch repo's `.claude/settings.local.json`, the four old skills are gone even in `-p` (266 skills); with `--plugin-dir`, `flow:archive`, `flow:changelog`, `flow:dev`, `flow:project` appear (270).
+- Gate with V1's narrowing: old-name grep 51 lines across 7 skill files (V2 clears them); link check green on 19 files.
+- Found during execution: `rg` without a path reads stdin when the shell isn't a terminal and hangs; the Gate now passes `.` to both calls.
+- Rulings: STATUS.md travelled in T1's commit (bookkeeping); T4 ran as a subagent so its outputs live in its report. Deferred minors: link check ignores `](<path>)`, `~~~` fences, indented code and reference links (none in the repo); `install.sh` still loops over the old folders (V3); skills' text still cites the old names (V2).
+
 ## V2 — The rename inside the skills
 
 **In**

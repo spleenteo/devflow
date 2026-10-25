@@ -28,7 +28,7 @@ Imperative mood, English, one concern per commit. Explicit `git add <paths>`, ne
 
 ## Gate
 
-Green before a slice closes, in order. The link check skips links inside fenced code blocks, where templates hold placeholder links:
+Green before a slice closes, in order, from the repo root. The link check skips links inside fenced code blocks, where templates hold placeholder links. Both `rg` calls name the path (`.`): without one, `rg` reads stdin when it isn't a terminal and hangs.
 
 ```bash
 claude plugin validate .        # passes; the only warnings are the missing version
@@ -36,10 +36,10 @@ claude plugin validate .        # passes; the only warnings are the missing vers
 # the repository URL, the README migration note and the repo-vs-plugin sentence)
 rg -n -i '\bdevflow\b|devflow-(docs|archive)|projectflow|\.devflow\.yml' \
   --glob '!docs/work/**' --glob '!docs/briefs/**' --glob '!docs/CHANGELOG.md' \
-  --glob '!docs/development-guidelines.md' | rg -v 'spleenteo/devflow'
+  --glob '!docs/development-guidelines.md' . | rg -v 'spleenteo/devflow'
 # every relative Markdown link resolves: prints "file -> target" per broken link, nothing when green.
 # Add --glob '!path' to the rg --files call for the narrowing a work's slices.md sets.
-rg --files --glob '*.md' --glob '!docs/work/archive/**' | while read -r f; do
+rg --files --glob '*.md' --glob '!docs/work/archive/**' . | while read -r f; do
   awk '/^ *```/{x=!x; next} !x{s=$0; while(match(s,/\]\([^) ]+/)){print substr(s,RSTART+2,RLENGTH-2); s=substr(s,RSTART+RLENGTH)}}' "$f" |
     while read -r t; do
       case "$t" in http*|mailto:*|\#*) continue;; esac

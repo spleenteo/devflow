@@ -352,12 +352,17 @@ Pointed at and never edited, each as `<file>:<line> — <new name>`, or as the c
 - lines of `CLAUDE.md`, `.claude/CLAUDE.md` and `CLAUDE.local.md` naming `/devflow`, `/devflow-docs`, `/devflow-archive`, `/projectflow` or `.devflow.yml`;
 - `Skill(...)` entries for those skills in `.claude/settings.json`;
 - project-scope copies of those skills under `.claude/skills/`;
-- open `work/*` branches still carrying an old file: they take the default branch's upgraded state once the upgrade is merged.
+- open `work/*` branches whose checkout still holds an old file: nothing refreshes them on its own. The command, for the user to run after the upgrade merges: `git switch work/<slug> && git merge <default>`.
 
 **project.** In the home and its sub-projects, rows of `slices.md` and `S<n>-plan.md` reading "devflow work `<slug>` in `<repo>` merged" become "flow:dev work `<slug>` in `<repo>` merged".
 
-**Asking.** One message: each change as `file — what changes`, then the pointed-at lines, then one question. With uncommitted changes in the checkout, say so and ask to commit or stash first (never stash it yourself). Nothing is written before the ok.
+**Asking.** One message: each change as `file — what changes`, then the pointed-at lines, then one question. With uncommitted changes in the checkout, say so and ask to commit or stash first (never stash it yourself). This check comes before any branch switch, the pending-merge proposal included. Nothing is written before the ok.
 
-**Writing, repo.** On the ok: cut `flow-upgrade` from the default branch (outside `work/`, so no scan takes it for a work), write the changes, commit with explicit paths as `Upgrade to Flow's current conventions` (one commit), and switch back to the starting branch. Then propose merging it into the default branch locally, with its own ok, as Closing a work, step 4, does; push stays the user's. An existing `flow-upgrade` branch means the upgrade is pending: say so, propose the merge, never cut it again. **Writing, project.** Rewritten in place; committed only when the home is under version control, with explicit paths.
+**Writing, repo.** On the ok: cut `flow-upgrade` from the default branch (outside `work/`, so no scan takes it for a work), write the changes, commit with explicit paths as `Upgrade to Flow's current conventions` (one commit), and switch back to the starting branch. Then propose merging it into the default branch locally, with its own ok, by the commands of Closing a work, step 4; the target is the default branch the detection found, never a work's `base:`. Push stays the user's. An existing `flow-upgrade` branch means the upgrade is pending: say so, propose the merge, never cut it again. **Writing, project.** Rewritten in place; committed only when the home is under version control, with explicit paths.
 
-**Declined.** The run stops there: nothing is opened or resumed, and nothing is written. Say that the old configuration is no longer read and that the upgrade will be offered again next time.
+**Declined.** The run stops there: nothing is opened or resumed, and nothing is written. Say that the old configuration (repo) or the old rows (project) are no longer read and that the upgrade will be offered again next time.
+
+**Resume on an old file.** On a resume, `/flow:dev` and `/flow:project` also check the checkout, once the work is known. When the checkout still holds an old file from the first table, nothing runs on it:
+
+- **(a)** The default branch has no traces left: propose merging the default branch into the work's branch (`git merge <default>`), with its own ok, and stop until it is done.
+- **(b)** The old file exists only on this branch, because the default branch never had it: stop, say so, and point to the rename on that branch, for the user to make: `git mv .devflow.yml .flow.yml`, and `stack:` to `stacks:` in it.

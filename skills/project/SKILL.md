@@ -74,7 +74,7 @@ At a phase or step that invokes a dependency, check again: if a required one isn
 
 ## On start: open or resume
 
-The dependency check (`## Dependencies`) has already run. Once the home is known, check it and its sub-projects for old traces as the work reference, § Upgrade, says. When there are some, follow that section: one message, one question, and the run ends there, opening or resuming nothing.
+The dependency check (`## Dependencies`) has already run. Once the home is known, check it and its sub-projects for old traces as the work reference, § Upgrade, says. When there are some, follow that section: one message, one question, and the run ends there, opening or resuming nothing. A sub-project's folder is checked the same way.
 
 ```bash
 rg "^phase:" <home>/STATUS.md <home>/*/STATUS.md 2>/dev/null

@@ -9,7 +9,7 @@ Moves a finished work or project home out of the way and repairs what pointed at
 
 ## Layout
 
-When an older configuration file is present (the work reference, § Upgrade, names it), stop and point to `/flow:dev`, which upgrades it.
+When an older configuration file is present (the work reference, § Upgrade, names it), even beside `.flow.yml`, stop and point to `/flow:dev`, which upgrades it.
 
 
 - A repo with `<root>/work/` (default root `docs`): repo layout.

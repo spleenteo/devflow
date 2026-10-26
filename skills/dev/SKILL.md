@@ -46,7 +46,7 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Impact lenses | Common lenses in `${CLAUDE_SKILL_DIR}/common-lenses.md`, always; plus each resolved preset's `## Lenses` (Profile, § Presets); the stacks without a preset in the same file | The common lenses and the preset lenses of each of the project's stacks |
 | Project lenses | `docs/impact-lenses.md` | Read if present by impact and every plan review, on top of the common and stack lenses. Template in `${CLAUDE_SKILL_DIR}/impact-lenses.template.md` |
 
-Configuration lives in `.flow.yml` at the project root. A project can override the defaults with `.flow.yml`: keys `root`, `stacks` (a flow list: `stacks: [astro, node]`; an older `stack: <name>` is converted by the upgrade, the work reference § Upgrade), `changelog`, `version_file`, `merge` (`local` | `pr`, default `local`), `areas` (the area words a decision may carry, as a flow list: `areas: [engine, ui]`), `presets` (per stack, a flow list of `stack=skill` pairs: `presets: [astro=my-stacks:astro]`; see Profile, § Presets). Read if present. The skill writes it only through the profile (below), on the work's branch. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
+Configuration lives in `.flow.yml` at the project root. A project can override the defaults with `.flow.yml`: keys `root`, `stacks` (a flow list: `stacks: [astro, node]`; an older `stack: <name>` is converted by the upgrade, the work reference § Upgrade), `changelog`, `version_file`, `merge` (`local` | `pr`, default `local`), `areas` (the area words a decision may carry, as a flow list: `areas: [engine, ui]`), `presets` (per stack, a flow list of `stack=skill` pairs: `presets: [astro=my-stacks:astro]`; see Profile, § Presets). Read if present. The skill writes it only through the profile (below), on the work's branch, or through the upgrade (the work reference, § Upgrade). Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
 
 ## Project memory
 
@@ -93,7 +93,7 @@ At a phase or step that invokes a dependency, check again: if a required one isn
 
 ## Upgrade check
 
-Runs right after the dependency check, before the profile. Look on the default branch for the old traces the work reference, § Upgrade, lists. When there are some, follow that section: one message, one question, and the run ends there. **An upgrade is a run of its own**: no profile, no Step 0, no work opened or resumed. The next run starts on the upgraded state. Nothing found: go on to the profile.
+Runs right after the dependency check, before the profile. Look on the default branch for the old traces the work reference, § Upgrade, lists. When there are some, follow that section: one message, one question, and the run ends there. **An upgrade is a run of its own**: no profile, no Step 0, no work opened or resumed. The next run starts on the upgraded state. Nothing found on the default branch: go on to the profile, after the resume check there (§ Upgrade, Open work branches).
 
 ## Profile
 
@@ -126,7 +126,7 @@ Presets are invoked at the proposal (Tests, Gate, References), at impact, and on
 
 Unanswered: a proposal counts as accepted, a file offer as declined, a Step 1 question is asked again. The level and areas need the guidelines file: if the user declines even the minimal one holding only `## Tests`, the level holds for this session only and is asked again at the next start (say so in the message).
 
-**Writing.** Never on the default branch. A new work: with the home, on `work/<slug>` after Step 2. A resume: after the switch to the work's branch, or at once when already on it. A piece is written into the work branch when it is missing there, copied from where it was found. The configuration file gains the missing keys (a `root` chosen in Step 0 included). The two `## Tests` lines go at the start of an existing `## Tests`; the section is added only when absent, in the existing guidelines file or in a new file holding the accepted draft (or only `## Tests`), when there is none. The full template stays an offer; a declined file is never created. Commit with `git add` on the paths actually written (the configuration file in use, the guidelines, `impact-lenses.md` if accepted, under the root in use):
+**Writing.** Never on the default branch. A new work: with the home, on `work/<slug>` after Step 2. A resume: after the switch to the work's branch, or at once when already on it. A piece is written into the work branch when it is missing there, copied from where it was found. The configuration file gains the missing keys (a `root` chosen in Step 0 included). The two `## Tests` lines go at the start of an existing `## Tests`; the section is added only when absent, in the existing guidelines file or in a new file holding the accepted draft (or only `## Tests`), when there is none. The full template stays an offer; a declined file is never created. Commit with `git add` on the paths actually written (`.flow.yml`, the guidelines, `impact-lenses.md` if accepted, under the root in use):
 
 ```bash
 git commit -m "Record the project profile"

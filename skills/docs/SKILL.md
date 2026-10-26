@@ -59,7 +59,7 @@ Binding list. If you feel like doing one of these, don't.
 
 ## Configuration
 
-Read `.flow.yml` in `dir`. Never create it. When the configuration found is an older file named in the work reference § Upgrade, answer `FAILED: old configuration, run /flow:dev to upgrade` and stop.
+Read `.flow.yml` in `dir`. Never create it. When an older configuration file named in the work reference § Upgrade is present, even beside `.flow.yml`, answer `FAILED: old configuration, run /flow:dev to upgrade` and stop.
 
 | Key | Default |
 |---|---|

@@ -12,7 +12,7 @@ Flow no longer borrows its planning, review and dialogue steps from other plugin
 - **Project profile**: the first time, `/flow:dev` asks which stacks, tests and merge rules the project uses, and writes them on the work branch; the guidelines template is shorter.
 - **Stack presets**: Astro, DatoCMS and Rails knowledge ships as `flow:stack-<name>` skills; a project or a user can map a stack to a skill of their own, which replaces the shipped one entirely.
 - **Own agents**: planner, plan reviewer, impact, executor and task reviewer run slice plans and reviews, with a ledger of each dispatch and one commit per task. The plan and review skills of other plugins leave the dependencies, with credit given in `CREDITS.md`.
-- **Brainstorm and grill**: `flow:brainstorm` and `flow:grill` replace the borrowed dialogues, before the frame and when stress-testing a plan; both also work by hand.
+- **Brainstorm and grill**: `/flow:brainstorm` and `/flow:grill` replace the borrowed dialogues, before the frame and when stress-testing a plan; both also work by hand.
 - **Upgrade**: projects on the old layout are upgraded as a run of their own, on a branch, merged after an ok; the old-name fallbacks are removed. README and architecture are rewritten for the new shape.
 - **Work**: `flow-own-engine`
 - **Decision**: [Flow writes and runs its own plans](decisions-log/2026-10-26-flow-writes-and-runs-its-own-plans.md)

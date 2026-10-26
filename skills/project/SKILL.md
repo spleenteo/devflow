@@ -31,11 +31,12 @@ Same skeleton as `/flow:dev`: the high-level plan is the slice list produced by 
 
 | What | Convention |
 |---|---|
-| Home | The folder the user names at opening; inside a documents vault, propose `<vault>/<Name>/`. Never a code repo's `docs/` |
+| Home | The folder the user names at opening, never a code repo's `docs/` |
+| Work reference | Home, `STATUS.md`, slice bookkeeping, close and archive for the **project** layout: `${CLAUDE_PLUGIN_ROOT}/shared/work.md` (in the repo: [shared/work.md](../../shared/work.md)), called "the work reference" below |
 | Files | `STATUS.md`, `frame.md`, `shaping.md`, `kickoff.md`, `slices.md`, `lessons.md`, `S<n>-plan.md`, `constraints.md`, `decisions/`, `report.md` |
 | Constraints | `constraints.md`: appetite, non-negotiables, people and roles, calendar. Template in `${CLAUDE_SKILL_DIR}/constraints.template.md` |
 | Decisions | `decisions/YYYY-MM-DD-<slug>.md`. Criterion and format in `${CLAUDE_SKILL_DIR}/decisions.md` |
-| Sub-projects | A slice too big for one plan becomes `S<n>-<slug>/` inside the home, with its own `STATUS.md` (`parent:` set) and its own slices |
+| Sub-projects | A slice too big for one plan becomes a sub-project: the work reference, § Home |
 
 Slices are at most nine per level. More than nine means the level is wrong: group them, and open sub-projects when their turn comes.
 
@@ -102,40 +103,11 @@ Before sending the message, check the project memory with the key words of the r
 mkdir -p "<home>"
 ```
 
-With `STATUS.md` inside:
-
-```markdown
----
-status: open
-phase: <frame | shaping | slicing | reality | slice | done>
-slice: null
-step: null
-project: <name>
-parent: null
-appetite: "<time>, <money>"
-updated: YYYY-MM-DD
-tags: [project, <name>]
-description: "<answer to question 1>"
----
-
-# Status — <Project name>
-
-> Update at the **end of every session**: done, remaining, blockers.
-
-**Entry**: <frame | shaping | slicing>, decided on <date> because <visible-outcome test answer>.
-
-## Slices
-
-- [ ] (defined during slicing)
-
-## Log
-
-<!-- date — slice — what happened — spent (time, money) — remaining — blockers -->
-```
+With `STATUS.md` inside, from the work reference, § `STATUS.md` (project): `appetite:` from question 4, `description:` from question 1, **Entry** from question 7.
 
 And `constraints.md` from the template, filled with the answers to questions 4 and 5. It's the file every plan and review reads: keep it short and true.
 
-`lessons.md` is created at the first slice close: one rule per line.
+`lessons.md` is created at the first slice close (the work reference, § `slices.md` and `lessons.md`).
 
 ## Step 3 — Define: from problem to slices
 
@@ -226,7 +198,7 @@ Written in session with the user: the plan needs what only they know (who, when,
 <open questions; settle each in dialogue, one question at a time>
 ```
 
-An action that is software is written as *"flow:dev work `<slug>` in `<repo>` merged"* (rows written as *"devflow work … merged"* are read the same), and that work is opened in its repo with `/flow:dev` when its turn comes. A slice that needs its own plan of several slices becomes a sub-project: `S<n>-<slug>/` with its own `STATUS.md` and `parent:` set; the parent slice's Done becomes "sub-project done".
+An action that is software is written as *"flow:dev work `<slug>` in `<repo>` merged"* (rows written as *"devflow work … merged"* are read the same), and that work is opened in its repo with `/flow:dev` when its turn comes. A slice that needs its own plan of several slices becomes a sub-project (the work reference, § Home); the parent slice's Done becomes "sub-project done".
 
 Writing the plan surfaces deviations from the mandate: an action that belongs to another slice, a Done that can't be observed, a cost the appetite doesn't cover. Record them in `slices.md` under **"Deviations found while planning S<n>"** and carry on to the review without stopping.
 
@@ -260,10 +232,10 @@ If an action is a `/flow:dev` work, it's run in its repo in its own session; her
 
 1. Verify the Done as written in `slices.md`, with evidence the user names: the document, the photo, the invoice, the confirmation. Record what it cost in time and money against the slice's budget.
 2. Lessons, in two places. The narrative under the slice in `slices.md`, as **"S<n> — done on <date>"**: what happened, what surprised, what it cost. The rules, one line each, appended to `lessons.md`: *"ask the supplier for the lead time in writing before the slice that depends on it starts."*
-3. Tick the slice in `STATUS.md`, set `slice:` to the next one and `step:` to `plan`, add the Log line.
+3. Tick the slice, set the next `slice:` and `step: plan`, add the Log line (the work reference, § `slices.md` and `lessons.md`).
 4. **Second stop.** One message: what closed, the evidence, spent against budget and against the appetite so far, the new rules, the decision candidate if any with the question whether to record it, and: *"S3 closed. Plan S4, or stop here?"*
 
-A closed slice isn't reopened. If a later slice finds an earlier one was wrong, the fix goes into the current slice, stated in `slices.md`, or becomes a new slice at the end, if the appetite allows.
+A closed slice isn't reopened; if a later slice finds it was wrong, the fix goes forward, within the appetite (same section).
 
 ## Step 5 — Closing a definition phase
 
@@ -274,15 +246,11 @@ Applies to frame, shaping, kickoff, slicing and reality. Four moves, in order:
 3. **Decision candidate** in the same report, when `${CLAUDE_SKILL_DIR}/decisions.md` says so: a real alternative discarded, a known problem deferred on purpose, a choice that will surprise whoever reads the plan later. Propose `decisions/YYYY-MM-DD-<slug>.md`; never write it unasked.
 4. **Stop and ask** before the next phase.
 
-If the home is under version control, commit at each of these points, with explicit paths. If it's a plain folder (a vault, a shared drive), the files are the record.
+Commit at each of these points as the work reference says (§ `slices.md` and `lessons.md`, Commits).
 
 ## Step 6 — Exit
 
-When the last slice is closed and the user confirms the project is complete:
-
-1. `phase: done`, `status: closed`, final Log line.
-2. Write `report.md`: what was done, time and money spent against the appetite, the decisions taken (linked), the lessons, what was left out and why. Written for someone who reads it in a year.
-3. Offer to move the folder to `<home>/../archive/`. Never on its own initiative.
+When the last slice is closed and the user confirms the project is complete, follow the work reference, § Closing a work (project): close, `report.md`, then offer the archive (§ Archive, project). Never archive on your own initiative.
 
 ## The short path
 

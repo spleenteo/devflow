@@ -42,7 +42,13 @@ Slices are at most nine per level. More than nine means the level is wrong: grou
 
 ## Project memory
 
-Before writing anything new, search the home and its siblings: `rg -il "<keywords>" <home>/.. --glob '*/STATUS.md' --glob '*/decisions/*.md' --glob '*/lessons.md'`. A neighbouring project may hold a decision or a lesson about the same supplier, the same person, the same constraint. Read only what matches.
+Before writing anything new, search the home and its siblings through `flow:docs`: invoke the Skill tool with skill `flow:docs` and args one line, self-contained, since the fork sees no conversation:
+
+```
+op: search, layout: project, dir: <absolute folder holding the projects: the parent of the home>, keywords: <k1>, <k2>
+```
+
+A neighbouring project may hold a decision or a lesson about the same supplier, the same person, the same constraint. It returns at most ten `path — excerpt` lines, or `none`; read only the files they name.
 
 ## Cost discipline
 
@@ -95,7 +101,7 @@ One message, seven questions, each with the answer this skill proposes from what
 6. **Source material?** Call transcripts, notes, messages, documents. If yes, the frame starts from them with `framing-doc`.
 7. **The visible-outcome test.** *Can you already say in one sentence what will be true when this is done, without answering "it depends"?* **Yes** → skip to slicing. **No** → start from the frame; and if the problem itself isn't clear, the frame uses `brainstorming` as the dialogue technique. State your reading rather than asking cold.
 
-Before sending the message, check the project memory with the key words of the request and flag what it finds.
+Before sending the message, check the project memory with the key words of the request (`flow:docs`, `op: search`, `layout: project`, `dir` the folder holding the projects) and flag what it finds.
 
 ## Step 2 — Create the home
 

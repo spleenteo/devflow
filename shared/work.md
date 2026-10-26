@@ -122,7 +122,21 @@ description: "<what the user wants to achieve>"
 **repo.** When the last slice is closed and the user confirms the work is complete. Each step asks before running; the user may stop at any point.
 
 1. **Close.** `phase: done`, `status: closed`, final Log line, commit.
-2. **Changelog.** `/flow:changelog`: entry and `.version`, committed on the branch.
+2. **Changelog.** Entry and `.version`, committed on the branch. The rules (level, entry format, version, commit) belong to `flow:docs`, a forked skill that never asks anything: this step is where the questions are asked and the requests sent. The close of `/flow:dev` and `/flow:changelog` both follow it. In order:
+   1. Show `git status --short`, so the user sees what the commit will and won't hold.
+   2. The version file missing (`.version` at the repo root, or `version_file` in `.flow.yml`): ask the current version, suggesting `0.1.0` if nothing has been released and `1.0.0` if the product is in production. The answer goes into the requests as `current`.
+   3. The branch holds works unrelated to this one: ask whether they ship as one release or two. Two means one slug per release.
+   4. Propose. Invoke the Skill tool with skill `flow:docs` and args one line of `key: value` pairs, self-contained, since the fork sees no conversation:
+
+      ```
+      op: changelog-propose, layout: repo, dir: <absolute repo root>, work: <slug>, base: <base branch>, release: one, current: <version>
+      ```
+
+      `release` is `one`, or the slugs of the split, comma-separated; `current` only when the version file is missing. It writes nothing and returns one line per release: `<level> → <version>: <title> — <reason>`.
+   5. Show those lines and wait for objections. On a `major? …` line, ask: a product generation is the user's call, never the skill's. Adjust level or title as the user says.
+   6. Write. Same skill, `op: changelog-write` (with `layout`, `dir`, `work`, `base`, `release`, and `current` when sent before), plus `level: <minor | patch | major>` and `title: "<title>"` per release, in the order of `release` and as the user saw them (with a split: `level: minor, patch`, `title: "First" | "Second"`). `major` only if the user confirmed it.
+   7. Handle the answer. `NEEDS: <field>`: ask the user for it and resend the request. `FAILED: <reason>`: report it and stop; nothing was written.
+   8. Report each returned line `Recorded v<version> — <title> — <sha>; missing decisions: …; manual after merge: …`: the version recorded, the decisions the work took that no file records, the manual steps for after the merge. Say that `/flow:archive` comes next.
 3. **Archive.** `/flow:archive`, following [Archive, repo](#archive-repo), committed on the branch.
 4. **Merge.** Find the target:
    1. `git symbolic-ref refs/remotes/origin/HEAD`, with `refs/remotes/origin/` stripped;

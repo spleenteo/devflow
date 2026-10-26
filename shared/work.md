@@ -5,7 +5,7 @@ The shared definition of a work's home, state, close and archive, read by `/flow
 - **repo**: a code repository; works live in `<root>/work/`, where `<root>` is `docs` unless `.flow.yml` sets `root`. Used by `/flow:dev`.
 - **project**: a folder the user names when opening a project, never a code repo's `docs/`. Used by `/flow:project`.
 
-Configuration (repo) lives in `.flow.yml` at the repository root; if it's absent and a `.devflow.yml` exists, read that instead: same keys. Keys this file uses: `root`, `merge` (`local` | `pr`, default `local`), `areas` (see [Decisions](#decisions)).
+Configuration (repo) lives in `.flow.yml` at the repository root. An older configuration file is converted by the [upgrade](#upgrade), never read. Keys this file uses: `root`, `merge` (`local` | `pr`, default `local`), `areas` (see [Decisions](#decisions)).
 
 ## Home
 
@@ -333,3 +333,31 @@ Report: which work, how many links updated, where its trace remains, whether the
 2. Move the home to the sibling `<home>/../archive/<name>/`: `git mv` if the folder is in a git repo, else `mv`. `report.md` stays inside.
 3. No wall. No `archived.md`, unless the parent folder is a git repo: then add the same one-row entry to `<home>/../archived.md`, creating it with the header above (paths adjusted).
 4. Report where it went.
+
+## Upgrade
+
+Old traces are what an earlier version of this plugin left behind under other names. The upgrade rewrites the ones Flow owns and points at the ones it doesn't. It is a run of its own: when `/flow:dev` or `/flow:project` finds old traces, it says so, offers the upgrade, and nothing else happens in that run (no profile, no first-run questions, no work opened or resumed). The next run starts on the upgraded state. `/flow:changelog`, `/flow:archive` and `flow:docs` never upgrade: facing an older configuration file, they stop and point to `/flow:dev`.
+
+**repo.** Looked for on the default branch (`git show <default>:<file>`; the target of Closing a work, step 4), not in the checkout:
+
+| Found | Rewritten |
+|---|---|
+| `.devflow.yml` | Renamed to `.flow.yml`. When both exist, `.flow.yml` wins on conflicting keys, the keys only the old file has move into it, and the old file is removed |
+| `stack: <name>` in the configuration | `stacks: [<name>]`; dropped when `stacks:` is already there |
+| `<root>/work/archived.md` whose header cites `/devflow-archive` | That line says `/flow:archive` |
+| A guidelines file under the root whose opening says "Devflow passes this file" | That sentence says `/flow:dev` |
+
+Pointed at and never edited, each as `<file>:<line> — <new name>`, or as the command that removes it:
+
+- lines of `CLAUDE.md`, `.claude/CLAUDE.md` and `CLAUDE.local.md` naming `/devflow`, `/devflow-docs`, `/devflow-archive`, `/projectflow` or `.devflow.yml`;
+- `Skill(...)` entries for those skills in `.claude/settings.json`;
+- project-scope copies of those skills under `.claude/skills/`;
+- open `work/*` branches still carrying an old file: they take the default branch's upgraded state once the upgrade is merged.
+
+**project.** In the home and its sub-projects, rows of `slices.md` and `S<n>-plan.md` reading "devflow work `<slug>` in `<repo>` merged" become "flow:dev work `<slug>` in `<repo>` merged".
+
+**Asking.** One message: each change as `file — what changes`, then the pointed-at lines, then one question. With uncommitted changes in the checkout, say so and ask to commit or stash first (never stash it yourself). Nothing is written before the ok.
+
+**Writing, repo.** On the ok: cut `flow-upgrade` from the default branch (outside `work/`, so no scan takes it for a work), write the changes, commit with explicit paths as `Upgrade to Flow's current conventions` (one commit), and switch back to the starting branch. Then propose merging it into the default branch locally, with its own ok, as Closing a work, step 4, does; push stays the user's. An existing `flow-upgrade` branch means the upgrade is pending: say so, propose the merge, never cut it again. **Writing, project.** Rewritten in place; committed only when the home is under version control, with explicit paths.
+
+**Declined.** The run stops there: nothing is opened or resumed, and nothing is written. Say that the old configuration is no longer read and that the upgrade will be offered again next time.

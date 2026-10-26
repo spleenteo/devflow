@@ -74,7 +74,7 @@ At a phase or step that invokes a dependency, check again: if a required one isn
 
 ## On start: open or resume
 
-The dependency check (`## Dependencies`) has already run.
+The dependency check (`## Dependencies`) has already run. Once the home is known, check it and its sub-projects for old traces as the work reference, § Upgrade, says. When there are some, follow that section: one message, one question, and the run ends there, opening or resuming nothing.
 
 ```bash
 rg "^phase:" <home>/STATUS.md <home>/*/STATUS.md 2>/dev/null
@@ -212,7 +212,7 @@ Written in session with the user: the plan needs what only they know (who, when,
 <open questions; settle them with `flow:grill`, target this plan, `frame.md` path and decision fields passed>
 ```
 
-An action that is software is written as *"flow:dev work `<slug>` in `<repo>` merged"* (rows written as *"devflow work … merged"* are read the same), and that work is opened in its repo with `/flow:dev` when its turn comes. A slice that needs its own plan of several slices becomes a sub-project (the work reference, § Home); the parent slice's Done becomes "sub-project done".
+An action that is software is written as *"flow:dev work `<slug>` in `<repo>` merged"*, and that work is opened in its repo with `/flow:dev` when its turn comes. A slice that needs its own plan of several slices becomes a sub-project (the work reference, § Home); the parent slice's Done becomes "sub-project done".
 
 Writing the plan surfaces deviations from the mandate: an action that belongs to another slice, a Done that can't be observed, a cost the appetite doesn't cover. Record them in `slices.md` under **"Deviations found while planning S<n>"** and carry on to the review without stopping.
 

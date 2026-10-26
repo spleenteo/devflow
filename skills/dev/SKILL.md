@@ -26,7 +26,7 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Skip steps silently | When it skips one, it says which and why |
 | Apply corrections on its own | Verifications report in one ranked message with a recommendation per finding; the user decides with one answer |
 | Pass whole documents to subagents | Each subagent gets a context packet: what it needs, nothing else |
-| Touch `CLAUDE.md` or write config on its own | The configuration file is written only to record what the user answered in the profile, on the work's branch |
+| Touch `CLAUDE.md` or write config on its own | The configuration file has two writers: the profile, to record what the user answered, on the work's branch; and the upgrade, on its own branch, after an ok (the work reference, § Upgrade) |
 | Write the changelog, the version or the archive itself | Changelog and version go through `flow:docs` (the work reference, § Closing a work, step 2); archiving through `/flow:archive`. Both in the closing sequence (Step 6), each after asking |
 | Merge, push or tag without an ok | Each is proposed and waits for its own yes (Step 6) |
 | Install its dependencies | It prints the commands from `dependencies.md`; the user runs them |
@@ -46,7 +46,7 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Impact lenses | Common lenses in `${CLAUDE_SKILL_DIR}/common-lenses.md`, always; plus each resolved preset's `## Lenses` (Profile, § Presets); the stacks without a preset in the same file | The common lenses and the preset lenses of each of the project's stacks |
 | Project lenses | `docs/impact-lenses.md` | Read if present by impact and every plan review, on top of the common and stack lenses. Template in `${CLAUDE_SKILL_DIR}/impact-lenses.template.md` |
 
-Configuration lives in `.flow.yml` at the project root. If it's absent and a `.devflow.yml` exists, read that instead: same keys. When it reads `.devflow.yml`, say so once in the session and suggest renaming it. A project can override the defaults with `.flow.yml`: keys `root`, `stacks` (a flow list: `stacks: [astro, node]`; an older `stack: <name>` reads as `[<name>]`, isn't asked again and is never rewritten), `changelog`, `version_file`, `merge` (`local` | `pr`, default `local`), `areas` (the area words a decision may carry, as a flow list: `areas: [engine, ui]`), `presets` (per stack, a flow list of `stack=skill` pairs: `presets: [astro=my-stacks:astro]`; see Profile, § Presets). Read if present. The skill writes it only through the profile (below), on the work's branch. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
+Configuration lives in `.flow.yml` at the project root. A project can override the defaults with `.flow.yml`: keys `root`, `stacks` (a flow list: `stacks: [astro, node]`; an older `stack: <name>` is converted by the upgrade, the work reference § Upgrade), `changelog`, `version_file`, `merge` (`local` | `pr`, default `local`), `areas` (the area words a decision may carry, as a flow list: `areas: [engine, ui]`), `presets` (per stack, a flow list of `stack=skill` pairs: `presets: [astro=my-stacks:astro]`; see Profile, § Presets). Read if present. The skill writes it only through the profile (below), on the work's branch. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
 
 ## Project memory
 
@@ -91,13 +91,17 @@ If any are missing, report them in one message, required first, then optional. F
 
 At a phase or step that invokes a dependency, check again: if a required one isn't listed, stop that phase and give its commands from `dependencies.md`; don't do its job without it.
 
+## Upgrade check
+
+Runs right after the dependency check, before the profile. Look on the default branch for the old traces the work reference, § Upgrade, lists. When there are some, follow that section: one message, one question, and the run ends there. **An upgrade is a run of its own**: no profile, no Step 0, no work opened or resumed. The next run starts on the upgraded state. Nothing found: go on to the profile.
+
 ## Profile
 
-The project's profile is three things the conductor must know and never guess: the `stacks`, the `merge` style and the test level. It runs on every invocation. **The order is fixed**: dependency check → read the profile and find the open works → one message (the missing profile pieces, Step 0's questions on a first run, and resume-or-new, or Step 1's questions) → the writes, on the work's branch. Nothing is written before the answers.
+The project's profile is three things the conductor must know and never guess: the `stacks`, the `merge` style and the test level. It runs on every invocation. **The order is fixed**: dependency check → upgrade check → read the profile and find the open works → one message (the missing profile pieces, Step 0's questions on a first run, and resume-or-new, or Step 1's questions) → the writes, on the work's branch. Nothing is written before the answers.
 
 | Piece | Lives in |
 |---|---|
-| `stacks`, `merge` | the configuration file: `.flow.yml`, or `.devflow.yml` when that is the one in use. Never create `.flow.yml` beside a `.devflow.yml` |
+| `stacks`, `merge` | the configuration file, `.flow.yml` |
 | Test level, sensitive areas | `## Tests` of the guidelines, opening with two lines: `Level: <none \| essential \| full>` and `Sensitive areas: <path or concept>, …` (empty allowed with `none` and `full`) |
 
 `none`: no tests required. `essential`: tests required for code in the sensitive areas only. `full`: TDD on new code.
@@ -134,10 +138,10 @@ git commit -m "Record the project profile"
 
 Step 0 only gathers answers, in the profile's message, and writes nothing: its writes happen with the profile's, on `work/<slug>`.
 
-Runs once: when there is no `docs/work/`, no `.flow.yml` and no `.devflow.yml`, looked up as the profile's Reading says (checkout, default branch, `work/*` branches), so it doesn't rerun while the first work is unmerged. A repo with no commits can't hold a branch: say the profile and the home need a first commit, and ask the user to make one (never make it).
+Runs once: when there is no `docs/work/`, no configuration file, looked up as the profile's Reading says (checkout, default branch, `work/*` branches), so it doesn't rerun while the first work is unmerged. A repo with no commits can't hold a branch: say the profile and the home need a first commit, and ask the user to make one (never make it).
 
 ```bash
-ls -d docs docs/work docs/decisions-log docs/development-guidelines.md docs/impact-lenses.md docs/CHANGELOG.md .flow.yml .devflow.yml 2>/dev/null
+ls -d docs docs/work docs/decisions-log docs/development-guidelines.md docs/impact-lenses.md docs/CHANGELOG.md .flow.yml 2>/dev/null
 ```
 
 **`docs/` doesn't exist** → say that `docs/work/` will be created with the work's home, and ask the offers below.
@@ -348,4 +352,4 @@ Code, changelog, version and archived work land on the target in one changeset. 
 
 `shaping`, `breadboarding`, `framing-doc`, `flow:brainstorm`, `flow:grill` aren't in the table because they aren't moments: they're tools this skill picks up when needed.
 
-A work run with this skill can be one action of a `/flow:project` plan: the project's row says *"flow:dev work `<slug>` merged"* (the older *"devflow work … merged"* means the same), this skill runs the work in its repo, and the row closes at the merge. The two skills share their skeleton and are kept in sync by hand.
+A work run with this skill can be one action of a `/flow:project` plan: the project's row says *"flow:dev work `<slug>` merged"*, this skill runs the work in its repo, and the row closes at the merge. The two skills share their skeleton and are kept in sync by hand.

@@ -59,7 +59,7 @@ Binding list. If you feel like doing one of these, don't.
 
 ## Configuration
 
-Read `.flow.yml` in `dir`. If it's absent and `.devflow.yml` exists, read that instead: same keys. Never create either.
+Read `.flow.yml` in `dir`. Never create it. When the configuration found is an older file named in the work reference § Upgrade, answer `FAILED: old configuration, run /flow:dev to upgrade` and stop.
 
 | Key | Default |
 |---|---|

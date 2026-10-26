@@ -20,7 +20,7 @@ Exit 1 if a required skill is missing, 0 otherwise. Installs nothing.
 Rows marked optional (<stack>) are shown only when the current directory has that
 stack: from .flow.yml (stacks: or stack:) in the checkout, else from signals
 (Gemfile + config/application.rb, astro.config.*, package.json dependencies).
-Only the checkout's .flow.yml is read: not .devflow.yml, not other branches.
+Only the checkout's .flow.yml is read: not other branches.
 USAGE
 }
 

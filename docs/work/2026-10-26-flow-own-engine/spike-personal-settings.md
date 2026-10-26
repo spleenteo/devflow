@@ -73,8 +73,21 @@ Sources: https://code.claude.com/docs/en/plugins/loading.md, https://code.claude
 
 ## Outcome
 
+> Superseded where it differs by the runtime check below: no `options`, no `stack_dir`; stack presets became skills (shaping A2.2-B).
+
 - Personal model preferences: declare `userConfig` in `flow` (`model` as `string` with `options`, optional `stack_dir` as `directory`). Values land in user `settings.json` under `pluginConfigs`, never in the repo. Read them with `${user_config.KEY}` in skill content.
 - User stack files: keep them in a user-chosen directory (the `stack_dir` option, default under `~/.claude/flow/`). Document that the user adds an allow rule or `additionalDirectories` for it, since default-mode reads outside the project are not documented as prompt-free.
 - Team sharing: use a plain git repo of Markdown cloned to that directory, not a second plugin. Cross-plugin file lookup is not documented. If a plugin is preferred, ship the stacks as skills of that plugin and declare it in `dependencies`.
 - Do not rely on `${CLAUDE_PLUGIN_DATA}` for hand-edited files, and do not invent free-form keys in `settings.json`: neither is documented for that use.
 - Open: `~` expansion and array handling in `userConfig` paths. Verify with a throwaway plugin before building on it.
+
+## Runtime check (2026-10-26, for V4)
+
+A throwaway plugin with four `userConfig` options (a `string` with `options` and a `default`, a `string` with `multiple: true`, a plain `string` with a `default`, a `string` with no default) and a skill printing each `${user_config.KEY}`, on CLI 2.1.310.
+
+- **`--plugin-dir` alone**: nothing is substituted, defaults included: every placeholder reaches the model literally, as `${user_config.KEY}`.
+- **`--plugin-dir` with `--settings '{"pluginConfigs":{"<plugin>@inline":{"options":{…}}}}'`** (the bare `<plugin>` key works too): set values are substituted; an option left out stays literal even when it declares a `default`.
+- **A list** (`multiple: true`, given as a JSON array) renders comma-joined without spaces: `a=x,b=y`. A plain string renders as written.
+- **Installed from a local directory marketplace** (in an isolated `CLAUDE_CONFIG_DIR`): `claude plugin install` reports the unset options; `claude plugin configure <plugin>@<marketplace> --values-stdin` stores values under `pluginConfigs["<plugin>@<marketplace>"].options` in that config's `settings.json`, as strings, a `multiple` option included. `claude plugin configure` has no `--config` flag. Substitution in this mode wasn't observed: the isolated config had no login.
+
+**Encoding chosen.** Every option is a plain `string`, no `multiple`, no `options` list, no `required`. Mappings are one string, `stack=skill` pairs separated by commas (`astro=my-stacks:astro, rails=my-stacks:rails`). A skill treats a value that is empty or still reads `${user_config.` as unset and falls back to the next source; it never relies on `default`.

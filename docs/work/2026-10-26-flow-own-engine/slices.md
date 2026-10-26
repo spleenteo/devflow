@@ -153,6 +153,14 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - A repo with `stack: astro` in `.flow.yml` isn't asked its stack.
 - The `userConfig` check is recorded in the spike on personal settings, with the encoding chosen.
 
+**Deviations found while planning V4**
+- The test level lives in two profile lines at the top of `## Tests` (`Level:`, `Sensitive areas:`), read and written without parsing prose.
+- `userConfig` declares the V5 and V6 options now (`stack_presets`, `model_top`, `model_mid`), with no defaults: the runtime check showed defaults aren't substituted, so an unset value reads as `${user_config.…}` and skills treat it as unset.
+- The profile is `/flow:dev`'s only: `/flow:project` has no stacks, tests or merge.
+- The profile asks at start but writes only on a work branch (with the home, or after the switch on resume), reading pieces from open `work/*` branches too; Step 0 folds into its one message.
+- Stale prose in `README.md` and `docs/architecture.md` about `stack:` and when `.flow.yml` is written is left for V8.
+- Unverified until V6 and the release: `${user_config.*}` substitution in an installed plugin, and whether an update opens the configuration dialog.
+
 ## V5 — Stack presets
 
 **In**

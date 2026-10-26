@@ -126,6 +126,11 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 
 **Gotchas**: the brief's evidence and project names stay out of the repo.
 
+**V3 — done on 2026-10-26**
+- `skills/docs/decisions.md` holds one format for both layouts (kinds, fixed headings, status log, `touches:`, `area:`, legacy); `skills/docs/scripts/decisions-check` (Bash and awk, `v1`) checks it, counting characters under BSD awk and treating files without `kind:` as legacy. `flow:docs` gained `decision-write`, `decision-status`, `decision-check` and `files:` matching on `touches:` by whole path segments. The criterion for proposing moved to `shared/work.md` § Decisions; the two old format files are gone. This work's five decisions are recorded; `.flow.yml` declares `areas`.
+- Task reviews caught: legacy files reported as errors, an unknown-key rule too strict (now a warning), an installed `check.sh` leaking into searches, a fork free to pick an `area` on its own (now `NEEDS:`), status changes on legacy files undefined.
+- Demonstrated headless: a slice close proposes the decision and writes nothing until a second turn says yes; then `flow:docs` writes it, runs the script from the fork, commits it alone; `files:` finds it through a child path and not through a sibling prefix or a body-only path; a project close records a project-layout decision (not committed: plain folder); superseding changes frontmatter and status log only; `install: yes` copies `check.sh`, and an older copy is reported. Gate green within the narrowing; `README.md` already points at the new format.
+
 ## V4 — Project profile
 
 **In**

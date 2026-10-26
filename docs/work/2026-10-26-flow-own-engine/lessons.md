@@ -8,3 +8,7 @@
 - To check that a fork's instructions stayed out of the caller, search only `assistant` and `user` messages without `parent_tool_use_id`: `system` `task_started` events carry the fork's prompt as metadata.
 - A demo that proves a question is asked must leave that answer out of the prompt, and check that nothing ran before the question.
 - In zsh a string of flags is one argument: pass CLI flags to headless runs as an array (`"${F[@]}"`).
+- A check script must decide whether a file is in scope (legacy or not) before reporting any error on it.
+- A fork told to "fix what the check reports" will invent content to pass: name the fields it may never choose and make those `NEEDS:`.
+- A file a skill installs into a folder it also searches must be excluded from those searches.
+- A two-turn demo (`--resume <session_id>` from the stream's `init` event) proves a proposal stops before writing.

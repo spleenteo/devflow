@@ -15,3 +15,7 @@
 - Anything a conductor writes at start lands on the default branch unless the text says where: tie every write to the work branch.
 - State a piece of configuration may live on several branches: read the default branch and open `work/*` branches before asking.
 - A runtime check of a platform feature can overturn a spike's documented reading: run it before planning on it.
+- Parallel executors in one checkout share the git index: each commits with the pathspec form (`git commit -m … -- <paths>`), or one task's staged files ride in another's commit.
+- An opinionated preset written from public practice needs a review against the current library docs: API details drift (page sizes, option names, cache mechanisms).
+- Two `--plugin-dir` flags and `--settings` `pluginConfigs` combine in one headless run: a throwaway plugin can stand in for a user's custom skill.
+- The stream's `init.skills` lists only user-invocable skills: prove a hidden skill loads by a successful Skill call, not by the listing.

@@ -202,6 +202,14 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - `install.sh` reads only the checkout's `.flow.yml` for stacks.
 - The presets' `## Rules` travel in the slice packet and the impact packet, not only their lenses.
 
+**V5 — done on 2026-10-26**
+- Three presets shipped as skills, `skills/stack-astro`, `stack-datocms`, `stack-rails` (not user-invocable, not forked, descriptions without stack names), each with Rules, Lenses, Tests, Gate, References. `skills/dev/lenses.md` became `common-lenses.md` with a section for stacks without a preset. `/flow:dev` resolves a preset per stack (`.flow.yml` `presets:`, then `${user_config.stack_presets}`, then the shipped one), merges several (highest level, union of areas and gate), puts their Rules in the slice and impact packets and their Lenses verbatim in the stack-lens packet, and drafts the guidelines from them. `dependencies.md` gained per-stack optional rows; `install.sh` labels them and drops other stacks' rows.
+- Reviews caught: a mapped preset that is missing falling back to the shipped one (now: generic lenses, no Rules, Tests or Gate from it); the unset rule for `userConfig`; several preset rules out of step with the current Astro and DatoCMS APIs (images, CDA page size, cache tags through `rawExecuteQuery`, `excludeInvalid`, `astro:env`), and gate commands proposed for scripts the repo lacks.
+- T4's commit `869cf05` also carries T2's `git mv` of the lenses file: parallel executors share the git index. Not rewritten; a lesson.
+- Ruling: Done 7's check that the `init` event lists `flow:stack-astro` can't hold, because `init.skills` lists only user-invocable skills (`flow:docs` is missing too). The successful Skill calls in demos 1–3 are the proof that the presets load.
+- Demonstrated headless: an Astro + DatoCMS repo with no profile proposes `[astro, datocms]`, invokes both presets, offers the draft and reports the datocms row but no rails row; on acceptance the draft on `work/about-page` holds References, Tests, Gate (and one observed convention), with `master` untouched. `presets: [astro=probe:astro]` in `.flow.yml`, and the same mapping through `--settings` `pluginConfigs`, invoke `probe:astro` and `flow:stack-datocms`, never `flow:stack-astro`; the impact subagent's input holds the probe's lens and rule markers and no `${CLAUDE_` or cache path. A repo with only `## Tests` and `## Gate` gets `## References` alone proposed and its two sections stay byte-identical. A Rails repo reports the `rails-development` row. Three generic Astro questions invoke no preset. `install.sh` verified in T4. Gate green within the narrowing; `install.sh:23` adds one `.devflow.yml` sentence (the stated limit), removed with the fallbacks in V8.
+- Open for the owner: the presets' opinionated rules are a first draft from public practice and need an expert read.
+
 ## V6 — Engine
 
 **In**

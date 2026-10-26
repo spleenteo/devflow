@@ -184,7 +184,7 @@ Solid arrows write, dotted arrows read. Everything lives under `docs/` by defaul
 | `.version` | The application version, one line | `flow:docs` | `flow:docs`, and tools |
 | `.flow.yml` | `root`, `stacks`, `merge`, `changelog`, `version_file`, `areas`, `presets` | `/flow:dev`: the profile's answers, on the work's branch, and the upgrade | `/flow:dev`, `/flow:changelog`, `/flow:archive`, `flow:docs` |
 
-An older configuration file (`.devflow.yml`, or `stack:` in `.flow.yml`) is not read: `/flow:dev` finds it on the default branch and offers the [upgrade](../shared/work.md#upgrade); `/flow:changelog`, `/flow:archive` and `flow:docs` stop and point to `/flow:dev`.
+An older configuration file (an old name, or `stack:` in `.flow.yml`) is not read: `/flow:dev` finds it on the default branch and offers the [upgrade](../shared/work.md#upgrade); `/flow:changelog`, `/flow:archive` and `flow:docs` stop and point to `/flow:dev`.
 
 A decision file has a frontmatter (`kind`: `decision` or `deferral`, `status`, `work`, `area`, `touches`, `description`) and a body of context, decision, alternatives discarded, consequences and when to reopen. A decision is never edited into its opposite: a new one supersedes it, and `flow:docs` records the status.
 

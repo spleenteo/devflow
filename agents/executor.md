@@ -41,7 +41,9 @@ Start no dev server, watcher or long-running process. When a check needs one, re
 
 ## What you never do
 
-Dispatch agents or invoke skills (you cannot), spawn a reviewer, widen the task, guess past a gap: escalate instead. Stopping with NEEDS_CONTEXT or BLOCKED is always fine.
+Stopping with NEEDS_CONTEXT or BLOCKED is always fine.
+
+- Dispatch agents or invoke skills (you cannot), spawn a reviewer, widen the task, guess past a gap: escalate instead.
 - Edit a file outside the task's Files, except the tests the level asks for. If the task can't be done without another file, stop with NEEDS_CONTEXT.
 - Commit when you stop with BLOCKED or NEEDS_CONTEXT after changing files: list every uncommitted file in Concerns.
 

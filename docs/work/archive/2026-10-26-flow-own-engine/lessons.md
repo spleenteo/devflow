@@ -1,0 +1,31 @@
+# Lessons — flow-own-engine
+
+- Before re-dispatching a failed executor, check the tree: a dead run may have written nothing, or half a file.
+- A headless demo prompt pre-answers every question the skill will ask and says where to stop; otherwise the run stalls or runs on.
+- A work already marked `closed` isn't resumed by `/flow:dev`: to demo a close, prepare the work at `phase: slice` with its last slice ticked.
+- The project's deny rule on `docs/work/archive/**` also blocks reading that path in throwaway repos: verify there with `git ls-files`, not `ls` or `cat`.
+- State that lives on a branch is invisible from another branch: anything that scans for works must read `work/*` branches too.
+- To check that a fork's instructions stayed out of the caller, search only `assistant` and `user` messages without `parent_tool_use_id`: `system` `task_started` events carry the fork's prompt as metadata.
+- A demo that proves a question is asked must leave that answer out of the prompt, and check that nothing ran before the question.
+- In zsh a string of flags is one argument: pass CLI flags to headless runs as an array (`"${F[@]}"`).
+- A check script must decide whether a file is in scope (legacy or not) before reporting any error on it.
+- A fork told to "fix what the check reports" will invent content to pass: name the fields it may never choose and make those `NEEDS:`.
+- A file a skill installs into a folder it also searches must be excluded from those searches.
+- A two-turn demo (`--resume <session_id>` from the stream's `init` event) proves a proposal stops before writing.
+- Anything a conductor writes at start lands on the default branch unless the text says where: tie every write to the work branch.
+- State a piece of configuration may live on several branches: read the default branch and open `work/*` branches before asking.
+- A runtime check of a platform feature can overturn a spike's documented reading: run it before planning on it.
+- Parallel executors in one checkout share the git index: each commits with the pathspec form (`git commit -m … -- <paths>`), or one task's staged files ride in another's commit.
+- An opinionated preset written from public practice needs a review against the current library docs: API details drift (page sizes, option names, cache mechanisms).
+- Two `--plugin-dir` flags and `--settings` `pluginConfigs` combine in one headless run: a throwaway plugin can stand in for a user's custom skill.
+- The stream's `init.skills` lists only user-invocable skills: prove a hidden skill loads by a successful Skill call, not by the listing.
+- A file the conductor reads with Read is not substituted: `${user_config.*}` and `${CLAUDE_PLUGIN_ROOT}` belong in SKILL.md, never in a shared reference.
+- A reviewer gets the author's report verbatim: a trimmed copy produces findings about what the trim dropped.
+- An agent with Bash runs the full suite "for a baseline" unless its never-list forbids it: name every command class a role must not run.
+- Parallel executors in one checkout can't share a BASE..HEAD review range: review each task by its own commits.
+- Another plugin's SessionStart hook can tell the model to use its skills first: state process ownership at the top of every entry skill, by process kind, not by plugin name.
+- A skill that writes into a document writes in the document's language, not the conversation's.
+- A dialogue skill's every exit (clear, skipped, small) needs a next step in its caller's text.
+- A migration committed on its own branch leaves open work branches on the old state: give the resume an explicit rule, never "they pick it up".
+- Entry points that check the same condition must share one predicate ("an old file is present", not "the file found is old"), or they diverge when both exist.
+- A rewritten README overstates by generalising: check every "any skill", "either variable" claim against the line that grants it.

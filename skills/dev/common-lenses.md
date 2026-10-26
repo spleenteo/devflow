@@ -1,8 +1,8 @@
 # Impact lenses
 
-Two subagents in parallel, both with `ultrathink` in the prompt: one runs the common lenses, the other the detected stack's lenses. On a one-slice work, one subagent runs all of them. Each gets the same packet (`slices.md` in full, the matching decisions' descriptions, the guidelines, the project lenses when present) and reads the code the slices touch on its own. Each reports one entry per problem, by severity: what · where (`file:line`) · why · recommended fix, and names the lenses that found nothing.
+Two subagents in parallel: one runs the common lenses, the other the stack lenses. On a one-slice work, one subagent runs all of them. Each gets the same packet (`slices.md` in full, the matching decisions' descriptions, the guidelines, the project lenses when present, the resolved presets' `## Rules`) and reads the code the slices touch on its own. Each reports one entry per problem, by severity: what · where (`file:line`) · why · recommended fix, and names the lenses that found nothing.
 
-The common lenses always run. On a small work, pick one or two stack lenses, saying which are skipped and why.
+The common lenses always run. The stack lenses are each resolved preset's `## Lenses` text, carried verbatim in the packet, or the tables below for a stack without a preset. On a small work, pick one or two stack lenses, saying which are skipped and why.
 
 ## Common, every stack
 
@@ -10,29 +10,13 @@ The common lenses always run. On a small work, pick one or two stack lenses, say
 |---|---|
 | **Existence** | Do the files, models, functions, routes and tables the slices name still exist, with that name and signature? This is the check that costs most when missing. Before declaring something unused or dead: grep the whole source tree, value and setter, and say in the report where you looked |
 | **Core flow and neighbours** | Which main user path is crossed or altered? Who else reads or writes the same data? Which settings or flags change the behaviour of what is about to be built? Which permissions or roles are affected? |
-| **Memory and debt** | Is there a decision in `docs/decisions-log/`, `CLAUDE.md` or `docs/` that this work contradicts or makes obsolete? Which documents become false once the work ships? Are data migrations needed on existing content? |
+| **Memory and debt** | Is there a decision in `docs/decisions-log/` (matched by key words and by `touches:` against the files the slices name), `CLAUDE.md` or `docs/` that this work contradicts or makes obsolete? Which documents become false once the work ships? Are data migrations needed on existing content? |
 
-## `rails`
+## Stacks without a preset
 
-| Lens | Looks for |
-|---|---|
-| **Transactions, callbacks and jobs** | Side effects in `after_save` that belong in `after_commit`; jobs enqueued before commit; scheduled jobs (`sidekiq-cron`, `whenever`) reading the touched tables; writes to schemas or databases other than the main one |
-| **Time and locale** | `Time.now` or `Date.today` instead of `Time.zone`; date formats in views and exports; time zones in nightly jobs |
-| **Migrations and data** | Reversibility; migrations that must run per tenant or schema; backfills on existing records; missing indexes on columns the new queries filter; N+1 in the views the slices touch |
-| **Authorization** | `ability.rb`, Pundit policies or equivalents: who can do the new thing, and who must not; separate application areas (admin, portal, API) sharing the touched models |
-| **Attachments and external services** | ActiveStorage and image CDNs; mailers and mail providers; PDFs; inbound and outbound webhooks |
+The stacks Flow ships a preset for (`astro`, `datocms`, `rails`) keep their lenses in the preset, not here. These stacks have none. A shipped stack whose mapped preset isn't in the session has no table here either: the `generic` rule applies (ad-hoc lenses), and it contributes no Rules, Tests or Gate.
 
-## `astro`
-
-| Lens | Looks for |
-|---|---|
-| **Prerender and runtime** | Which routes are static and which SSR; what changes if data read at build time must be read per request; environment variables available only at build |
-| **Content sources** | CMS queries: nullable fields crossed on untranslated records (a query that throws returns 200 with an empty body and nothing in the logs); environments and draft mode; cache and revalidation |
-| **Islands and navigation** | Components with `client:*` and what survives a view transition: state attached to an element Astro replaces on navigation is lost; inline scripts that do or don't re-attach |
-| **Languages and direction** | Per-locale routes and 404s; `lang` and `dir` on the root; physical vs logical CSS properties; fonts covering the served alphabets; `hreflang` and sitemap |
-| **Weight and platform** | Hosting limits (bundle size, build time, route count); self-hosted fonts and images; `robots.txt` and crawler output |
-
-## `react`
+### `react`
 
 | Lens | Looks for |
 |---|---|
@@ -42,7 +26,7 @@ The common lenses always run. On a small work, pick one or two stack lenses, say
 | **Data and backend** | Queries, mutations and access policies (RLS, security rules) on the touched tables; optimistic updates and cache invalidation; offline behaviour |
 | **Types** | Exhaustive `switch` statements the compiler can check; discriminated unions instead of boolean flags; `tsc --noEmit` as part of the gate |
 
-## `node`
+### `node`
 
 | Lens | Looks for |
 |---|---|
@@ -50,7 +34,7 @@ The common lenses always run. On a small work, pick one or two stack lenses, say
 | **Environment and secrets** | Environment variables read at runtime, defaults, differences between local and production |
 | **Data** | Migrations, file formats written and read, compatibility with existing data |
 
-## `generic`
+### `generic`
 
 The three common lenses suffice. If the repo has a recognisable stack this table doesn't cover, say so and write two or three ad-hoc lenses in the prompt, same format.
 

@@ -169,6 +169,40 @@ A `deferral` swaps `alternatives:` for `why-deferred:`. `NEEDS: <field>` or `FAI
 
 **Who reads them.** Repo: the impact lens "Memory and debt" and every plan review, through `op: descriptions` with `keywords` and `files`; `/flow:changelog` links the work's decisions; `/flow:archive` leaves them in place. Project: the reality check and every plan review, through `op: descriptions`; `report.md` links them at exit.
 
+## Agents
+
+Flow's own agents live in the plugin's `agents/` folder, one file per role, dispatched with the Agent tool as `flow:<name>`. Both layouts use them. Each definition holds the role's discipline, its model and its effort; what a role reviews or plans always arrives in the packet.
+
+| Role | Agent | Tier | Used for |
+|---|---|---|---|
+| Planner | `flow:planner` | top | Writes a slice's plan |
+| Plan reviewer | `flow:plan-reviewer` | top | Plan reviews, the fidelity check, the action-plan review |
+| Impact | `flow:impact` | top | Impact and the reality check, with the lenses in the packet |
+| Executor | `flow:executor` | mid | One task of a plan |
+| Task reviewer | `flow:task-reviewer` | mid | A task's commits; top tier for a `critical` task, the final review and a third fix round |
+
+**Tiers.** The conductors speak of the top tier (planner, plan-reviewer, impact, the fidelity check, a `critical` task's review, the final review, a third fix round) and the mid tier (executor, other task reviews). Only the agent definitions name model aliases.
+
+**Model per dispatch**, first hit wins:
+
+1. The user's explicit request in this session, for a role or for everything: pass it as `model`.
+2. The preference for the tier, which the conductor's **Models** paragraph shows: pass it as `model`.
+3. Nothing: pass no `model`, so the definition holds.
+
+A role whose definition is mid, dispatched on the top tier with no request and no preference, takes `model` and `effort` from the frontmatter of `plan-reviewer.md` in the agents folder (read it). With a preference for the top tier, it takes that model and the same `effort`.
+
+Two environment variables beat all of this, and Flow can't see past them: `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` (with `CLAUDE_CODE_SUBAGENT_MODEL`) forces the model of every subagent ([model choice](https://code.claude.com/docs/en/sub-agents.md#choose-a-model)), and `CLAUDE_CODE_EFFORT_LEVEL` overrides every effort ([effort level](https://code.claude.com/docs/en/model-config.md#set-the-effort-level)). Name them to the user in one sentence when a model they asked for doesn't seem to apply.
+
+**Dispatch contract.** The prompt is the slice packet (or the conductor's own packet) verbatim at the top, then the role's instruction. Paths in a packet or an instruction are expanded absolute paths, never variables: a subagent substitutes nothing.
+
+**Ledger.** `<work dir>/V<n>-ledger.md`, written by the conductor and committed with the close.
+
+- First line `# Ledger — V<n>`. At the start of execute the conductor runs `printenv CLAUDE_CODE_SUBAGENT_MODEL_FORCE CLAUDE_CODE_SUBAGENT_MODEL` once and writes the result on the second line.
+- One line per dispatch: `- <task> · <agent> · <model> · <outcome> · <commits>`. The model is the passed value, or `definition: <alias>` when none was passed, plus `forced` when the variable is set.
+- `- T<n>: complete` when a task's review passes; `Ruling: <what> — <why> — <cost if wrong>` for each ruling.
+- Each agent's report is appended under its line, trimmed to status, commits, tests run, concerns.
+- On resume at `step: execute` the ledger is reloaded, and tasks marked complete are never dispatched again.
+
 ## Closing a work
 
 **repo.** When the last slice is closed and the user confirms the work is complete. Each step asks before running; the user may stop at any point.

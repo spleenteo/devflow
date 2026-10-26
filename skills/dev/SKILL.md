@@ -11,7 +11,7 @@ The high-level plan is the slice list, produced by shaping. The detailed plan of
 
 ## Why
 
-The skills that do the actual work (`shaping` (`shaping-skills:shaping`), `breadboarding` (`shaping-skills:breadboarding`), `framing-doc` (`shaping-skills:framing-doc`), `writing-plans` (`superpowers:writing-plans`), `subagent-driven-development` (`superpowers:subagent-driven-development`)) come from outside, don't know each other and don't know the repo's paths: `writing-plans` saves to `docs/superpowers/plans/`, `brainstorming` (`superpowers:brainstorming`) to `docs/superpowers/specs/`, `shaping` wherever it lands. Without a conductor, every work restarts the debate about which phases apply and where files go, state is lost when the session ends, and the return to the user between steps disappears.
+The skills that do the actual work (`shaping` (`shaping-skills:shaping`), `breadboarding` (`shaping-skills:breadboarding`), `framing-doc` (`shaping-skills:framing-doc`)) come from outside, don't know each other and don't know the repo's paths: `brainstorming` (`superpowers:brainstorming`) to `docs/superpowers/specs/`, `shaping` wherever it lands. Without a conductor, every work restarts the debate about which phases apply and where files go, state is lost when the session ends, and the return to the user between steps disappears.
 
 This skill keeps the thread: it opens the work's home, picks the path, invokes each tool at the right moment telling it where to write and what to read, records progress on disk, and has plans verified by someone else before executing.
 
@@ -73,7 +73,11 @@ Token cost comes from fresh contexts rereading the same documents. Wall-clock co
 2. **Same packet, same position.** Within a slice, the packet is one verbatim text placed at the top of every subagent prompt, with the specific instruction after it. Identical prefixes hit the prompt cache.
 3. **Two stops per slice.** After the reviewed plan, and after the close. Plan and review run back to back.
 4. **One message per verification.** Findings ranked by severity, each with a recommended action, one question at the end. Never one finding at a time.
-5. **Reasoning and model where they pay.** `ultrathink` at impact, and on plan reviews only when the plan has more than five tasks. Task reviewers on a smaller model (the Agent tool's `model` option) unless the task is marked `critical`. Tasks without dependencies dispatched in parallel.
+5. **Model and effort by role.** Top tier for the planner, the plan review, impact and the fidelity check; mid tier for executors and task reviews, except a `critical` task's. Tasks without dependencies dispatched in parallel. Tiers and precedence: the work reference, § Agents.
+
+## Models
+
+Flow's agents are in `${CLAUDE_PLUGIN_ROOT}/agents/` (dispatched as `flow:<name>`). Preference for the top tier: `${user_config.model_top}`; for the mid tier: `${user_config.model_mid}`. A value that is empty, or begins with `${`, is unset. Which model each dispatch takes, the dispatch contract and the ledger: the work reference, § Agents (`${CLAUDE_PLUGIN_ROOT}/shared/work.md`).
 
 And measure: every Log line in `STATUS.md` carries wall-clock and cost (from `/cost`), so the next tuning is a comparison, not an opinion.
 
@@ -194,7 +198,7 @@ For each phase: invoke the tool telling it where to save, commit, update `phase:
 | `shaping` | Several solutions with different outcomes | `shaping` | `shaping.md` |
 | `breadboard` | The work introduces places or affordances that don't exist yet. On existing code, skip by default and say so | `breadboarding` | `breadboard.md` |
 | `slicing` | Always, even with one slice | `shaping` (slicing section) or `breadboarding` | `slices.md` |
-| `impact` | Always, after slicing | Two subagents (below) | Corrections in `slices.md` |
+| `impact` | Always, after slicing | Two `flow:impact` agents (below) | Corrections in `slices.md` |
 
 If the tool the row picks for the case at hand isn't listed in the session, stop that phase and give its commands from `dependencies.md`. Never swap in another tool (`brainstorming` in place of a missing `framing-doc`).
 
@@ -231,7 +235,7 @@ A technical work that skipped the frame has no criterion, and nothing here appli
 
 ### `phase: impact`, once, on `slices.md`
 
-The slices against the real code, before the first plan. First invoke each resolved preset (Profile, § Presets). Two subagents in parallel, both with `ultrathink` in the prompt: one with the common lenses, one with the stack lenses and the project lenses, same report format. The common lenses are `${CLAUDE_SKILL_DIR}/common-lenses.md`: put its expanded absolute path in the packet, never the variable. The stack lenses are each resolved preset's `## Lenses` text, verbatim in the stack-lens packet, never a path into another plugin; for a stack with no preset, that stack's table from `common-lenses.md`, verbatim; for a shipped stack whose mapped preset is unavailable, ad-hoc lenses by the `generic` rule. The common-lens subagent receives the project lenses in the packet but doesn't run them. On a one-slice work, one subagent with all of them. Both packets also carry the presets' `## Rules`. Packet: `slices.md` in full (here it is the object under review), the descriptions of `docs/decisions-log/` files that match the work's key words and the files the slices name (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords`, `files`), the guidelines, and the contents of `docs/impact-lenses.md` verbatim when present. The code they read themselves.
+The slices against the real code, before the first plan. First invoke each resolved preset (Profile, § Presets). Two `flow:impact` agents in parallel: one with the common lenses, one with the stack lenses and the project lenses, same report format. The common lenses are `${CLAUDE_SKILL_DIR}/common-lenses.md`: put its expanded absolute path in the packet, never the variable. The stack lenses are each resolved preset's `## Lenses` text, verbatim in the stack-lens packet, never a path into another plugin; for a stack with no preset, that stack's table from `common-lenses.md`, verbatim; for a shipped stack whose mapped preset is unavailable, ad-hoc lenses by the `generic` rule. The common-lens subagent receives the project lenses in the packet but doesn't run them. On a one-slice work, one agent with all of them. Both packets also carry the presets' `## Rules`. Packet: `slices.md` in full (here it is the object under review), the descriptions of `docs/decisions-log/` files that match the work's key words and the files the slices name (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords`, `files`), the guidelines, and the contents of `docs/impact-lenses.md` verbatim when present. The code they read themselves.
 
 Not in session: whoever just ran the shaping is the worst head for seeing what breaks elsewhere.
 
@@ -249,15 +253,15 @@ From here `phase: slice`. For each slice, in `slices.md` order, four steps and t
 
 ### `step: plan`
 
-If `writing-plans` isn't listed in the session, stop this step and give its commands from `dependencies.md`. Otherwise invoke it with the packet and this instruction:
+Dispatch `flow:planner` with the packet, the effective test level and this instruction:
 
-> Save the plan to `docs/work/2026-09-02-mobile-menu/V2-plan.md`. **Not** in `docs/superpowers/plans/`. Task level: for each task, what it does, which files it touches, how it's verified, what done means. No minute-by-minute steps: the implementer reads the code. TDD where the `## Tests` section of the guidelines requires it, not elsewhere. Mark dependencies between tasks (`depends on: T1`) and mark `critical` the tasks that touch shared or risky code. Aim for under 100 lines.
+> Save the plan to `docs/work/2026-09-02-mobile-menu/V2-plan.md`. **Not** in `docs/superpowers/plans/`. Task level: for each task, what it does, which files it touches, how it's verified, what done means. No minute-by-minute steps: the implementer reads the code. Test level: `<level>`. Mark dependencies between tasks (`depends on: T1`) and mark `critical` the tasks that touch shared or risky code. Aim for under 100 lines.
 
-Writing the plan surfaces deviations from the mandate: an affordance better moved to another slice, a file that doesn't exist, a mechanism the shape didn't foresee. Record them in `slices.md` under **"Deviations found while planning V<n>"** and carry on to the review without stopping.
+Writing the plan surfaces deviations from the mandate: an affordance better moved to another slice, a file that doesn't exist, a mechanism the shape didn't foresee. The planner returns the plan's path and its deviation lines: record those in `slices.md` under **"Deviations found while planning V<n>"** and carry on to the review without stopping.
 
 ### `step: review`
 
-Right after the plan, one subagent, never in session: whoever just wrote the plan is the worst head for finding its contradictions. `ultrathink` only if the plan has more than five tasks. Packet plus the plan. The decisions in the packet match the plan too: ask `op: descriptions` again with `keywords` and `files:` the plan's files, and add any new description.
+Right after the plan, one `flow:plan-reviewer`, never in session: whoever just wrote the plan is the worst head for finding its contradictions. Dispatch it with the packet, the plan and the lens table below. The decisions in the packet match the plan too: ask `op: descriptions` again with `keywords` and `files:` the plan's files, and add any new description.
 
 | Lens | Looks for |
 |---|---|
@@ -269,7 +273,7 @@ Right after the plan, one subagent, never in session: whoever just wrote the pla
 
 **First stop.** One message: the plan in ten lines, the findings ranked with a recommended fix each, the deviations recorded, one question: *"Apply the recommended fixes and execute? Say which to skip."*
 
-Approved fixes go into the plan in place. Reopen `writing-plans` only if the structure changes: tasks split, reordered or added.
+Approved fixes go into the plan in place. If the structure changes (tasks split, reordered or added), send the planner back with the findings.
 
 ### `step: execute`
 
@@ -295,7 +299,7 @@ A closed slice isn't reopened (rule in the same section).
 
 Applies to frame, shaping, breadboard, slicing and impact. Five moves, in order:
 
-1. **Fidelity check**, before the commit. For each requirement, shape or slice just produced: which line of the criterion does it serve? Whatever traces back to nothing is named in the report, with what it would take to keep it. On `shaping.md` and `slices.md` — the documents the rest of the work inherits — a subagent runs it, with a packet of the criterion, the applicable guidelines and the document alone. On the others, in session. Skipped entirely on a work with no frame, and said so.
+1. **Fidelity check**, before the commit. For each requirement, shape or slice just produced: which line of the criterion does it serve? Whatever traces back to nothing is named in the report, with what it would take to keep it. On `shaping.md` and `slices.md` — the documents the rest of the work inherits — a `flow:plan-reviewer` runs it, with a packet of the criterion, the applicable guidelines and the document alone. On the others, in session. Skipped entirely on a work with no frame, and said so.
 2. **Commit** the document just produced. Explicit `git add` on the touched files, never `-A` or `.`: the working tree may hold unrelated work. Imperative messages, in the language the repo already uses.
 3. **Update `STATUS.md`**: `phase:`, `updated:`, Log line with wall-clock and cost. After a verification the line states the outcome: *"09-02 — impact — 2 problems, fixed in V2 and V4 — 14 min — $2.10"*.
 4. **Decision candidate** in the same report, when the work reference, § Decisions, says so: a real alternative discarded, a known problem deferred on purpose, a behaviour that will surprise whoever reads the code. Propose it; never write it unasked, and on a yes send the `decision-write` request that section shows.
@@ -326,8 +330,8 @@ Code, changelog, version and archived work land on the target in one changeset. 
 | Moment | Skill | Owner |
 |---|---|---|
 | Opening, definition, slice loop | `/flow:dev` | the `flow` plugin |
-| A slice's plan | `writing-plans` | superpowers |
-| A plan's execution | `subagent-driven-development` | superpowers |
+| A slice's plan, review and impact | Flow's agents (`flow:planner`, `flow:plan-reviewer`, `flow:impact`) | the `flow` plugin |
+| A plan's execution | Flow's agents (`flow:executor`, `flow:task-reviewer`) | the `flow` plugin |
 | Changelog and version | `flow:docs` (by hand: `/flow:changelog`) | the `flow` plugin |
 | Archiving | `/flow:archive` | the `flow` plugin |
 

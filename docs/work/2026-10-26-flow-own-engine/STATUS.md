@@ -1,6 +1,6 @@
 ---
 status: open
-phase: shaping
+phase: slicing
 slice: null
 step: null
 work: flow-own-engine
@@ -26,3 +26,4 @@ description: "Flow plans and runs its own work, owns its memory and the project 
 
 - 2026-10-26 — frame — brainstorming in session, frame written — builder check, then shaping — n/a — n/a
 - 2026-10-26 — frame — builder check: 5 questions, 2 answered by the owner, 3 settled as calls; frame approved — shaping, spikes 2-4 — n/a — n/a
+- 2026-10-26 — shaping — R0–R8, shape A selected; 3 spikes (fork verified at runtime); release: one, v0.2.0; presets: skills, opinionated, replaceable; fidelity check: 8 findings applied — breadboard skipped, slicing next — n/a — n/a

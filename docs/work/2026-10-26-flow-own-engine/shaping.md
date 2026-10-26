@@ -28,16 +28,17 @@ The criterion is in [`frame.md`](frame.md#the-criterion). Every requirement belo
 | **R3** | **Each subagent runs on a model and effort chosen for its role, and the user can override them** | Must-have |
 | R3.1 | No `ultrathink` anywhere; effort is set explicitly where it pays (impact, plan, plan review) | Must-have |
 | R3.2 | Model choice is expressed by tier, not by an ID that ages | Must-have |
-| **R4** | **Knowledge about a framework is loaded only in projects of that framework** | Must-have |
-| R4.1 | One file per stack: peculiarities, impact lenses, reference skills or docs, gate commands, proposed test level | Must-have |
-| R4.2 | The plugin ships files only for stacks in use and no opinions of its author; a user or small team adds or replaces stack files without forking | Must-have |
-| R4.3 | Skills a stack file points to are optional dependencies reported only in that stack's projects | Must-have |
-| R4.4 | `docs/development-guidelines.md` is drafted by Flow, short: references, test level, gate, project deviations; existing code conventions win | Must-have |
+| **R4** | 🟡 **Knowledge about a framework is loaded only in projects of that framework (beyond one line in the skill listing)** | Must-have |
+| R4.1 | 🟡 One preset per stack: patterns and peculiarities (opinions), impact lenses, reference skills or docs, gate commands and test level to propose | Must-have |
+| R4.2 | 🟡 The plugin ships opinionated presets for its owner's stacks; a custom preset, per project or per user, replaces the shipped one entirely, without forking | Must-have |
+| R4.3 | 🟡 Skills a preset points to are optional dependencies reported only in that stack's projects | Must-have |
+| R4.4 | 🟡 `docs/development-guidelines.md` is drafted by Flow, short: references, test level, gate, project deviations; existing code conventions win; after the draft, the gate and test level come only from this file | Must-have |
+| R4.5 | 🟡 A project can have several stacks (e.g. a framework and a CMS); each gets its own preset, replaced independently | Must-have |
 | **R5** | **The work happens where the user already looks** | Must-have |
 | R5.1 | A work is a branch in the main checkout; a worktree only on request | Must-have |
 | R5.2 | No server runs where the user can't reach it; if one is started, its folder, port and URL are reported and it is stopped | Must-have |
 | R5.3 | The close proposes a local merge and runs it after an ok; a PR only on request or by project rule; push and tag need an ok | Must-have |
-| R5.4 | One commit per task meeting the atomic-commit criteria (green, working, no dead code, one kind of work) | Must-have |
+| R5.4 | 🟡 One commit per task meeting the atomic-commit criteria (green, working, no dead code, one kind of work), replacing superpowers' per-task commit default; the rules live in one place | Must-have |
 | **R6** | **Every rule about a document is written in exactly one place** | Core goal |
 | R6.1 | The work's state (home, `STATUS.md`, transitions, `slices.md`, `lessons.md`, archive, `archived.md`) has one shared definition read by every conductor | Must-have |
 | R6.2 | Permanent memory (decisions, changelog, version, search) has one owner the conductors ask, without loading its formats | Must-have |
@@ -63,41 +64,41 @@ The shape the frame already describes. Parts flagged ⚠️ wait on a spike.
 | Part | Mechanism | Flag |
 |------|-----------|:----:|
 | **A1** | **Project profile** | |
-| A1.1 | At every start the conductor reads `.flow.yml` (stack, merge style) and the `## Tests` section of the guidelines; for each missing piece it infers a proposal and asks, all in one message; answers written back to those files | |
-| A1.2 | 🟡 Personal settings declared as `userConfig` in `plugin.json`: prompted at install, stored in the user's settings (never in a repo), read by skills as `${user_config.KEY}`. Model preferences live here | |
+| A1.1 | 🟡 At every start the conductor reads `.flow.yml` (stacks, merge style) and the `## Tests` section of the guidelines; for each missing piece it infers a proposal and asks, all in one message; answers written back to those files | |
+| A1.2 | Personal settings declared as `userConfig` in `plugin.json`: prompted at install, stored in the user's settings (never in a repo), read by skills as `${user_config.KEY}`. Model preferences live here | |
 | A1.3 | At opening, the work's request is checked against the sensitive areas; a raise is proposed and written as `tests:` in the work's `STATUS.md` | |
-| **A2** | **Stack files** | |
-| A2.1 | `stacks/<name>.md` in the plugin, one per stack in use; the common lenses become their own file; `lenses.md` is removed | |
-| A2.2 | 🟡 Where stack knowledge comes from and how a user replaces it: see A2.2-A / A2.2-B below | ⚠️ |
-| A2.3 | First-run draft of `docs/development-guidelines.md` from the resolved stack file, the repo's observed conventions and the profile answers | |
+| **A2** | **🟡 Stack presets** | |
+| A2.1 | 🟡 One skill per stack the owner uses, `flow:stack-<name>`: opinionated patterns and peculiarities, impact lenses, pointers to external skills or docs, gate commands, proposed test level; the common lenses become their own file; `lenses.md` is removed | |
+| A2.2 | 🟡 Resolution per stack (A2.2-B): `.flow.yml` may map the stack to a custom skill, else `userConfig` may, else `flow:stack-<name>`; only the resolved skill is invoked, the shipped one is ignored when a custom one is mapped; a project lists several stacks and each resolves on its own | |
+| A2.3 | 🟡 First-run draft of `docs/development-guidelines.md` from the resolved stack skills, the repo's observed conventions and the profile answers; the draft is the last moment a preset influences gate or test level | |
 | A2.4 | `dependencies.md` gains per-stack optional rows; the start check reports only the current stack's | |
 | **A3** | **Engine** | |
-| A3.1 | Plan instructions owned by Flow (task level, files, verification, done, dependencies, `critical`), replacing `writing-plans` | |
-| A3.2 | Executor and task-reviewer prompts owned by Flow, with the slice packet, the test policy and the commit rules; ledger and reports in the work folder | |
-| A3.3 | 🟡 One plugin agent per role in `agents/` (planner, plan reviewer, impact, executor, task reviewer), each with `model` as an alias (`opus`, `sonnet`, `fable`) and `effort` in its frontmatter. A user preference (A1.2) or an explicit request is passed as the per-call `model`, which wins over the definition; `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` remains the user's global lever | |
+| A3.1 | 🟡 Plan instructions owned by Flow (task level, files, verification, done, dependencies, `critical`), replacing `writing-plans`; rules taken from superpowers credit it and its MIT licence | |
+| A3.2 | 🟡 Executor and task-reviewer prompts owned by Flow, with the slice packet, the test policy and the commit rules (the only place commit rules are written); ledger and reports in the work folder; the ledger records the model each agent ran on | |
+| A3.3 | 🟡 One plugin agent per role in `agents/` (planner, plan reviewer, impact, executor, task reviewer), each with `effort` and a `model` alias in its frontmatter. Instructions speak in tiers (most capable, mid); the agent definitions are the one place tiers map to aliases. Precedence: `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` (the user's global lever), then an explicit request, then the `userConfig` preference, then the definition | |
 | A3.4 | Test policy text injected in executor and reviewer prompts: level, areas, focused runs only; full suite at the gate | |
-| A3.5 | `superpowers` removed from `dependencies.md`; every reference to its skills removed | |
+| A3.5 | 🟡 `superpowers` removed from `dependencies.md`; every reference to its skills and every `ultrathink` removed | |
 | **A4** | **Branch, server and merge** | |
 | A4.1 | Step 2 creates `work/<slug>` in the current checkout; a worktree only when the user asks | |
 | A4.2 | Server rule in executor prompts: don't start servers; if needed, report folder, port, URL and stop at step end | |
 | A4.3 | Closing sequence: local merge after an ok; `merge: pr` in `.flow.yml` or the user's request switches to a PR | |
 | **A5** | **Work layer** | |
-| A5.1 | One reference file in the plugin holding home, `STATUS.md` format and transitions, `slices.md`, `lessons.md`, archive and `archived.md`; both conductors read it | |
+| A5.1 | 🟡 One reference file in the plugin holding home, `STATUS.md` format and transitions, `slices.md`, `lessons.md`, archive and `archived.md`, for both layouts (`docs/` in a repo, the project folder); both conductors read it | |
 | A5.2 | Archiving moves from `flow:archive` into the work layer; `/flow:archive` stays as a thin entry point | |
 | **A6** | **`flow:docs`** | |
-| A6.1 | 🟡 `flow:docs` with `context: fork` and `background: false`; a conductor invokes it through the Skill tool with a self-contained request and receives a one-line result (runtime test in the spike) | |
-| A6.2 | Unified decision format (kinds, fixed headings, `## Reopen when`, `touches:`, `area:`, status log), variant without `touches:` for non-code projects; check script | |
+| A6.1 | 🟡 `flow:docs` with `context: fork` and `background: false`, serving both layouts; a conductor invokes it through the Skill tool with a self-contained request and receives a one-line result (runtime test in the spike) | |
+| A6.2 | 🟡 Unified decision format (kinds, fixed headings, `## Reopen when`, `touches:`, `area:`, status log), variant without `touches:` for non-code projects; check script; files without `kind:` read as legacy | |
 | A6.3 | Changelog and version operations moved in from `flow:changelog`; `/flow:changelog` stays as a thin entry point | |
 | A6.4 | Memory search by key words and by `touches:` against the plan's files | |
 | **A7** | **Widen and narrow** | |
-| A7.1 | `flow:brainstorm`, ported from superpowers' `brainstorming`: exit instead of execute, caller's path, artifacts proposed, builder check kept | |
-| A7.2 | `flow:grill`, from `grilling`: frontier rounds, criterion anchor, caller's target, parked questions list | |
+| A7.1 | 🟡 `flow:brainstorm`, ported from superpowers' `brainstorming` (MIT, credited): exit instead of execute, caller's path, artifacts proposed, builder check kept | |
+| A7.2 | 🟡 `flow:grill`, from `grilling` (MIT, credited): frontier rounds, criterion anchor, caller's target, parked questions list; a choice that discards a real alternative is handed to `flow:docs` as a decision candidate | |
 | A7.3 | `dev` and `project` definition path: brainstorm → grill → frame; inside a slice, grill on the doubt | |
 | **A8** | **Upgrade** | |
-| A8.1 | One upgrade step in the work layer: recognises old traces, lists changes, runs after an ok, commits on the work's branch or `work/flow-upgrade` | |
+| A8.1 | 🟡 One upgrade step in the work layer: recognises old traces, lists changes, runs after an ok, commits on the work's branch or `work/flow-upgrade`; never edits `CLAUDE.md`, points at its lines instead | |
 | A8.2 | The fallback sentences for `.devflow.yml` and "devflow work … merged" are removed from every skill | |
 
-### A2.2: where stack knowledge lives
+### A2.2: where stack knowledge lives — B selected
 
 | Alt | Mechanism |
 |-----|-----------|
@@ -106,8 +107,8 @@ The shape the frame already describes. Parts flagged ⚠️ wait on a spike.
 
 | Req | Requirement | Status | A2.2-A | A2.2-B |
 |-----|-------------|--------|--------|--------|
-| R4.1 | One file per stack: peculiarities, impact lenses, reference skills or docs, gate commands, proposed test level | Must-have | ✅ | ✅ |
-| R4.2 | The plugin ships files only for stacks in use and no opinions of its author; a user or small team adds or replaces stack files without forking | Must-have | ✅ | ✅ |
+| R4.1 | One preset per stack: patterns and peculiarities (opinions), impact lenses, reference skills or docs, gate commands and test level to propose | Must-have | ✅ | ✅ |
+| R4.2 | The plugin ships opinionated presets for its owner's stacks; a custom preset, per project or per user, replaces the shipped one entirely, without forking | Must-have | ✅ | ✅ |
 | R1.3 | Project settings are committed and shared; personal settings are never committed and never change the team's gate | Must-have | ✅ | ✅ |
 | R1.2 | Every start asks only for the pieces of the profile still missing; nothing asked twice | Must-have | ❌ | ✅ |
 
@@ -120,21 +121,21 @@ The shape the frame already describes. Parts flagged ⚠️ wait on a spike.
 | Req | Requirement | Status | A |
 |-----|-------------|--------|---|
 | R0 | Flow plans and runs a work by itself, with no dependency on superpowers | Core goal | ✅ |
-| R1 | What Flow can't infer is asked once and kept in one named place | Core goal | ❌ |
+| R1 | What Flow can't infer is asked once and kept in one named place | Core goal | ✅ |
 | R2 | No agent writes or runs more tests than the project asked for | Core goal | ✅ |
-| R3 | Each subagent runs on a model and effort chosen for its role, and the user can override them | Must-have | 🟡 ✅ |
-| R4 | Knowledge about a framework is loaded only in projects of that framework | Must-have | ❌ |
+| R3 | Each subagent runs on a model and effort chosen for its role, and the user can override them | Must-have | ✅ |
+| R4 | 🟡 Knowledge about a framework is loaded only in projects of that framework (beyond one line in the skill listing) | Must-have | ✅ |
 | R5 | The work happens where the user already looks | Must-have | ✅ |
-| R6 | Every rule about a document is written in exactly one place | Core goal | 🟡 ✅ |
+| R6 | Every rule about a document is written in exactly one place | Core goal | ✅ |
 | R7 | Flow has its own tools to widen and to narrow | Must-have | ✅ |
 | R8 | A project used with the old skills is upgraded when reopened, with consent | Must-have | ✅ |
 
 **Notes:**
-- 🟡 R1, R4 fail on A2.2 only: the choice between A2.2-A and A2.2-B is open.
+- All requirements pass, after the fidelity check of 2026-10-26 (8 findings applied) and the owner's choice of opinionated, replaceable presets. A2.2-B selected on 2026-10-26: stack knowledge lives in skills; A2.2-A (Markdown files in a user folder) discarded for the permission prompts outside the working directory.
 
 ## Release
 
-🟡 Decided 2026-10-26: **one release, v0.2.0**, one branch, slices in dependency order, one merge. `main` is the release (projects declare the marketplace without a ref), so no half state may reach it, e.g. superpowers removed before the engine replaces it. Discarded: several releases, one work each.
+Decided 2026-10-26: **one release, v0.2.0**, one branch, slices in dependency order, one merge. `main` is the release (projects declare the marketplace without a ref), so no half state may reach it, e.g. superpowers removed before the engine replaces it. Discarded: several releases, one work each.
 
 ## Spikes
 

@@ -10,7 +10,7 @@ description: "Frame for the revision that gives Flow its own planning and execut
 
 - **Problem**: Flow delegates planning, execution and ideation to a third-party plugin whose defaults (exhaustive tests, worktrees, its own paths) fight the project, and its own rules about documents are duplicated across the conductors.
 - **Outcome**: a user opens a work and Flow asks, up front, what it can't infer (stack, test level, merge style), then plans and runs the work itself with the right model per role, in the user's own checkout, writing memory through one owner.
-- **Less about**: shipping opinions about frameworks inside the plugin; replacing shaping-skills; bulk-migrating existing projects.
+- **Less about**: imposing the plugin's framework presets on anyone who prefers their own; replacing shaping-skills; bulk-migrating existing projects.
 - **Measure**: a decision about tests, models, branches or documents is taken once, in one named place, and every later agent reads it from there instead of applying a default.
 
 ## Source
@@ -64,14 +64,14 @@ Asked what was worth keeping from superpowers: *"plan reviews were useful, tests
 
 ### Stack and guidelines
 
-- Flow first establishes the stack: inferred from the repo when it can, asked otherwise.
-- **One file per stack, loaded only for that stack.** Everything Flow knows about a framework lives in its own file: its peculiarities, its impact lenses, the reference skills or official docs it points to (e.g. thoughtbot's `rails-patterns` and `testing-patterns` for Rails), the usual gate commands, the test level to propose. Nothing about other stacks is ever loaded. Today's `lenses.md`, which holds every stack in one file, is split: the common lenses stay as method for every stack; each stack's lenses move into that stack's file.
-- **The plugin ships the mechanism and stack files only for stacks in use**, not a catalogue of every framework. A stack file points to external skills for depth instead of restating them.
-- Stack files can be added or replaced at user level (so a person or a small team carries its own) and per project.
-- Opinions live outside the plugin: a user who has their own rules for a framework or a CMS writes them as skills in a plugin of their own, and adds a stack file of their own that points to it. Flow stays agnostic.
-- Pointed-at skills are optional dependencies tied to the stack: Flow reports them only in projects of that stack.
-- **Project settings and personal settings are kept apart**, as Claude Code does with its own settings. Project settings are committed and shared with the team: stack, test level and sensitive areas, merge style (in `.flow.yml` and `docs/development-guidelines.md`). Personal settings are never committed: model preferences (e.g. "always the most capable for me") and user-level stack files, in a file under the user's home, with an optional per-project local file ignored by git. Personal wins over project only for personal keys; a personal file never changes what the team's gate requires.
-- `docs/development-guidelines.md` becomes short and is drafted by Flow at first run, not offered as an empty template: the reference skills, the test level and sensitive areas, the gate commands, and only the project's own deviations. Existing conventions found in the code win over the stack file. Where the file already exists, Flow proposes only the missing sections.
+- Flow first establishes the stacks: inferred from the repo when it can, asked otherwise. A project can have several (a framework and a CMS, e.g. Astro and a headless CMS); each gets its own preset.
+- **One preset per stack, loaded only for that stack.** Everything Flow knows about a framework lives in its own preset: its patterns and peculiarities, its impact lenses, the reference skills or official docs it points to (e.g. thoughtbot's `rails-patterns` and `testing-patterns` for Rails), the usual gate commands, the test level to propose. Nothing about other stacks is ever loaded. Today's `lenses.md`, which holds every stack in one file, is split: the common lenses stay as method for every stack; each stack's lenses move into that stack's preset.
+- **The plugin ships opinionated presets for the stacks its owner uses**, not a catalogue of every framework: patterns and peculiarities are opinions, and a new project of those stacks gets the owner's rules immediately. A preset points to external skills for depth instead of restating them.
+- **A custom preset replaces the shipped one entirely.** A user or small team who dislikes a preset maps that stack to their own (per project or per user); when a custom preset exists, the shipped one is ignored, not merged. Each stack of a project is replaced independently.
+- Presets only seed the first draft of the guidelines: after that, the gate and the test level are what `docs/development-guidelines.md` says, so a personal preset never changes the team's gate.
+- Skills a preset points to are optional dependencies tied to the stack: Flow reports them only in projects of that stack.
+- **Project settings and personal settings are kept apart**, as Claude Code does with its own settings. Project settings are committed and shared with the team: stacks, test level and sensitive areas, merge style (in `.flow.yml` and `docs/development-guidelines.md`). Personal settings are never committed: model preferences (e.g. "always the most capable for me") and user-level preset mappings, in the plugin's user configuration (`userConfig`), stored in the user's settings and never in a repo. Personal wins over project only for personal keys; a personal file never changes what the team's gate requires.
+- `docs/development-guidelines.md` becomes short and is drafted by Flow at first run, not offered as an empty template: the reference skills, the test level and sensitive areas, the gate commands, and only the project's own deviations. Existing conventions found in the code win over the preset. Where the file already exists, Flow proposes only the missing sections.
 
 ### Branches, commits, merge
 
@@ -97,7 +97,7 @@ Asked what was worth keeping from superpowers: *"plan reviews were useful, tests
 ### Upgrade from the old skills
 
 - At start, Flow recognises the old traces (`.devflow.yml`, `archived.md` header citing `/devflow-archive`, "devflow work … merged" rows) and proposes an upgrade in one message listing what would change; it runs after an ok and is committed on its own.
-- The same step brings the project to this work's conventions: stack and stack file, test level, guidelines sections, merge rule.
+- The same step brings the project to this work's conventions: stacks and presets, test level, guidelines sections, merge rule.
 - A project's `CLAUDE.md` is never edited: Flow points at the lines to fix.
 - Decisions in the old format are not converted: read as legacy.
 - Recognition replaces the fallbacks: the old names appear in one place only, the upgrade step. Done project by project, as each is reopened; no bulk tool.
@@ -119,7 +119,7 @@ Asked what was worth keeping from superpowers: *"plan reviews were useful, tests
 ## Goals, non-goals, anti-goals
 
 - **Goals**: everything under Outcome.
-- **Non-goals**: framework guidelines inside the plugin; replacing `shaping-skills`; bulk migration of projects; converting old decisions; changing `flow:project`'s reality checks beyond what the shared layers require.
+- **Non-goals**: presets for stacks nobody here uses; merging a custom preset with the shipped one; replacing `shaping-skills`; bulk migration of projects; converting old decisions; changing `flow:project`'s reality checks beyond what the shared layers require.
 - **Anti-goals** (failure even if it works): any agent adds tests the project didn't ask for; a dev server runs where the user can't reach it; the same document rule is written in two skills again; the plugin names any personal project or tool.
 
 ## Constraints
@@ -134,7 +134,7 @@ Asked what was worth keeping from superpowers: *"plan reviews were useful, tests
 1. **Release split**: one release or several (e.g. engine first, then memory, then profile)? The test level depends on the engine's prompts; `flow:docs` depends on nothing else.
 2. **Spike — running a skill in its own context**: can a plugin skill run as a separate agent (frontmatter or an agent definition shipped by the plugin), and how does a conductor invoke it and read a short result?
 3. **Spike — model and effort from a skill**: confirm that a skill's instruction to set `model` and `effort` on the Agent tool is honoured, and which values exist; how the user's override is expressed (per step, per work).
-4. **Where personal settings and user-level stack files live**, and their format: a file under the user's home, a git-ignored local file per project, or the plugin's own user configuration if Claude Code offers one (spike). Shared by a small team without a fork of the plugin.
+4. **Where personal settings and user-level presets live**, and their format: a file under the user's home, a git-ignored local file per project, or the plugin's own user configuration if Claude Code offers one (spike). Shared by a small team without a fork of the plugin.
 5. **How much of superpowers' execution machinery to rebuild** (ledger, review packages, fix-round caps) versus leaving to the model.
 6. **`flow:project`**: which of the new pieces it uses (brainstorm and grill yes; tests, stack and merge no).
 
@@ -148,4 +148,4 @@ Settled by the author after the builder check; the owner may overturn them.
 
 ## Left to the builder
 
-File names inside the plugin, the exact wording of prompts, the order of questions in the first-run message, which stack files ship first (only stacks in use).
+File names inside the plugin, the exact wording of prompts, the order of questions in the first-run message, which presets ship first (the owner's stacks).

@@ -36,7 +36,7 @@ claude plugin validate .        # passes; expected warnings: missing version and
 # § Upgrading from an older Flow; nothing else.
 # --hidden so .claude-plugin/ is searched too
 rg -n -i --hidden '\bdevflow\b|devflow-(docs|archive)|projectflow|\.devflow\.yml' \
-  --glob '!.git' --glob '!.git/**' --glob '!.superpowers/**' \
+  --glob '!.git' --glob '!.git/**' \
   --glob '!docs/work/**' --glob '!docs/briefs/**' --glob '!docs/CHANGELOG.md' \
   --glob '!docs/development-guidelines.md' .
 # every relative Markdown link resolves: prints "file -> target" per broken link, nothing when green.

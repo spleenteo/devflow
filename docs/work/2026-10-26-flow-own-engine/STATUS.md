@@ -1,8 +1,8 @@
 ---
 status: open
 phase: slice
-slice: V2
-step: execute
+slice: V3
+step: plan
 work: flow-own-engine
 stack: generic
 updated: 2026-10-26
@@ -19,7 +19,7 @@ description: "Flow plans and runs its own work, owns its memory and the project 
 ## Slices
 
 - [x] V1 Work layer
-- [ ] V2 `flow:docs`
+- [x] V2 `flow:docs`
 - [ ] V3 Decision format
 - [ ] V4 Project profile
 - [ ] V5 Stack presets
@@ -37,3 +37,4 @@ description: "Flow plans and runs its own work, owns its memory and the project 
 - 2026-10-26 — slicing — 8 slices; fidelity check: 9 findings applied — impact — n/a — n/a
 - 2026-10-26 — impact — 2 subagents (common lenses, repo lenses): 18 problems after dedup, all fixed in slices.md, no reordering — V1 plan — n/a — n/a
 - 2026-10-26 — V1 close — work layer shipped (shared/work.md; dev, project, archive point to it); 5 headless demos + check 6 green; Gate green within narrowing; T1 written in session after 2 executor failures — V2 plan — n/a — n/a
+- 2026-10-26 — V2 close — flow:docs shipped (fork: changelog, version, search); /flow:changelog an entry point; conductors send requests; 6 headless demos green; Gate green within narrowing; 2 fix rounds from task reviews — V3 plan — n/a — n/a

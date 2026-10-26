@@ -95,6 +95,12 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 
 **Gotchas**: a forked skill receives no conversation history: every request must carry the paths and slugs it needs.
 
+**V2 — done on 2026-10-26**
+- `skills/docs/SKILL.md` (`flow:docs`, forked, not user-invocable) owns changelog, version and memory search behind a one-line request contract with four ops; `NEEDS:` and `FAILED:` are its only ways to say no. `/flow:changelog` is an 18-line entry point; the questions and the propose/write flow live once, in `shared/work.md` § Closing a work, step 2.
+- Task reviews caught what the plan missed: the fork's commit could sweep in already-staged files (now the pathspec form), commands didn't run in `dir` (now `git -C`), and `/flow:project` searched before its home was known (now the parent of the proposed folder).
+- Demonstrated headless: the close writes entry and `.version` through `flow:docs`, the conductor receiving one line; "what do we know about export" returns two entries and a decision; `/flow:changelog` by hand gives the same entry; with no `.version` the run stops at the question with no `flow:docs` call, and the follow-up request carries `current:`; a repo-local skill named `docs` is ignored in favour of `flow:docs`; a lesson about a supplier is found in a sibling project. Gate green within the narrowing.
+- Observed: the fork's prompt appears in the stream's `system`/`task_started` events, not in the conductor's messages; a commit made by `flow:docs` carries the fork model's co-author trailer. `background: false` outside headless mode is unverified: left to an interactive check.
+
 ## V3 — Decision format
 
 **In**

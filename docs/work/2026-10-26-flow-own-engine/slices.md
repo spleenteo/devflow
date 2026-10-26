@@ -51,6 +51,11 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - A project folder's closed project is archived to its sibling `archive/` as the project procedure says.
 - In a throwaway repo whose default branch is `master`, the close merges into `master`.
 
+**Deviations found while planning V1**
+- The reference lives at `shared/work.md`, outside `skills/` (it is not a skill): the Done's `rg` runs over `skills/` and `shared/`.
+- `STATUS.md` (repo layout) gains `base:`, the branch the work was cut from, so the close can find the merge target in repos without a remote.
+- The standing-documents reload lists stay in the conductors: they are conductor-specific and moving them would duplicate them.
+
 **Gotchas**: the reference is read by two skills with different layouts; every path in it must say which layout it belongs to. `${CLAUDE_PLUGIN_ROOT}` is substituted in skill text only, not in Bash.
 
 ## V2 — `flow:docs`

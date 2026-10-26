@@ -2,7 +2,7 @@
 status: open
 phase: slice
 slice: V1
-step: plan
+step: execute
 work: flow-own-engine
 stack: generic
 updated: 2026-10-26

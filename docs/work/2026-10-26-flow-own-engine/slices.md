@@ -279,6 +279,13 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - The grill looks facts up with the built-in `Explore`.
 - The grill-me decision keeps `status: active` with a status-log line; legacy, no `kind:`.
 
+**V7 — done on 2026-10-26**
+- `flow:brainstorm` (ported from superpowers' `brainstorming`) and `flow:grill` (from Matt Pocock's `grilling`), both MIT and credited in `CREDITS.md`. The brainstorm exits instead of executing (clear request, skip or small change return to the caller), writes `brainstorm.md` where the caller says, offers visuals as local HTML or SVG files, never a server, and runs its builder check on `flow:plan-reviewer`. The grill asks frontier rounds with recommendations, anchors on the criterion when one exists, writes `## Settled` and `## Parked questions` into the caller's target, and hands decision candidates to `flow:docs`. Both conductors run brainstorm → grill → frame and send vague points to the grill; every Flow entry skill states process ownership. superpowers left `dependencies.md` and every skill but credit lines; the grill-me decision got its status-log line; the agents' descriptions now say "Flow's skills".
+- Reviews caught: a "never another brainstorming" sentence that named superpowers; the grill targeting a `frame.md` not yet written; the hook-injected instruction to use another brainstorming skill (answered by process ownership); skip and small-change exits with no next step for the conductor; the builder check sending a design document to a plan reviewer without saying there are no tasks; decision fields the grill couldn't know at the definition path; commits in a project home not under version control.
+- Demonstrated headless with superpowers enabled and its SessionStart hook observed in every run: a clear request exits with nothing written; a bakery layout comparison gets the visual offer in its own message, then `design/layouts.html` on a yes, no server, ports unchanged; a grill on a five-line plan asks a numbered round and, on "park Q2", writes `## Parked questions` and `## Settled`, uncommitted; `/flow:dev` on an unclear product request runs `flow:brainstorm` → `flow:grill` → `frame.md` (criterion on top) committed on `work/repeat-customers`; `/flow:project` does the same in a plain folder, uncommitted. No Skill call outside `flow:*` in any run.
+- The grill demo found answers written in the conversation's language inside an English file: both skills now write in the documents' language.
+- Gate green within the narrowing.
+
 ## V8 — Upgrade and documentation
 
 **In**

@@ -23,3 +23,6 @@
 - A reviewer gets the author's report verbatim: a trimmed copy produces findings about what the trim dropped.
 - An agent with Bash runs the full suite "for a baseline" unless its never-list forbids it: name every command class a role must not run.
 - Parallel executors in one checkout can't share a BASE..HEAD review range: review each task by its own commits.
+- Another plugin's SessionStart hook can tell the model to use its skills first: state process ownership at the top of every entry skill, by process kind, not by plugin name.
+- A skill that writes into a document writes in the document's language, not the conversation's.
+- A dialogue skill's every exit (clear, skipped, small) needs a next step in its caller's text.

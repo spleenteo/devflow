@@ -32,7 +32,7 @@ The date is when the decision was taken; the file name carries the same date as 
 | `touches` | repo layout only: the paths and symbols the decision constrains, a non-empty list. A path matches a file it equals or contains; whole segments only |
 | `description` | quoted, at most 160 characters: what was decided and what it rules out |
 
-Lists are written in flow form only, `[a, b]`; block lists are rejected. A decision has no `resolved_by`, a deferral no `superseded_by`.
+Lists are written in flow form only, `[a, b]`; block lists are rejected. A decision has no `resolved_by`, a deferral no `superseded_by`. A key outside this table (`tags:`, say) is allowed: the check warns and ignores it.
 
 ## Body
 
@@ -121,7 +121,7 @@ To supersede, write a new decision first, then mark the old one `superseded` wit
 
 ## The check
 
-`scripts/decisions-check [--project] [--areas a,b,c] <dir>` checks every file with a `kind:` key against this format and prints `file: problem` per error, then `checked N, legacy M, errors K, warnings W` (exit 1 when K > 0). A body over 40 lines is a warning, not an error. A project may copy the script into its repo (`<root>/decisions-log/check.sh`, version header kept) to run it in its own Gate or CI.
+`scripts/decisions-check [--project] [--areas a,b,c] <dir>` checks every file with a `kind:` key against this format and prints `file: problem` per error, then `checked N, legacy M, errors K, warnings W` (exit 1 when K > 0). Beyond the frontmatter and headings it checks the title line, the `**Date**` line against the file name's date, and the file-name pattern; unknown keys, `touches` in the project layout and a body over 40 lines are warnings, not errors. A project may copy the script into its repo (`<root>/decisions-log/check.sh`, version header kept) to run it in its own Gate or CI.
 
 ## Legacy files
 

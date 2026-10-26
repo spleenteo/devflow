@@ -35,8 +35,9 @@ fi
 
 read -r -d '' PROG <<'AWK' || true
 function trim(s) { sub(/^[ \t]+/, "", s); sub(/[ \t\r]+$/, "", s); return s }
-function err(m) { print "E " m }
-function warn(m) { print "W " m }
+function err(m) { B[++nb] = "E " m }
+function warn(m) { B[++nb] = "W " m }
+function flush(  i) { for (i = 1; i <= nb; i++) print B[i] }
 function inlist(v, csv,   a, n, i) {
   n = split(csv, a, ",")
   for (i = 1; i <= n; i++) if (trim(a[i]) == v) return 1
@@ -68,7 +69,7 @@ infm {
 }
 {
   bl++
-  if ($0 ~ /^[ \t]*```/) { fence = !fence; next }
+  if ($0 ~ /^[ \t]*(```|~~~)/) { fence = !fence; next }
   if (fence) next
   if (!seentitle && trim($0) != "") {
     seentitle = 1
@@ -80,13 +81,13 @@ infm {
   if (cur > 0 && H[cur] == "The decision" && trim($0) != "") dl++
 }
 END {
-  if (legacy) { print "LEGACY"; exit }
-  if (!closed) { err("frontmatter is not closed by a --- line"); exit }
+  if (legacy || !("kind" in V)) { print "LEGACY"; exit }
+  if (!closed) { nb = 0; err("frontmatter is not closed by a --- line"); flush(); exit }
 
   # keys allowed
   split("kind status superseded_by resolved_by work project slice area touches description", AK, " ")
   for (i = 1; i <= 10; i++) allowed[AK[i]] = 1
-  for (k in V) if (!(k in allowed)) err("unknown key " k)
+  for (k in V) if (!(k in allowed)) warn("unknown key " k " (ignored)")
   if (blk) err("block list in the frontmatter: use the flow form [a, b]")
 
   kind = V["kind"]
@@ -121,6 +122,7 @@ END {
     else if (areas != "" && !inlist(a, areas)) err("area '" a "' is not in the declared areas (" areas ")")
   } else if (!project) err("missing area")
 
+  if (project && ("touches" in V)) warn("touches is not used in the project layout")
   if (!project) {
     if (!("touches" in V)) err("missing touches")
     else if (V["touches"] == "") { if (!blk) err("touches is empty") }
@@ -173,6 +175,7 @@ END {
   }
 
   if (bl > 40) warn("body is " bl " lines (roughly 40 at most): move the analysis to a linked document")
+  flush()
 }
 AWK
 

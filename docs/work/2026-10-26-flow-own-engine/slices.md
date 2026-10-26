@@ -236,6 +236,15 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 
 **Gotchas**: plugin agents ignore `permissionMode`, `hooks`, `mcpServers`.
 
+**Deviations found while planning V6**
+- Agent reports live in the slice's ledger (`V<n>-ledger.md`), under each dispatch line, not as separate files.
+- `impact` and `plan-reviewer` serve `/flow:project` too (reality check, action-plan review), and both conductors' fidelity checks run on `plan-reviewer`.
+- Aliases live only in the agent definitions: a mid-tier role dispatched on the top tier reads its model and effort from `plan-reviewer.md`.
+- `shared/work.md` § Agents names no variable (it is read, not substituted): each conductor carries a short Models paragraph with `${user_config.model_top}`, `${user_config.model_mid}` and the agents' path.
+- The `writing-plans`, `subagent-driven-development` row leaves `dependencies.md` now; superpowers stays for `brainstorming` until V7. Meanwhile the executor can't invoke skills, so superpowers' TDD can't take over a task.
+- "One commit per task" counts the task's work: one commit per kind when a task holds two, and each review fix is its own named commit.
+- `effort` doesn't show in the stream JSON: the reality check's effort is shown by the dispatch carrying none, so the definition's holds.
+
 ## V7 — Widen and narrow
 
 **In**

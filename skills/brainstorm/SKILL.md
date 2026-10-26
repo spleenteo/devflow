@@ -13,7 +13,7 @@ You build what you believe the user wants, and that belief is thinner than it fe
 
 Before replying: what do I know about what they want, and why?
 
-- **Everything that matters is in the request** ("make the title bold"): say it is clear and exit, below. Nothing is written. Without a subagent tool for the builder check, run it yourself as that builder.
+- **Everything that matters is in the request** ("make the title bold"): say it is clear and exit, below. Nothing is written.
 - **Something non-trivial is missing**: start the dialogue.
 
 ## The first message
@@ -48,7 +48,7 @@ For a project, write a plain document a talented builder in the domain could pla
 
 **Where.** The caller passes the path (the conductors pass `<work dir>/brainstorm.md` or `<home>/brainstorm.md`). By hand with no path, ask; never a default folder of your own. Called, the caller commits on the work branch. By hand, write it, don't commit, and say so.
 
-**Builder check.** Tell the user a reviewer will read it first and you may come back once with a few questions. Dispatch `flow:plan-reviewer` (top tier, see Models) with a packet: the document's expanded absolute path; the domain (for example "software engineer", "event planner"); "the document is its own mandate"; "apply only the Builder questions lens; there are no tasks"; and one lens, **Builder questions**: you are a talented builder in that domain, handed this document, unable to talk to its author; report only the questions you would still need answered before planning, where a wrong guess would matter, each with why the answer changes the plan; skip what the document leaves to the builder and anything you could decide yourself; if nothing important is left, say so. Read the ranked findings as ranked questions; ignore each finding's recommended fix, and read `Lenses clean: Builder questions` as nothing important left. Don't hand the document over until the check is back. Sort the questions into three piles:
+**Builder check.** Tell the user a reviewer will read it first and you may come back once with a few questions. Dispatch `flow:plan-reviewer` (top tier, see Models) with a packet: the document's expanded absolute path; the domain (for example "software engineer", "event planner"); "the document is its own mandate"; "apply only the Builder questions lens; there are no tasks"; and one lens, **Builder questions**: you are a talented builder in that domain, handed this document, unable to talk to its author; report only the questions you would still need answered before planning, where a wrong guess would matter, each with why the answer changes the plan; skip what the document leaves to the builder and anything you could decide yourself; if nothing important is left, say so. Read the ranked findings as ranked questions; ignore each finding's recommended fix, and read `Lenses clean: Builder questions` as nothing important left. Without a subagent tool, run the check yourself as that builder. Don't hand the document over until the check is back. Sort the questions into three piles:
 
 - **Answered already** by the conversation or the project: put the answer in the document.
 - **Minor**: a sensible builder could settle it without changing what gets built. Settle it, and mark it in the document as your call.

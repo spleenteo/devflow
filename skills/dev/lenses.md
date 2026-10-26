@@ -10,7 +10,7 @@ The common lenses always run. On a small work, pick one or two stack lenses, say
 |---|---|
 | **Existence** | Do the files, models, functions, routes and tables the slices name still exist, with that name and signature? This is the check that costs most when missing. Before declaring something unused or dead: grep the whole source tree, value and setter, and say in the report where you looked |
 | **Core flow and neighbours** | Which main user path is crossed or altered? Who else reads or writes the same data? Which settings or flags change the behaviour of what is about to be built? Which permissions or roles are affected? |
-| **Memory and debt** | Is there a decision in `docs/decisions-log/`, `CLAUDE.md` or `docs/` that this work contradicts or makes obsolete? Which documents become false once the work ships? Are data migrations needed on existing content? |
+| **Memory and debt** | Is there a decision in `docs/decisions-log/` (matched by key words and by `touches:` against the files the slices name), `CLAUDE.md` or `docs/` that this work contradicts or makes obsolete? Which documents become false once the work ships? Are data migrations needed on existing content? |
 
 ## `rails`
 

@@ -38,13 +38,13 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Root | `docs/` | Everything this skill writes lives under it: `docs/work/`, `docs/decisions-log/`, `docs/development-guidelines.md`, `docs/CHANGELOG.md`. Checked at first run (Step 0) |
 | Stack | `rails`, `astro`, `react`, `node`, `generic` | `Gemfile` + `config/application.rb` → rails; `astro.config.*` → astro; `package.json` with `react` in dependencies → react; `package.json` without → node; else generic |
 | Guidelines | `docs/development-guidelines.md` | Read if present; its relevant sections go into every context packet. Template in `${CLAUDE_SKILL_DIR}/development-guidelines.template.md` |
-| Decisions | `docs/decisions-log/` | Read by impact and review; written here, on request, at the close of a step (until `flow:docs` takes it over). Format in `${CLAUDE_SKILL_DIR}/decisions-log.md` |
+| Decisions | `docs/decisions-log/` | Read by impact and review; proposed here at the close of a step, written by `flow:docs` on a yes. Criterion and requests: the work reference, § Decisions |
 | Changelog | `docs/CHANGELOG.md` | Written by `flow:docs`; searched at opening. An existing one is adopted, not replaced |
 | Work reference | `${CLAUDE_PLUGIN_ROOT}/shared/work.md` (in the repo: [shared/work.md](../../shared/work.md)) | The how of a work's home, `STATUS.md`, slice-close bookkeeping, close, merge and archive. This skill says when; the reference says how. Read it when a step points to it |
 | Impact lenses | Per stack, in `${CLAUDE_SKILL_DIR}/lenses.md` | Chosen from the detected stack |
 | Project lenses | `docs/impact-lenses.md` | Read if present by impact and every plan review, on top of the stack lenses. Template in `${CLAUDE_SKILL_DIR}/impact-lenses.template.md` |
 
-Configuration lives in `.flow.yml` at the project root. If it's absent and a `.devflow.yml` exists, read that instead: same keys. When it reads `.devflow.yml`, say so once in the session and suggest renaming it. A project can override the defaults with `.flow.yml`: keys `root`, `stack`, `changelog`, `version_file`, `merge` (`local` | `pr`, default `local`). Read if present. The skill writes it in one case only: Step 0, to record a non-default root the user chose. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
+Configuration lives in `.flow.yml` at the project root. If it's absent and a `.devflow.yml` exists, read that instead: same keys. When it reads `.devflow.yml`, say so once in the session and suggest renaming it. A project can override the defaults with `.flow.yml`: keys `root`, `stack`, `changelog`, `version_file`, `merge` (`local` | `pr`, default `local`), `areas` (the area words a decision may carry, as a flow list: `areas: [engine, ui]`). Read if present. The skill writes it in one case only: Step 0, to record a non-default root the user chose. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
 
 ## Project memory
 
@@ -196,7 +196,7 @@ A technical work that skipped the frame has no criterion, and nothing here appli
 
 ### `phase: impact`, once, on `slices.md`
 
-The slices against the real code, before the first plan. Two subagents in parallel, both with `ultrathink` in the prompt: one with the common lenses, one with the detected stack's lenses (`${CLAUDE_SKILL_DIR}/lenses.md`: put its expanded absolute path in the packet, never the variable) and the project lenses, same report format. The common-lens subagent receives the project lenses in the packet but doesn't run them. On a one-slice work, one subagent with all of them. Packet: `slices.md` in full (here it is the object under review), the descriptions of `docs/decisions-log/` files that match the work's key words (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`), the guidelines, and the contents of `docs/impact-lenses.md` verbatim when present. The code they read themselves.
+The slices against the real code, before the first plan. Two subagents in parallel, both with `ultrathink` in the prompt: one with the common lenses, one with the detected stack's lenses (`${CLAUDE_SKILL_DIR}/lenses.md`: put its expanded absolute path in the packet, never the variable) and the project lenses, same report format. The common-lens subagent receives the project lenses in the packet but doesn't run them. On a one-slice work, one subagent with all of them. Packet: `slices.md` in full (here it is the object under review), the descriptions of `docs/decisions-log/` files that match the work's key words and the files the slices name (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords`, `files`), the guidelines, and the contents of `docs/impact-lenses.md` verbatim when present. The code they read themselves.
 
 Not in session: whoever just ran the shaping is the worst head for seeing what breaks elsewhere.
 
@@ -210,7 +210,7 @@ On a one-slice work, impact is often the check that saves you: the twenty-line f
 
 From here `phase: slice`. For each slice, in `slices.md` order, four steps and two stops. `step:` in `STATUS.md` says which.
 
-**The slice packet**, built once per slice and placed verbatim at the top of every subagent prompt in it: the `## The criterion` block when the work has one; the slice's section of `slices.md`; `lessons.md`; the sections of `docs/development-guidelines.md` that apply (tests, naming, placement, gate); the descriptions of matching decisions (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`); the contents of `docs/impact-lenses.md` when present. `shaping.md` and `breadboard.md` only if the slice's section points to them.
+**The slice packet**, built once per slice and placed verbatim at the top of every subagent prompt in it: the `## The criterion` block when the work has one; the slice's section of `slices.md`; `lessons.md`; the sections of `docs/development-guidelines.md` that apply (tests, naming, placement, gate); the descriptions of matching decisions (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords`, and `files:` the slice's files); the contents of `docs/impact-lenses.md` when present. `shaping.md` and `breadboard.md` only if the slice's section points to them.
 
 ### `step: plan`
 
@@ -222,7 +222,7 @@ Writing the plan surfaces deviations from the mandate: an affordance better move
 
 ### `step: review`
 
-Right after the plan, one subagent, never in session: whoever just wrote the plan is the worst head for finding its contradictions. `ultrathink` only if the plan has more than five tasks. Packet plus the plan.
+Right after the plan, one subagent, never in session: whoever just wrote the plan is the worst head for finding its contradictions. `ultrathink` only if the plan has more than five tasks. Packet plus the plan. The decisions in the packet match the plan too: ask `op: descriptions` again with `keywords` and `files:` the plan's files, and add any new description.
 
 | Lens | Looks for |
 |---|---|
@@ -250,7 +250,7 @@ That skill runs without stopping between tasks and settles conflicts with ruling
 ### `step: close`
 
 1. Verify the slice's Done as written in `slices.md`, plus the gate: the `## Gate` section of the guidelines if present, else tests green, typecheck or lint green, build green. If the slice is a refactor, the Done is a regression checklist written before starting and run by hand before committing.
-2. Lessons, in two places. The narrative under the slice in `slices.md`, as **"V<n> — done on <date>"**: what execution revealed, the rulings taken from the ledger. The rules, one line each, appended to `lessons.md`: *"before declaring something unused, grep all of `src`, value and setter, and say in the report where you looked."* A ruling that discarded a real alternative is a decision candidate (see `${CLAUDE_SKILL_DIR}/decisions-log.md`).
+2. Lessons, in two places. The narrative under the slice in `slices.md`, as **"V<n> — done on <date>"**: what execution revealed, the rulings taken from the ledger. The rules, one line each, appended to `lessons.md`: *"before declaring something unused, grep all of `src`, value and setter, and say in the report where you looked."* A ruling that discarded a real alternative is a decision candidate (see the work reference, § Decisions).
 3. Update `STATUS.md` as the work reference says (§ `slices.md` and `lessons.md`, closing a slice), with wall-clock and cost in the Log line.
 4. Commit. **Second stop.** One message: what closed, the gate result, the new rules, the decision candidate if any with the question whether to record it, and: *"V3 closed and committed. Plan V4, or stop here?"*
 
@@ -263,7 +263,7 @@ Applies to frame, shaping, breadboard, slicing and impact. Five moves, in order:
 1. **Fidelity check**, before the commit. For each requirement, shape or slice just produced: which line of the criterion does it serve? Whatever traces back to nothing is named in the report, with what it would take to keep it. On `shaping.md` and `slices.md` — the documents the rest of the work inherits — a subagent runs it, with a packet of the criterion, the applicable guidelines and the document alone. On the others, in session. Skipped entirely on a work with no frame, and said so.
 2. **Commit** the document just produced. Explicit `git add` on the touched files, never `-A` or `.`: the working tree may hold unrelated work. Imperative messages, in the language the repo already uses.
 3. **Update `STATUS.md`**: `phase:`, `updated:`, Log line with wall-clock and cost. After a verification the line states the outcome: *"09-02 — impact — 2 problems, fixed in V2 and V4 — 14 min — $2.10"*.
-4. **Decision candidate** in the same report, when `${CLAUDE_SKILL_DIR}/decisions-log.md` says so: a real alternative discarded, a known problem deferred on purpose, a behaviour that will surprise whoever reads the code. Propose `docs/decisions-log/YYYY-MM-DD-<slug>.md`; never write it unasked.
+4. **Decision candidate** in the same report, when the work reference, § Decisions, says so: a real alternative discarded, a known problem deferred on purpose, a behaviour that will surprise whoever reads the code. Propose it; never write it unasked, and on a yes send the `decision-write` request that section shows.
 5. **Stop and ask** before the next phase.
 
 ## Step 6 — Exit

@@ -5,7 +5,7 @@ The shared definition of a work's home, state, close and archive, read by `/flow
 - **repo**: a code repository; works live in `<root>/work/`, where `<root>` is `docs` unless `.flow.yml` sets `root`. Used by `/flow:dev`.
 - **project**: a folder the user names when opening a project, never a code repo's `docs/`. Used by `/flow:project`.
 
-Configuration (repo) lives in `.flow.yml` at the repository root; if it's absent and a `.devflow.yml` exists, read that instead: same keys. Keys this file uses: `root`, `merge` (`local` | `pr`, default `local`).
+Configuration (repo) lives in `.flow.yml` at the repository root; if it's absent and a `.devflow.yml` exists, read that instead: same keys. Keys this file uses: `root`, `merge` (`local` | `pr`, default `local`), `areas` (see [Decisions](#decisions)).
 
 ## Home
 
@@ -116,6 +116,57 @@ description: "<what the user wants to achieve>"
 **Closing a slice, the bookkeeping.** Tick the slice in `STATUS.md`, set `slice:` to the next one and `step:` to `plan`, add the Log line. A closed slice isn't reopened: if a later slice finds an earlier one was wrong, the fix goes into the current slice, stated in `slices.md`, or becomes a new slice at the end (project: if the appetite allows).
 
 **Commits.** repo: commit at each phase close and slice close, with explicit `git add <paths>`, never `-A` or `.`. project: the same when the home is under version control; in a plain folder the files are the record.
+
+## Decisions
+
+**Both.** A decision is the memory of *why*: it outlives the slices, the plans and the works, which get archived. The conductors propose; `flow:docs` writes, checks and commits (its format and its check live in `skills/docs/`).
+
+**When to propose one:**
+
+- a **real alternative was discarded**: in six months someone will propose it again;
+- a **known problem was deferred on purpose**: whoever finds it must know it was known, and why it is still there (`kind: deferral`);
+- the behaviour **will surprise** whoever reads the code or the plan later: a guard that looks useless, a callback in an unexpected place, a more expensive supplier, a step skipped;
+- an **outside constraint** shaped the choice: a platform limit, a client requirement, a permit, a legal rule.
+
+**The test: does the choice outlive the work?** If not, it is a ruling of the slice and goes in `slices.md`, or a rule for later slices and goes in `lessons.md`. Choices without alternatives, style preferences (repo: `development-guidelines.md`; project: `constraints.md`) and what the code or the plan already says by itself are no decisions.
+
+**Propose, never write unasked.** At the close of a step, and during execution when one shows up: *"This choice discarded X. Record it?"* One question, with the candidate's gist. Decisions are written when taken, never in bulk at the end: by then the reason has faded.
+
+**On a yes**, invoke the Skill tool with skill `flow:docs` and args a header line plus one note line per item (a repeated label gives several items), self-contained since the fork sees no conversation. Repo layout (`work` is the slug, or `null` outside a work; `areas` from `.flow.yml` bound `area`):
+
+```
+op: decision-write, layout: repo, dir: <absolute repo root>, kind: decision, slug: <what-was-decided>, work: <slug>
+decision: <what was decided, concretely>
+context: <what was on the table, and what forced a choice>
+alternatives: <alternative>: <why it lost>
+alternatives: <another alternative>: <why it lost>
+consequences: <what it costs, what to watch>
+reopen-when: <the event that makes it worth revisiting>
+references: <link to slices.md, a spike, a ticket>
+touches: <src/menu>
+touches: <src/api/filters.ts>
+area: <one of the .flow.yml areas>
+```
+
+Project layout (`dir` is the folder holding the projects, `project` the home folder's name, `slice` `S<n>` or `null`):
+
+```
+op: decision-write, layout: project, dir: <absolute folder holding the projects>, project: <home folder name>, kind: decision, slug: <what-was-decided>, slice: S<n>
+decision: <what was decided, concretely: names, numbers, dates>
+context: <what was on the table, and what forced a choice>
+alternatives: <alternative>: <why it lost>
+consequences: <what it costs, what to watch>
+reopen-when: <the event that makes it worth revisiting>
+references: <the slice's section, a quote, a message>
+```
+
+A `deferral` swaps `alternatives:` for `why-deferred:`. `NEEDS: <field>` or `FAILED: <reason>`: ask the user for the field, or report it, and resend or stop. A success returns the path and sha: report them.
+
+**Status.** A decision is never edited into its opposite. When a new one replaces it, or a deferred problem gets solved, send `op: decision-status` with `file` (relative to `dir`), `status: superseded` and `superseded_by: <new file>`, or `status: resolved` and `resolved_by: <work slug>`, and `note: <one line>`, plus `project` in the project layout.
+
+**Checking.** When the user asks to check the log, send `op: decision-check` (`layout`, `dir`, plus `project` in the project layout) and show what it returns. When the user asks to copy the check into the repo, for its own gate or CI, add `install: yes` (repo layout only); committing the copy is the user's call.
+
+**Who reads them.** Repo: the impact lens "Memory and debt" and every plan review, through `op: descriptions` with `keywords` and `files`; `/flow:changelog` links the work's decisions; `/flow:archive` leaves them in place. Project: the reality check and every plan review, through `op: descriptions`; `report.md` links them at exit.
 
 ## Closing a work
 

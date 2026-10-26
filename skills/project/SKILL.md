@@ -35,7 +35,7 @@ Same skeleton as `/flow:dev`: the high-level plan is the slice list produced by 
 | Work reference | Home, `STATUS.md`, slice bookkeeping, close and archive for the **project** layout: `${CLAUDE_PLUGIN_ROOT}/shared/work.md` (in the repo: [shared/work.md](../../shared/work.md)), called "the work reference" below |
 | Files | `STATUS.md`, `frame.md`, `shaping.md`, `kickoff.md`, `slices.md`, `lessons.md`, `S<n>-plan.md`, `constraints.md`, `decisions/`, `report.md` |
 | Constraints | `constraints.md`: appetite, non-negotiables, people and roles, calendar. Template in `${CLAUDE_SKILL_DIR}/constraints.template.md` |
-| Decisions | `decisions/YYYY-MM-DD-<slug>.md`. Criterion and format in `${CLAUDE_SKILL_DIR}/decisions.md` |
+| Decisions | `decisions/YYYY-MM-DD-<slug>.md`. Proposed here, written by `flow:docs` on a yes. Criterion and requests: the work reference, § Decisions |
 | Sub-projects | A slice too big for one plan becomes a sub-project: the work reference, § Home |
 
 Slices are at most nine per level. More than nine means the level is wrong: group them, and open sub-projects when their turn comes.
@@ -249,7 +249,7 @@ Applies to frame, shaping, kickoff, slicing and reality. Four moves, in order:
 
 1. **Fidelity check**, before anything is reported. For each requirement, shape or slice just produced: which line of the criterion does it serve? Whatever traces back to nothing is named in the report, with what it would take to keep it. On `shaping.md` and `slices.md` — the documents the rest of the project inherits, and the ones the client reads — a subagent runs it, with a packet of the criterion, `constraints.md` and the document alone. On the others, in session. The frame phase checks itself differently: that the criterion block exists and that the body doesn't contradict it.
 2. **Update `STATUS.md`**: `phase:`, `updated:`, Log line.
-3. **Decision candidate** in the same report, when `${CLAUDE_SKILL_DIR}/decisions.md` says so: a real alternative discarded, a known problem deferred on purpose, a choice that will surprise whoever reads the plan later. Propose `decisions/YYYY-MM-DD-<slug>.md`; never write it unasked.
+3. **Decision candidate** in the same report, when the work reference, § Decisions, says so: a real alternative discarded, a known problem deferred on purpose, a choice that will surprise whoever reads the plan later. Propose it; never write it unasked, and on a yes send the `decision-write` request that section shows.
 4. **Stop and ask** before the next phase.
 
 Commit at each of these points as the work reference says (§ `slices.md` and `lessons.md`, Commits).

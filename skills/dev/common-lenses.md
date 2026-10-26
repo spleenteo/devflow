@@ -14,7 +14,7 @@ The common lenses always run. The stack lenses are each resolved preset's `## Le
 
 ## Stacks without a preset
 
-The stacks Flow ships a preset for (`astro`, `datocms`, `rails`) keep their lenses in the preset, not here. These stacks have none, and so does a stack whose mapped preset isn't in the session:
+The stacks Flow ships a preset for (`astro`, `datocms`, `rails`) keep their lenses in the preset, not here. These stacks have none. A shipped stack whose mapped preset isn't in the session has no table here either: the `generic` rule applies (ad-hoc lenses), and it contributes no Rules, Tests or Gate.
 
 ### `react`
 

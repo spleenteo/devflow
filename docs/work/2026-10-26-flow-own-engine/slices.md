@@ -299,3 +299,9 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - On a throwaway repo carrying old traces, the start proposes the upgrade, runs it after an ok and commits it on a branch; `main` untouched.
 - The Gate's old-name grep matches only the upgrade step.
 - Every Mermaid block in `docs/architecture.md` renders with `mmdc` (as at v0.1.0) and is checked by eye.
+
+**Deviations found while planning V8**
+- An upgrade is a run of its own: it lists the changes, commits on `flow-upgrade` (outside `work/`) after an ok, proposes a local merge, and opens no work; declining stops the run.
+- `/flow:changelog`, `/flow:archive` and `flow:docs` don't upgrade: they stop and point to `/flow:dev`.
+- Open work branches, `CLAUDE.md` files, `.claude/settings.json` entries and project-scope copies of the old skills are pointed at, never edited.
+- The Gate's old-name grep also allows README's upgrade section; `install.sh` still reads `stack:`.

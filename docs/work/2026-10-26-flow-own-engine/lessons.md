@@ -26,3 +26,6 @@
 - Another plugin's SessionStart hook can tell the model to use its skills first: state process ownership at the top of every entry skill, by process kind, not by plugin name.
 - A skill that writes into a document writes in the document's language, not the conversation's.
 - A dialogue skill's every exit (clear, skipped, small) needs a next step in its caller's text.
+- A migration committed on its own branch leaves open work branches on the old state: give the resume an explicit rule, never "they pick it up".
+- Entry points that check the same condition must share one predicate ("an old file is present", not "the file found is old"), or they diverge when both exist.
+- A rewritten README overstates by generalising: check every "any skill", "either variable" claim against the line that grants it.

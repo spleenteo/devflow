@@ -13,6 +13,9 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 
 ## Gate narrowing, until V8 closes
 
+Ended with V8: the Gate runs as written in the guidelines.
+
+
 - **Old names.** The `.devflow.yml` fallback sentence and the "devflow work … merged" note are allowed wherever V1–V7 move them (the work-layer reference, `flow:docs`, the thin `/flow:changelog` and `/flow:archive` entry points), on top of the places the Gate already lists. V8 removes them all but the upgrade step.
 - **Links.** From V3 on, links in `README.md` to files V3–V5 remove or move (`skills/dev/decisions-log.md`, `skills/dev/lenses.md`, the guideline and lens templates) may break: add `--glob '!README.md'` to the link check's `rg --files` call until V8 rewrites it. `docs/architecture.md` stays checked.
 
@@ -305,3 +308,23 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - `/flow:changelog`, `/flow:archive` and `flow:docs` don't upgrade: they stop and point to `/flow:dev`.
 - Open work branches, `CLAUDE.md` files, `.claude/settings.json` entries and project-scope copies of the old skills are pointed at, never edited.
 - The Gate's old-name grep also allows README's upgrade section; `install.sh` still reads `stack:`.
+
+**V8 — done on 2026-10-26**
+- An upgrade is a run of its own, described once in `shared/work.md` § Upgrade. `/flow:dev` checks the default branch right after the dependency check. It lists the changes in one message, and on an ok commits them on `flow-upgrade`, switches back and proposes a local merge with its own ok. Declining stops the run. `/flow:project` rewrites the "devflow work … merged" rows in place. `/flow:changelog`, `/flow:archive` and `flow:docs` stop on an older file, even beside `.flow.yml`, and point to `/flow:dev`. Every fallback is gone. dev no longer reads `stack:`, and `install.sh` still does. The Naming rule and the Gate are updated, and the narrowing ends. README and `docs/architecture.md` are rewritten to the new shape, with the merge described as local after an ok and `pr` when configured.
+- Reviews caught the following:
+  - open `work/*` branches left on an old file with nothing to refresh them. The answer is the rule "Resume on an old file": merge the default branch, or rename by hand, before any write.
+  - the profile able to write before that check on a resume;
+  - three entry points with two different predicates when both files exist;
+  - the upgrade merge borrowing a work's `base:`;
+  - in the docs, a claim that `stack:` stops the entry points;
+  - env vars overstated as overriding both models and effort;
+  - process ownership claimed for skills that don't carry it;
+  - user-invocable skills named without the slash;
+  - a lifecycle diagram with no upgrade exit and no frame → slicing edge.
+- Demonstrated headless on throwaway repos:
+  - `.devflow.yml` (`root: notes`, `stack: astro`): turn 1 lists the three rewrites and points at `CLAUDE.md:3`, writing nothing. Turn 2, "ok, upgrade; don't merge", commits once on `flow-upgrade`: `.flow.yml` with `root: notes` and `stacks: [astro]`, the archived header rewritten, `main` and `CLAUDE.md` untouched, back on `main`.
+  - A decline writes nothing and opens no work.
+  - Both files: `merge: pr` kept and `changelog` moved.
+  - `/flow:changelog` stops and points to `/flow:dev`.
+  - A project home not under git, with a sub-project: both rows proposed, then rewritten to "flow:dev work …", with no commit.
+- The Gate is green without the narrowing. The four Mermaid blocks render with `npx -y @mermaid-js/mermaid-cli` and were read as images.

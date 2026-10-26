@@ -1,8 +1,8 @@
 ---
 status: open
 phase: slice
-slice: V8
-step: execute
+slice: null
+step: null
 work: flow-own-engine
 stack: generic
 updated: 2026-10-26
@@ -25,7 +25,7 @@ description: "Flow plans and runs its own work, owns its memory and the project 
 - [x] V5 Stack presets
 - [x] V6 Engine
 - [x] V7 Widen and narrow
-- [ ] V8 Upgrade and documentation
+- [x] V8 Upgrade and documentation
 
 ## Log
 
@@ -43,3 +43,4 @@ description: "Flow plans and runs its own work, owns its memory and the project 
 - 2026-10-26 — V5 close — presets astro, datocms, rails as skills; per-stack resolution (.flow.yml, userConfig, shipped); common lenses on their own; guidelines draft; per-stack dependency rows and install.sh filtering; 7 demos green (init listing check replaced by Skill results); Gate green within narrowing; 2 fix rounds — V6 plan; owner to review the presets' rules — n/a — n/a
 - 2026-10-26 — V6 close — five agents (planner, plan-reviewer, impact, executor, task-reviewer) with model and effort; Flow's own plan, execution and review; § Agents and the ledger; test policy, commit and server rules once in the executor; no ultrathink; plan skills out of dependencies.md; CREDITS.md; 5 demos green plus one re-run after 3 demo fixes; Gate green within narrowing; 3 fix rounds — V7 plan — n/a — n/a
 - 2026-10-26 — V7 close — flow:brainstorm and flow:grill ported and credited; brainstorm → grill → frame in both conductors; process ownership in every entry skill; superpowers out of dependencies and skills; 5 demos green with the superpowers hook active; Gate green within narrowing; 3 fix rounds plus 1 demo fix — V8 plan — n/a — n/a
+- 2026-10-26 — V8 close — upgrade as a run of its own (flow-upgrade branch, local merge after its own ok, decline stops, resume rule for old work branches); fallbacks removed; Naming and Gate updated, narrowing ended; README and architecture rewritten; 5 demos green (two two-turn); Gate green as written; 3 fix rounds on T1, 1 on T3 — closing sequence (changelog v0.2.0, archive, merge, tag) awaits the owner's ok — n/a — n/a

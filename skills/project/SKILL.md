@@ -129,7 +129,7 @@ For each phase: invoke the tool telling it where to save, update `phase:`, stop.
 | `shaping` | Several ways with different outcomes | `shaping`, with the appetite as a hard constraint on every shape | `shaping.md` |
 | `kickoff` | The people who will execute meet to agree on the shape | `kickoff-doc` on the call's transcript | `kickoff.md` |
 | `slicing` | Always, even with one slice | `shaping` (slicing section) | `slices.md` |
-| `reality` | Always, after slicing | Two subagents (below) | Corrections in `slices.md` |
+| `reality` | Always, after slicing | `flow:impact`, two, or one (below) | Corrections in `slices.md` |
 
 If the tool the row picks for the case at hand isn't listed in the session (`kickoff-doc` included), stop that phase and give its commands from `dependencies.md`. Never swap in another tool (`brainstorming` in place of a missing `framing-doc`).
 
@@ -168,7 +168,7 @@ A frame written before this convention gets the block added at the top of its ne
 
 ### `phase: reality`, once, on `slices.md`
 
-The slices against the world, before the first plan. Two `flow:impact` dispatches in parallel, each with its lenses from the table in the packet. Packet: `slices.md` in full, `constraints.md`, `shaping.md` if it exists, the matching decisions.
+The slices against the world, before the first plan. Two `flow:impact` dispatches in parallel, each with its lenses from the table in the packet. Packet: `slices.md` in full, `constraints.md`, `shaping.md` if it exists, the matching decisions. The Pre-mortem lens is the exception to evidence-only: hypotheses allowed, each with the slice it hits and the cheapest check to run now.
 
 | Dispatch | Lenses |
 |---|---|
@@ -251,7 +251,12 @@ A closed slice isn't reopened; if a later slice finds it was wrong, the fix goes
 
 Applies to frame, shaping, kickoff, slicing and reality. Four moves, in order:
 
-1. **Fidelity check**, before anything is reported. For each requirement, shape or slice just produced: which line of the criterion does it serve? Whatever traces back to nothing is named in the report, with what it would take to keep it. On `shaping.md` and `slices.md` — the documents the rest of the project inherits, and the ones the client reads — a `flow:plan-reviewer` runs it, with a packet of the criterion, `constraints.md` and the document alone. On the others, in session. The frame phase checks itself differently: that the criterion block exists and that the body doesn't contradict it.
+1. **Fidelity check**, before anything is reported. For each requirement, shape or slice just produced: which line of the criterion does it serve? Whatever traces back to nothing is named in the report, with what it would take to keep it. On `shaping.md` and `slices.md` — the documents the rest of the project inherits, and the ones the client reads — a `flow:plan-reviewer` runs it, with a packet of the criterion (standing in for the mandate), `constraints.md`, the document alone and this lens table. On the others, in session. 
+   | Lens | Looks for |
+   |---|---|
+   | **Criterion fidelity** | Each requirement, shape or slice names the criterion line it serves; whatever traces to none is reported with what keeping it would take |
+
+   The frame phase checks itself differently: that the criterion block exists and that the body doesn't contradict it.
 2. **Update `STATUS.md`**: `phase:`, `updated:`, Log line.
 3. **Decision candidate** in the same report, when the work reference, § Decisions, says so: a real alternative discarded, a known problem deferred on purpose, a choice that will surprise whoever reads the plan later. Propose it; never write it unasked, and on a yes send the `decision-write` request that section shows.
 4. **Stop and ask** before the next phase.

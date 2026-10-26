@@ -40,7 +40,7 @@ The `ARGUMENTS:` text is a header line of `key: value` pairs, followed, for `dec
 | `status`, `superseded_by`, `resolved_by`, `note` | `decision-status`: the new status (`superseded` or `resolved`), the file name of the new decision or the slug of the resolving work, and the one-line note for the status log |
 | `install` | `decision-check`: `yes` copies the script into the repo |
 
-Required: `op`, `layout`, `dir`; and per op: changelog ops need `work`, `base`, `release`; `changelog-write` also `level` and `title` per release; `search` and `descriptions` need `keywords` or `files` (at least one); `decision-write` needs `kind`, `slug`, `work` (repo) or `project` and `slice` (project), and the notes `decision:`, `context:`, `alternatives:` (decision) or `why-deferred:` (deferral), `consequences:`, `reopen-when:`, `touches:` (repo layout) and `area:` (repo layout); `decision-status` needs `file`, `status`, the matching `superseded_by` or `resolved_by`, and `note`; `decision-check` needs nothing more in the repo layout. In the project layout `decision-write`, `decision-status` and `decision-check` need `project`. A changelog op with `layout: project` is `NEEDS: layout repo`: a project has no changelog.
+Required: `op`, `layout`, `dir`; and per op: changelog ops need `work`, `base`, `release`; `changelog-write` also `level` and `title` per release; `search` and `descriptions` need `keywords` or `files` (at least one; in the project layout `files` is ignored, so `files` alone is `NEEDS: keywords`); `decision-write` needs `kind`, `slug`, `work` (repo) or `project` and `slice` (project), and the notes `decision:`, `context:`, `alternatives:` (decision) or `why-deferred:` (deferral), `consequences:`, `reopen-when:`, `touches:` (repo layout) and `area:` (repo layout); `decision-status` needs `file`, `status`, the matching `superseded_by` or `resolved_by`, and `note`; `decision-check` needs nothing more in the repo layout. In the project layout `decision-write`, `decision-status` and `decision-check` need `project`. A changelog op with `layout: project` is `NEEDS: layout repo`: a project has no changelog.
 
 ## What it does NOT do
 
@@ -167,12 +167,12 @@ With a split, every line carries the same `<sha>`.
 
 Search before reading, then read only what matches.
 
-- `layout: repo`: `rg -il "<keyword>" <dir>/<changelog> <dir>/<root>/decisions-log/ <dir>/<root>/work/archived.md`, one keyword at a time or as an alternation. Never `<root>/work/archive/`.
+- `layout: repo`: `rg -il "<keyword>" <dir>/<changelog> <dir>/<root>/decisions-log/ --glob '*.md' --glob '!README.md' <dir>/<root>/work/archived.md`, one keyword at a time or as an alternation. Never `<root>/work/archive/`.
 - `layout: project`: under `dir`, `rg -il "<keyword>" --glob '*/STATUS.md' --glob '*/decisions/*.md' --glob '*/lessons.md' <dir>`.
 
 `rg` always gets an explicit path. Read the matching files, and for each keep the lines that bear on the keywords.
 
-**`files`** (repo layout): the decisions in `<dir>/<root>/decisions-log/` are matched by their frontmatter, not by their text. For each decision file with a `touches:` line, split the list; an entry matches a requested file when, compared by whole path segments, it equals the file or is a parent directory of it (`src/menu` matches `src/menu/Item.tsx`, not `src/menu-old/x.ts`; ignore a trailing `/`). An entry that is a symbol, not a path, never matches. A path that appears only in the body doesn't count. Files with no `touches:` (legacy) never match by `files`. With both `keywords` and `files`, a file is a match when it matches either; the excerpt for a `files` match is the file's description. With `files` alone, `<root>/decisions-log/` is the only place searched.
+**`files`** (repo layout): the decisions in `<dir>/<root>/decisions-log/` are matched by their frontmatter, not by their text. For each decision file with a `touches:` line, split the list; an entry matches a requested file when, compared by whole path segments, it equals the file or is a parent directory of it (`src/menu` matches `src/menu/Item.tsx`, not `src/menu-old/x.ts`; ignore a trailing `/`). A path that appears only in the body doesn't count. Files with no `touches:` (legacy) never match by `files`. With both `keywords` and `files`, a file is a match when it matches either; the excerpt for a `files` match is the file's description. With `files` alone, `<root>/decisions-log/` is the only place searched.
 
 Return at most ten lines, the most relevant first, each:
 
@@ -184,7 +184,7 @@ Return at most ten lines, the most relevant first, each:
 
 ## Op `descriptions`
 
-As `search`, `files` included, over decisions only: `<root>/decisions-log/` (repo), `*/decisions/*.md` (project). Return at most ten lines, each:
+As `search`, `files` included, over decisions only: `<root>/decisions-log/` (repo; `rg` gets `--glob '*.md' --glob '!README.md'`, so the installed `check.sh` never matches), `*/decisions/*.md` (project). Return at most ten lines, each:
 
 ```
 <path> — <the file's description: line>
@@ -205,7 +205,7 @@ Writes one decision file in the format, checks it, commits it alone. Read the fo
 bash ${CLAUDE_SKILL_DIR}/scripts/decisions-check [--project] [--areas <areas from .flow.yml>] <decisions folder>
 ```
 
-   `--project` in the project layout; `--areas` only when `.flow.yml` has `areas:` (pass its items comma-separated). Fix every error reported for your file in the file and run it again, up to three times; if it still reports errors, remove the file and answer `FAILED: check: <first error>`. Errors in other files are not yours: ignore them.
+   `--project` in the project layout; `--areas` only when `.flow.yml` has `areas:` (pass its items comma-separated). Fix every error reported for your file in the file and run it again, up to three times. An `area` outside the declared vocabulary is not fixed by picking one: remove the file and answer `NEEDS: area (one of <list>)`. If it still reports errors, remove the file and answer `FAILED: check: <first error>`. Errors in other files are not yours: ignore them.
 5. Commit it alone, pathspec form (a repo; a project home only when it is inside a git repo, which you test with `git -C <home> rev-parse --show-toplevel`, otherwise skip the commit and say `not committed`):
 
 ```bash
@@ -228,9 +228,9 @@ Recorded <path> — <commit sha | not committed> — check: <the script's summar
 Changes a decision's status. Never touches the body. Read the format file (`${CLAUDE_SKILL_DIR}/decisions.md`, § Changing status) first.
 
 1. `file` relative to `dir` (a project: under `<project>/decisions/`; the file must exist, else `FAILED: no <file>`). `status`: `superseded` or `resolved`; for `superseded`, `superseded_by` (the new file's name), for `resolved`, `resolved_by` (the work's slug); `note` the status-log line. Missing: `NEEDS: <field>`.
-2. Edit the frontmatter only: `status:` and `superseded_by:` or `resolved_by:` (replace the `null` line; a kind that does not carry that key, say `resolved` on a decision: `FAILED: <status> does not fit kind <kind>`). Append `- YYYY-MM-DD — <note>` with today's date as the last line under `## Status log`. A file with no `## Status log` heading (legacy) gets the heading `## Status log` appended at the end, then the line; a legacy file gets no `kind:` and no other key. No other line of the file changes.
-3. For a file with `kind:`, run the check as in `decision-write` and fix what it reports for your file.
-4. Commit it alone, pathspec form, message `Mark <file name> <status>`. Return:
+2. Edit the frontmatter only, changing lines that already exist and adding no key: `status:` and `superseded_by:` or `resolved_by:` (replace the `null` line; a kind that does not carry that key, say `resolved` on a decision: `FAILED: <status> does not fit kind <kind>`). Append `- YYYY-MM-DD — <note>` with today's date as the last line under `## Status log`. A file with no `## Status log` heading (legacy) gets the heading `## Status log` appended at the end, then the line; a legacy file gets no `kind:` and no other key, and the status log carries the change. No other line of the file changes.
+3. For a file with `kind:`, run the check as in `decision-write` and report its summary line; never fix content. A legacy file skips the check.
+4. Commit it alone as in `decision-write` step 5 (pathspec form, including the no-git case), message `Mark <file name> <status>`. Return:
 
 ```
 Updated <path> — <status> — <commit sha | not committed> — check: <summary line | legacy>
@@ -244,9 +244,9 @@ Runs the check over the layout's decisions folder, `<dir>/<root>/decisions-log/`
 bash ${CLAUDE_SKILL_DIR}/scripts/decisions-check [--project] [--areas <areas>] <decisions folder>
 ```
 
-Return the script's error and warning lines (at most twenty), then its summary line, exactly as printed. With `install: yes` (repo layout; in the project layout, `FAILED: install is for the repo layout`): copy the script with `cp ${CLAUDE_SKILL_DIR}/scripts/decisions-check <dir>/<root>/decisions-log/check.sh`, replacing an older copy, and add a last line `installed <root>/decisions-log/check.sh (v<N>)`. The version is the number in the script's `# decisions-check v<N>` header line.
+Without a decisions folder, return `checked 0, legacy 0, errors 0, warnings 0` and run nothing. Otherwise return the script's error and warning lines (at most twenty), then its summary line, exactly as printed. With `install: yes` (repo layout; in the project layout, `FAILED: install is for the repo layout`): create the folder first if it is missing, then copy the script with `cp ${CLAUDE_SKILL_DIR}/scripts/decisions-check <dir>/<root>/decisions-log/check.sh`, replacing an older copy, and add a last line `installed <root>/decisions-log/check.sh (v<N>)`. The version is the number in the script's `# decisions-check v<N>` header line. You don't commit the copy: that is the conductor's decision.
 
-Without `install`, when `<root>/decisions-log/check.sh` exists, read its header line: if its version is lower than the script's (or it has none), add a last line `check.sh is older (v<old>, current v<N>): send install: yes to update it`. Committing the copy is the conductor's decision: you don't commit it.
+Without `install`, when `<root>/decisions-log/check.sh` exists, read its header line: if its version is lower than the script's (or it has none), add a last line `check.sh is older (v<old>, current v<N>): send install: yes to update it`.
 
 ## Relation to archiving
 

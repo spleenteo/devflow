@@ -62,13 +62,13 @@ Plugin skills are invoked as `/plugin-name:skill-name` ([skills](https://code.cl
 | [`/flow:brainstorm`](skills/brainstorm/SKILL.md) | A dialogue that finds out what you want and why, then writes a description a builder could plan from. Run by `/flow:dev` and `/flow:project` for an idea that isn't clear; also by hand |
 | [`/flow:grill`](skills/grill/SKILL.md) | Rounds of numbered questions, each with a recommended answer, on a plan, a draft or one doubt. Settled answers land in a file you name. Run by the conductors, also by hand |
 | [`/flow:changelog`](skills/changelog/SKILL.md) | The changelog entry and the `.version` bump for a finished work, on its branch |
-| [`/flow:archive`](skills/archive/SKILL.md) | Moves a finished work to `docs/work/archive/` and repairs the links |
+| [`/flow:archive`](skills/archive/SKILL.md) | Moves a finished work or project home out of the way and repairs the links |
 
 Open Claude Code inside the project and type `/flow:dev`, or say "resume mobile-menu". A bugfix is a one-slice work: straight to slicing, impact if it touches more than one file, the loop once.
 
 **From `/flow:project` to `/flow:dev`.** When an action of a project is software, its plan row reads "flow:dev work `<slug>` in `<repo>` merged". You open that work with `/flow:dev` in its repo, in its own session, and the row closes when it is merged.
 
-Running one of these skills is your choice of process: inside it, the process skills of other plugins (brainstorming, planning, plan execution, test-driven development, worktrees) don't apply.
+Running `/flow:dev`, `/flow:project`, `/flow:brainstorm` or `/flow:grill` is your choice of process: inside it, the process skills of other plugins (brainstorming, planning, plan execution, test-driven development, worktrees) don't apply.
 
 ## How a work runs
 
@@ -167,7 +167,7 @@ presets: [astro=my-stacks:astro]   # stack=skill pairs, replacing the shipped pr
 | `model_mid` | Model for the mid tier. Empty: Flow's default |
 | `stack_presets` | Skill per stack, as `stack=skill` pairs, comma-separated: `astro=my-stacks:astro, rails=my-stacks:rails` |
 
-**Environment variables beat both.** `CLAUDE_CODE_SUBAGENT_MODEL_FORCE`, with `CLAUDE_CODE_SUBAGENT_MODEL`, forces the model of every subagent ([run every subagent on one model](https://code.claude.com/docs/en/sub-agents#run-every-subagent-on-one-model)), and `CLAUDE_CODE_EFFORT_LEVEL` overrides the effort of every agent ([effort level](https://code.claude.com/docs/en/model-config#set-the-effort-level)). When either is set, the models and effort in Flow's agents and in the options above don't apply. The ledger records the value of the first two.
+**Environment variables beat both.** `CLAUDE_CODE_SUBAGENT_MODEL_FORCE`, with `CLAUDE_CODE_SUBAGENT_MODEL`, forces the model of every subagent ([run every subagent on one model](https://code.claude.com/docs/en/sub-agents#run-every-subagent-on-one-model)), and `CLAUDE_CODE_EFFORT_LEVEL` overrides the effort of every agent ([effort level](https://code.claude.com/docs/en/model-config#set-the-effort-level)). The first pair overrides the models of Flow's agents and the options above; `CLAUDE_CODE_EFFORT_LEVEL` overrides their effort. The ledger records the value of the first two.
 
 **Dependencies.** `install.sh` checks the dependencies for the current repo: it reads [`dependencies.md`](dependencies.md), shows the optional rows only for the stacks the checkout has, and installs nothing.
 
@@ -178,11 +178,11 @@ Older versions were installed as skills named `devflow`, `devflow-docs`, `devflo
 1. **Install the plugin first** (see [Install](#install)). Until the old skills are removed, both load: `/devflow` and `/flow:dev` are two copies of the conductor.
 2. **Remove the old skills.** Symlinks: `rm ~/.claude/skills/{devflow,devflow-docs,devflow-archive,projectflow}` (`rm -r` if they are copied folders). For `npx` installs: `npx skills remove -g devflow devflow-docs devflow-archive projectflow`.
 3. **New names:** `/devflow` is `/flow:dev`, `/projectflow` is `/flow:project`, `/devflow-docs` is `/flow:changelog`, `/devflow-archive` is `/flow:archive`.
-4. **Run `/flow:dev`** in the project. It finds the old traces on the default branch and offers the upgrade step: `.devflow.yml` renamed to `.flow.yml`, `stack:` turned into `stacks:`, the old names in `docs/work/archived.md` and in the guidelines rewritten, all in one commit on a `flow-upgrade` branch that it proposes to merge. It also lists, without editing them, the lines of your `CLAUDE.md` files, `Skill(...)` entries in `.claude/settings.json` and project-scope skill copies that still carry the old names. The upgrade is a run of its own: nothing else happens until the next run.
+4. **Run `/flow:dev`** in the project. It finds the old traces on the default branch and offers the upgrade step: `.devflow.yml` renamed to `.flow.yml`, `stack:` turned into `stacks:`, the old names in `docs/work/archived.md` and in the guidelines rewritten, all in one commit on a `flow-upgrade` branch that it proposes to merge. It also lists, without editing them, the lines of your `CLAUDE.md` files, `Skill(...)` entries in `.claude/settings.json` and project-scope skill copies that still carry the old names. The upgrade is a run of its own: nothing else happens until the next run. Open `work/*` branches that still hold an old file are pointed at, with the merge command to run after the upgrade (`git switch work/<slug> && git merge <default>`); the merge into the default branch waits for its own ok; declining stops the run, and the upgrade is offered again next time. Resuming a work whose branch still holds an old file stops until the branch is refreshed.
 
 Until the upgrade runs, the old configuration file is not read.
 
-**Superpowers may stay installed.** Inside a Flow run, its process skills don't apply; outside a Flow run they behave as before. Personal copies of `shaping`, `breadboarding` or `framing-doc` still count as present, but each shows twice in the listing (`shaping` and `shaping-skills:shaping`); remove a personal copy from `~/.claude/skills/` to drop it.
+**Superpowers may stay installed.** Inside `/flow:dev`, `/flow:project`, `/flow:brainstorm` and `/flow:grill`, its process skills don't apply; outside them they behave as before. Personal copies of `shaping`, `breadboarding` or `framing-doc` still count as present, but each shows twice in the listing (`shaping` and `shaping-skills:shaping`); remove a personal copy from `~/.claude/skills/` to drop it.
 
 Existing projects keep their `docs/` as it is.
 

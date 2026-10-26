@@ -15,7 +15,7 @@ Every behaviour of Claude Code a document states is either verified in a spike o
 ## Naming
 
 - A skill's folder is its `name:`, kebab-case: `skills/dev/SKILL.md` has `name: dev`.
-- Skills are cited as `/flow:<skill>` in every document. Dependency skills by bare name with the plugin form in brackets: `writing-plans` (`superpowers:writing-plans`), so the reference holds for plugin and personal installs alike. The brackets go only at a dependency's first mention in each skill, bare afterwards. Checked: with only the plugin copy visible, a session resolves the bare name to the plugin skill.
+- User-invocable skills are cited as `/flow:<skill>` in every document. Skills that aren't user-invocable (`flow:docs`, `flow:stack-<name>`) and agents (`flow:planner`, …) are cited as `flow:<name>`, with no slash. Dependency skills are cited by bare name, with the plugin form in brackets at the first mention: `shaping` (`shaping-skills:shaping`). The brackets go only at a dependency's first mention in each skill, bare afterwards.
 - No names of specific user projects or personal tools anywhere. Examples use invented names.
 
 ## Language
@@ -32,9 +32,8 @@ Green before a slice closes, in order, from the repo root. The link check skips 
 
 ```bash
 claude plugin validate .        # passes; expected warnings: missing version and icon, the folder also holding a marketplace manifest
-# old names: only the allowed matches remain: the .devflow.yml fallback sentence in dev,
-# changelog, archive, architecture.md and the README's Configuration; dev's Step 0 condition
-# and ls; the "devflow work ... merged" notes in dev and project; the README migration note.
+# old names: the only allowed matches are in shared/work.md § Upgrade and in the README's
+# § Upgrading from an older Flow; nothing else.
 # --hidden so .claude-plugin/ is searched too
 rg -n -i --hidden '\bdevflow\b|devflow-(docs|archive)|projectflow|\.devflow\.yml' \
   --glob '!.git' --glob '!.git/**' --glob '!.superpowers/**' \

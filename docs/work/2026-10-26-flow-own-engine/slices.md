@@ -191,6 +191,17 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - `./install.sh` in a throwaway Astro repo labels the Astro rows and omits the others.
 - A session in an Astro repo asked a generic Astro question doesn't invoke the preset by itself.
 
+**Deviations found while planning V5**
+- Stacks shipped, chosen by the owner at this plan: `astro`, `datocms`, `rails`.
+- Today's `react` and `node` lenses stay, in `common-lenses.md` § Stacks without a preset.
+- `datocms` is a stack detected from its packages, so an Astro project with DatoCMS resolves two presets.
+- The `presets` key in the configuration file uses the `stack=skill` pairs of `userConfig`, as a flow list.
+- The presets' opinions are a first draft from public practice and today's lenses; the owner reviews them at this slice's close.
+- No `astro` dependency row: no external Astro skill is referenced, so `install.sh` labels the datocms rows in an Astro + DatoCMS repo.
+- `flow:stack-<name>` is cited without a slash, like `flow:docs`; V8 updates the Naming rule.
+- `install.sh` reads only the checkout's `.flow.yml` for stacks.
+- The presets' `## Rules` travel in the slice packet and the impact packet, not only their lenses.
+
 ## V6 — Engine
 
 **In**

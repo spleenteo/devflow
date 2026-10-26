@@ -24,7 +24,7 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Skip steps silently | When it skips one, it says which and why |
 | Apply corrections on its own | Verifications report in one ranked message with a recommendation per finding; the user decides with one answer |
 | Pass whole documents to subagents | Each subagent gets a context packet: what it needs, nothing else |
-| Touch `CLAUDE.md` or write config on its own | `.flow.yml` is written only to record a layout the user chose at first run (Step 0) |
+| Touch `CLAUDE.md` or write config on its own | The configuration file is written only to record what the user answered in the profile, on the work's branch |
 | Write the changelog, the version or the archive itself | Changelog and version go through `flow:docs` (the work reference, § Closing a work, step 2); archiving through `/flow:archive`. Both in the closing sequence (Step 6), each after asking |
 | Merge, push or tag without an ok | Each is proposed and waits for its own yes (Step 6) |
 | Install its dependencies | It prints the commands from `dependencies.md`; the user runs them |
@@ -35,16 +35,16 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 
 | What | Convention | Detection |
 |---|---|---|
-| Root | `docs/` | Everything this skill writes lives under it: `docs/work/`, `docs/decisions-log/`, `docs/development-guidelines.md`, `docs/CHANGELOG.md`. Checked at first run (Step 0) |
-| Stack | `rails`, `astro`, `react`, `node`, `generic` | `Gemfile` + `config/application.rb` → rails; `astro.config.*` → astro; `package.json` with `react` in dependencies → react; `package.json` without → node; else generic |
+| Root | `docs/` | Everything this skill writes lives under it: `docs/work/`, `docs/decisions-log/`, `docs/development-guidelines.md`, `docs/CHANGELOG.md`. Asked at first run (Step 0) |
+| Stacks | `rails`, `astro`, `react`, `node`, `generic`; a project can have several | Each signal checked on its own: `Gemfile` + `config/application.rb` → rails; `astro.config.*` → astro; `package.json` with `react` in dependencies → react. `node` only when `package.json` exists and no other JS stack matched; `generic` only when nothing matched. Confirmed in the profile |
 | Guidelines | `docs/development-guidelines.md` | Read if present; its relevant sections go into every context packet. Template in `${CLAUDE_SKILL_DIR}/development-guidelines.template.md` |
 | Decisions | `docs/decisions-log/` | Read by impact and review; proposed here at the close of a step, written by `flow:docs` on a yes. Criterion and requests: the work reference, § Decisions |
 | Changelog | `docs/CHANGELOG.md` | Written by `flow:docs`; searched at opening. An existing one is adopted, not replaced |
 | Work reference | `${CLAUDE_PLUGIN_ROOT}/shared/work.md` (in the repo: [shared/work.md](../../shared/work.md)) | The how of a work's home, `STATUS.md`, slice-close bookkeeping, close, merge and archive. This skill says when; the reference says how. Read it when a step points to it |
-| Impact lenses | Per stack, in `${CLAUDE_SKILL_DIR}/lenses.md` | Chosen from the detected stack |
+| Impact lenses | Per stack, in `${CLAUDE_SKILL_DIR}/lenses.md` | Taken for each of the project's stacks |
 | Project lenses | `docs/impact-lenses.md` | Read if present by impact and every plan review, on top of the stack lenses. Template in `${CLAUDE_SKILL_DIR}/impact-lenses.template.md` |
 
-Configuration lives in `.flow.yml` at the project root. If it's absent and a `.devflow.yml` exists, read that instead: same keys. When it reads `.devflow.yml`, say so once in the session and suggest renaming it. A project can override the defaults with `.flow.yml`: keys `root`, `stack`, `changelog`, `version_file`, `merge` (`local` | `pr`, default `local`), `areas` (the area words a decision may carry, as a flow list: `areas: [engine, ui]`). Read if present. The skill writes it in one case only: Step 0, to record a non-default root the user chose. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
+Configuration lives in `.flow.yml` at the project root. If it's absent and a `.devflow.yml` exists, read that instead: same keys. When it reads `.devflow.yml`, say so once in the session and suggest renaming it. A project can override the defaults with `.flow.yml`: keys `root`, `stacks` (a flow list: `stacks: [astro, node]`; an older `stack: <name>` reads as `[<name>]`, isn't asked again and is never rewritten), `changelog`, `version_file`, `merge` (`local` | `pr`, default `local`), `areas` (the area words a decision may carry, as a flow list: `areas: [engine, ui]`). Read if present. The skill writes it only through the profile (below), on the work's branch. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
 
 ## Project memory
 
@@ -85,9 +85,41 @@ If any are missing, report them in one message, required first, then optional. F
 
 At a phase or step that invokes a dependency, check again: if a required one isn't listed, stop that phase and give its commands from `dependencies.md`; don't do its job without it.
 
+## Profile
+
+The project's profile is three things the conductor must know and never guess: the `stacks`, the `merge` style and the test level. It runs on every invocation, right after the dependency check and before anything is opened or resumed. **The order is fixed**: dependency check → profile questions (on a first run, with Step 0's) → find the open works → open (Step 1) or resume → the profile's write, on the work's branch. Step 1's message may share the turn with the profile's questions; the writes never come before the answers.
+
+| Piece | Lives in |
+|---|---|
+| `stacks`, `merge` | the configuration file: `.flow.yml`, or `.devflow.yml` when that is the one in use. Never create `.flow.yml` beside a `.devflow.yml` |
+| Test level, sensitive areas | `## Tests` of the guidelines, opening with two lines: `Level: <none \| essential \| full>` and `Sensitive areas: <path or concept>, …` (empty allowed with `none` and `full`) |
+
+`none`: no tests required. `essential`: tests required for code in the sensitive areas only. `full`: TDD on new code.
+
+**Reading.** A piece is present when it is in the checkout, or in the same file on an open `work/*` branch (`git show <branch>:<file>`): an unmerged profile lives there. Present pieces are never asked again. `merge` has its default, `local`, but is still asked once, like the others.
+
+**Proposing.** One proposal per missing piece:
+
+- **Stacks**: the detection rule of the Conventions table, all matches listed.
+- **Level**: `essential` when a test runner is configured, else `none`. Configured means: a test dev-dependency (`vitest`, `jest`, `mocha`, `@playwright/test`, `cypress`) in `package.json`, or a `scripts.test` other than npm's stub (`echo "Error: no test specified" && exit 1`); `spec/` with `rspec` in the `Gemfile`, or `test/` with `minitest`; `pytest` configured (`pytest.ini`, or `[tool.pytest]` in `pyproject.toml`). Areas proposed from paths that look sensitive: auth, payments, billing, migrations, data import and export.
+- **Merge**: `pr` when the repo has a remote and `.github/pull_request_template.md` or `.github/workflows/`, else `local`.
+
+**Asking.** Only the missing pieces, in one message, each with its proposal; on a first run, Step 0's questions are in the same message. Asking writes nothing:
+
+> "Before opening: **stacks** `[node]` (detected: `package.json`, no framework); **tests** `essential`, since `vitest` is configured, sensitive areas `src/auth/`, `src/billing/`; **merge** `local` (no remote). Also: keep `docs/` for the flow's folders, and create `docs/development-guidelines.md` with only `## Tests`? Correct what's wrong."
+
+**Writing.** Never on the default branch. A new work: with the home, on `work/<slug>` after Step 2. A resume: right after the switch to the work's branch. Only what is missing is written: the configuration file gains the missing keys (a `root` chosen in Step 0 included); `## Tests` with its two lines goes at the top of the existing guidelines file, or into a new file holding only `## Tests` when there is none and the user accepted it. The full template stays an offer; a declined one is never created. Commit with explicit paths:
+
+```bash
+git add .flow.yml docs/development-guidelines.md
+git commit -m "Record the project profile"
+```
+
+**Raise.** At opening (Step 1), if the request touches a sensitive area (by path or concept), propose a level for this work in the same message. On a yes, `tests: <level>` goes in its `STATUS.md`; the project's `## Tests` stays as it is. A work without `tests:` uses the project level.
+
 ## Step 0 — First run in a repo
 
-The dependency check (`## Dependencies`) has already run.
+The dependency check has already run. Step 0 only gathers answers, in the profile's message, and writes nothing: its writes happen with the profile's, on `work/<slug>`.
 
 Runs once: when there is no `docs/work/`, no `.flow.yml` and no `.devflow.yml`.
 
@@ -95,24 +127,22 @@ Runs once: when there is no `docs/work/`, no `.flow.yml` and no `.devflow.yml`.
 ls -d docs docs/work docs/decisions-log docs/development-guidelines.md docs/impact-lenses.md docs/CHANGELOG.md .flow.yml .devflow.yml 2>/dev/null
 ```
 
-**`docs/` doesn't exist** → create `docs/work/` and say so in one line.
+**`docs/` doesn't exist** → say that `docs/work/` will be created with the work's home.
 
 **`docs/` exists** → it's already someone's namespace. Say what this skill will add inside it (`work/`, `decisions-log/`, `development-guidelines.md`, `CHANGELOG.md`, and optionally `impact-lenses.md`), report any collision (one of those paths already present with content this skill didn't write; an existing `CHANGELOG.md` is adopted, not a collision), and ask:
 
 1. **Keep `docs/` (recommended).** The flow's folders sit next to the existing ones. If something collides, the user moves or renames it first: the flow never moves files it doesn't own.
-2. **Use a top-level `flow/` folder (discouraged).** Documentation splits in two places, and readers look in `docs/` first. If chosen, write `.flow.yml` with `root: flow` and say so.
+2. **Use a top-level `flow/` folder (discouraged).** Documentation splits in two places, and readers look in `docs/` first. If chosen, `root: flow` goes into the configuration file with the profile's write, and the home is created under it.
 
-Then, if `docs/development-guidelines.md` is missing, offer to create it from `${CLAUDE_SKILL_DIR}/development-guidelines.template.md`. The user fills it in; if they decline, don't create it: an empty template is worse than none.
-
-Then, if `docs/impact-lenses.md` is missing, offer to create it the same way from `${CLAUDE_SKILL_DIR}/impact-lenses.template.md`, under the chosen root: the project's own lenses, applied at impact and in every plan review. The user fills it in; declined → not created.
+Also in the message: if `docs/development-guidelines.md` is missing, offer to create it, from `${CLAUDE_SKILL_DIR}/development-guidelines.template.md` for the full form or with only `## Tests` for the minimum. If `docs/impact-lenses.md` is missing, offer to create it from `${CLAUDE_SKILL_DIR}/impact-lenses.template.md`, under the chosen root: the project's own lenses, applied at impact and in every plan review. Accepted files are created with the profile's write; the user fills them in. Declined → not created: an empty template is worse than none.
 
 ## On start: open or resume
 
-The dependency check (`## Dependencies`) has already run.
+The dependency check and the profile questions (`## Profile`) have already run, and their answers are in hand.
 
 Find the open works as the work reference, § Finding open works, says: the current checkout and every `work/*` branch.
 
-- No result → new work (Step 1).
+- No result → new work (Step 1; its message can share the turn with the profile's questions).
 - One or more works with `phase:` other than `done` → say so and ask:
 
 > "`2026-09-02-mobile-menu` is at slice **V3**, step **execute**. Resume there, or open a new work?"
@@ -125,11 +155,11 @@ Resuming reloads the **standing documents**, and nothing else:
 
 A standing document is one that is still true. A closed phase is a debate that ended. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a work that resumes without it resumes on whatever was written last.
 
-Open with what you reloaded, in five lines — work, phase and slice, cost so far from the Log, the criterion in the frame's own words, the blockers from the last Log line — then ask. The user has to be able to see that the frame is in the room.
+On a resume, the profile's write follows the switch to the work's branch. Open with what you reloaded, in five lines — work, phase and slice, cost so far from the Log, the criterion in the frame's own words, the blockers from the last Log line — then ask. The user has to be able to see that the frame is in the room.
 
 ## Step 1 — Opening
 
-One message, five questions, each with the answer this skill proposes from what it already knows. The user corrects what's wrong and answers what's missing.
+One message, five questions, each with the answer this skill proposes from what it already knows. The user corrects what's wrong and answers what's missing. If the request touches a sensitive area of the profile, the message also carries the raise (`## Profile`).
 
 1. **What do you want to build?** In the user's words. Becomes `description` in the frontmatter.
 2. **Code name?** Propose a short lowercase slug with hyphens, checked against `docs/work/` and `docs/work/archived.md`.
@@ -145,7 +175,7 @@ If the doubt is about the domain (what the code does today, which rule applies),
 
 The work opens on branch `work/<slug>` in the current checkout, with its dated folder under `docs/work/`. No worktree unless the user asks. Commands: the work reference, § Creating the home.
 
-Write `STATUS.md` in it as § `STATUS.md` (repo) says: `description` is the answer to question 1, **Entry** is the visible-outcome test answer, and `base:` records the branch the work was cut from. `phase:`, `slice:` and `step:` are kept current as that section says: without them an interrupted work shows up the next morning as finished, or as never started.
+Then write the profile's answers (`## Profile`, § Writing) and commit them there. Write `STATUS.md` in it as § `STATUS.md` (repo) says: `description` is the answer to question 1, **Entry** is the visible-outcome test answer, and `base:` records the branch the work was cut from, `stacks:` the confirmed stacks, `tests:` only when the user accepted a raise. `phase:`, `slice:` and `step:` are kept current as that section says: without them an interrupted work shows up the next morning as finished, or as never started.
 
 `lessons.md` is created at the first slice close (§ `slices.md` and `lessons.md`).
 
@@ -196,7 +226,7 @@ A technical work that skipped the frame has no criterion, and nothing here appli
 
 ### `phase: impact`, once, on `slices.md`
 
-The slices against the real code, before the first plan. Two subagents in parallel, both with `ultrathink` in the prompt: one with the common lenses, one with the detected stack's lenses (`${CLAUDE_SKILL_DIR}/lenses.md`: put its expanded absolute path in the packet, never the variable) and the project lenses, same report format. The common-lens subagent receives the project lenses in the packet but doesn't run them. On a one-slice work, one subagent with all of them. Packet: `slices.md` in full (here it is the object under review), the descriptions of `docs/decisions-log/` files that match the work's key words and the files the slices name (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords`, `files`), the guidelines, and the contents of `docs/impact-lenses.md` verbatim when present. The code they read themselves.
+The slices against the real code, before the first plan. Two subagents in parallel, both with `ultrathink` in the prompt: one with the common lenses, one with the lenses of each of the project's stacks (`${CLAUDE_SKILL_DIR}/lenses.md`: put its expanded absolute path in the packet, never the variable) and the project lenses, same report format. The common-lens subagent receives the project lenses in the packet but doesn't run them. On a one-slice work, one subagent with all of them. Packet: `slices.md` in full (here it is the object under review), the descriptions of `docs/decisions-log/` files that match the work's key words and the files the slices name (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords`, `files`), the guidelines, and the contents of `docs/impact-lenses.md` verbatim when present. The code they read themselves.
 
 Not in session: whoever just ran the shaping is the worst head for seeing what breaks elsewhere.
 
@@ -210,7 +240,7 @@ On a one-slice work, impact is often the check that saves you: the twenty-line f
 
 From here `phase: slice`. For each slice, in `slices.md` order, four steps and two stops. `step:` in `STATUS.md` says which.
 
-**The slice packet**, built once per slice and placed verbatim at the top of every subagent prompt in it: the `## The criterion` block when the work has one; the slice's section of `slices.md`; `lessons.md`; the sections of `docs/development-guidelines.md` that apply (tests, naming, placement, gate); the descriptions of matching decisions (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords`, and `files:` the slice's files); the contents of `docs/impact-lenses.md` when present. `shaping.md` and `breadboard.md` only if the slice's section points to them.
+**The slice packet**, built once per slice and placed verbatim at the top of every subagent prompt in it: the `## The criterion` block when the work has one; the slice's section of `slices.md`; `lessons.md`; the work's effective test level (`tests:` in `STATUS.md`, else the project's `Level:`) and the sections of `docs/development-guidelines.md` that apply (tests, naming, placement, gate); the descriptions of matching decisions (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords`, and `files:` the slice's files); the contents of `docs/impact-lenses.md` when present. `shaping.md` and `breadboard.md` only if the slice's section points to them.
 
 ### `step: plan`
 

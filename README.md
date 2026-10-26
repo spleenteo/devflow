@@ -1,8 +1,8 @@
 # flow
 
-A Claude Code plugin that runs a piece of work from idea to done, one slice at a time, and keeps its state on disk so a work resumes days later in a new session. `/flow:dev` takes software work in a repository to a branch ready to merge; `/flow:project` runs a project that people carry out over weeks or months, in a folder outside any repo.
+A Claude Code plugin that runs a piece of work from idea to done, one slice at a time, and keeps its state on disk so a work resumes days later in a new session. `/flow:dev` takes software work in a repository to a branch merged after your ok; `/flow:project` runs a project that people carry out over weeks or months, in a folder outside any repo.
 
-Shaping produces the slices. The detailed plan of each slice is written right before it starts, so it carries what the previous slices taught. Plans are reviewed by a fresh head, and the flow returns to you at two points per slice. `/flow:dev` works with any stack and adds nothing to your project's `CLAUDE.md`.
+Flow brings its own dialogue for an idea that isn't clear (`/flow:brainstorm`, `/flow:grill`), its own agents for planning, review, impact and execution, and its own memory keeper for the changelog and the decisions. Shaping, breadboarding and framing come from the `shaping-skills` plugin. The detailed plan of each slice is written right before it starts, so it carries what the previous slices taught. Plans are reviewed by a fresh agent, and the flow returns to you at two points per slice. `/flow:dev` works with any stack and adds nothing to your project's `CLAUDE.md`.
 
 How it fits together: [`docs/architecture.md`](docs/architecture.md).
 
@@ -21,7 +21,7 @@ Recent versions also accept one step that adds the marketplace and installs the 
 /plugin install flow --marketplace spleenteo/flow
 ```
 
-**Dependencies.** The flow hands the thinking, planning and execution to skills from two other plugins, superpowers and shaping-skills. It checks for them but never installs them. Run `/flow:dev` in the project you'll work in: before anything else, the start check lists what's missing, with the commands to run. To check without opening a project, `install.sh` from a clone does the same from the shell, writing and installing nothing:
+**Dependencies.** Flow plans, reviews and executes with its own agents. It hands shaping, breadboarding and framing to the `shaping-skills` plugin, and a stack's opinions to optional skills from other plugins. It checks for them but never installs them. Run `/flow:dev` in the project you'll work in: before anything else, the start check lists what's missing, with the commands to run. To check without opening a project, `install.sh` from a clone does the same from the shell, writing and installing nothing:
 
 ```bash
 git clone https://github.com/spleenteo/flow.git flow
@@ -57,28 +57,50 @@ Plugin skills are invoked as `/plugin-name:skill-name` ([skills](https://code.cl
 
 | Skill | What it does |
 |---|---|
-| [`/flow:dev`](skills/dev/SKILL.md) | Software work in a repo: opening, definition phases (frame, shaping, breadboard, slicing, impact), then a plan, review, execute and close loop per slice |
+| [`/flow:dev`](skills/dev/SKILL.md) | Software work in a repo: profile, opening, definition phases (brainstorm, grill, frame, shaping, breadboard, slicing, impact), then a plan, review, execute and close loop per slice, then the closing sequence |
 | [`/flow:project`](skills/project/SKILL.md) | A project that people carry out: appetite, a reality check in place of impact, plans of actions, a report at the end |
+| [`/flow:brainstorm`](skills/brainstorm/SKILL.md) | A dialogue that finds out what you want and why, then writes a description a builder could plan from. Run by `/flow:dev` and `/flow:project` for an idea that isn't clear; also by hand |
+| [`/flow:grill`](skills/grill/SKILL.md) | Rounds of numbered questions, each with a recommended answer, on a plan, a draft or one doubt. Settled answers land in a file you name. Run by the conductors, also by hand |
 | [`/flow:changelog`](skills/changelog/SKILL.md) | The changelog entry and the `.version` bump for a finished work, on its branch |
 | [`/flow:archive`](skills/archive/SKILL.md) | Moves a finished work to `docs/work/archive/` and repairs the links |
 
-Open Claude Code inside the project and type `/flow:dev`, or say "resume mobile-menu". A work goes like this:
-
-- **Opening.** One message with five questions and the answers it proposes: what to build, a code name, source material, whether the outcome is already clear in one sentence (technical work skips to slicing; product work starts from the frame), whether the problem is clear.
-- **Definition.** Each phase writes one document in `docs/work/<date>-<slug>/`, commits, and stops. Impact has two subagents read the slices against the real code and report in one ranked message.
-- **Slice loop.** Plan, review by a fresh subagent, **first stop**; execute, close with the Done and the gate verified, lessons written, **second stop**: "V3 closed. Plan V4, or stop here?"
-- **Resume.** It reloads the standing documents (`STATUS.md`, the frame's criterion, the guidelines that apply, `lessons.md`, the matching decisions, the current plan), says what it reloaded, and continues.
-- **Close.** It asks before each step: close the work, `/flow:changelog`, `/flow:archive`, then reports that the branch is ready to merge. It doesn't merge, push or tag.
-
-A bugfix is a one-slice work: straight to slicing, impact if it touches more than one file, the loop once.
+Open Claude Code inside the project and type `/flow:dev`, or say "resume mobile-menu". A bugfix is a one-slice work: straight to slicing, impact if it touches more than one file, the loop once.
 
 **From `/flow:project` to `/flow:dev`.** When an action of a project is software, its plan row reads "flow:dev work `<slug>` in `<repo>` merged". You open that work with `/flow:dev` in its repo, in its own session, and the row closes when it is merged.
+
+Running one of these skills is your choice of process: inside it, the process skills of other plugins (brainstorming, planning, plan execution, test-driven development, worktrees) don't apply.
+
+## How a work runs
+
+- **Profile.** On every run `/flow:dev` reads the profile of the repo: the stacks, the `merge` style and the test level. It asks only for what is missing, in one message, and writes the answers on the work's branch.
+- **Opening.** One message with five questions and the answers it proposes: what to build, a code name, source material, whether the outcome is already clear in one sentence (technical work skips to slicing; product work starts from the frame), whether the problem is clear. It searches the project's memory first and says what already touches the same area. The work gets its own branch, `work/<slug>`, in the current checkout, and a dated folder in `docs/work/`.
+- **Definition.** A product work whose problem isn't clear goes brainstorm → grill → frame: `/flow:brainstorm` writes `brainstorm.md`, `/flow:grill` settles what is open in it, then the frame is written with a short criterion on top that every later document is measured against. Then, as needed: shaping, breadboard, slicing (always), impact. Each phase writes one document, commits and stops. Impact has two agents read the slices against the real code and report in one ranked message.
+- **Slice loop.** Per slice: Flow's planner writes the plan, a plan reviewer checks it, **first stop**; executors carry out the tasks, a task reviewer checks each one, then the close: the Done and the gate verified, lessons written, **second stop**: "V3 closed. Plan V4, or stop here?"
+- **Tiers.** Planner, plan reviewer and impact run on the top tier; executors and task reviews on the mid tier. A `critical` task's review, the final review and a third fix round go to the top tier. Plans mark which tasks depend on which and which are `critical`; independent tasks run in parallel.
+- **The ledger.** During execution `docs/work/<dir>/V<n>-ledger.md` records every dispatch (task, agent, model, outcome, commits) and which tasks are complete. A resumed work doesn't dispatch a complete task again.
+- **Resume.** It reloads the standing documents (`STATUS.md`, the frame's criterion, the guidelines that apply, `lessons.md`, the matching decisions, the current plan and its ledger), says what it reloaded, and continues.
+- **Close and merge.** After the last slice it asks before each step: close the work, the changelog and version (`/flow:changelog`), `/flow:archive`, then the merge. With `merge: local`, the default, it proposes the local merge into the target branch and runs it after your ok; with `merge: pr` it proposes a pull request and merges nothing. Push and tag each wait for their own ok. Code, changelog, version and archived work land together.
+
+The decisions are the memory of why: when a choice discards a real alternative, `/flow:dev` proposes recording it and writes it only after your yes.
+
+## Profile and stack presets
+
+A stack can have a preset: a skill with opinionated rules, impact lenses, a test level, gate commands and references. Shipped: `astro`, `datocms` and `rails`, as `flow:stack-astro`, `flow:stack-datocms` and `flow:stack-rails`. A project with several stacks (`[astro, datocms]`) gets the presets of each. Some presets reference skills from other plugins, which are optional ([`dependencies.md`](dependencies.md)).
+
+A preset never merges with your own. To use another skill for a stack, map it, in order of precedence:
+
+1. `presets:` in `.flow.yml`, as `stack=skill` pairs;
+2. the plugin option `stack_presets`, comma-separated pairs;
+3. otherwise the shipped preset, when the stack has one.
+
+The mapped skill replaces the shipped one entirely. If it isn't available in the session, Flow says so and does not fall back to the shipped preset. Why: [stack presets are replaceable skills](docs/decisions-log/2026-10-26-stack-presets-are-replaceable-skills.md).
 
 ## What lands in a project
 
 Markdown only, versioned with the code, under `docs/` by default:
 
 ```
+.flow.yml                 only when you set a key
 .version
 docs/
   CHANGELOG.md
@@ -90,23 +112,26 @@ docs/
     archived.md
     2026-09-02-mobile-menu/
       STATUS.md
+      brainstorm.md
+      frame.md
       slices.md
       lessons.md
       V1-plan.md
+      V1-ledger.md
     archive/
 ```
 
-`docs/` is the project's memory: what shipped, why, and how code is written here. `/flow:dev` searches it at the opening of every work. The plugin's own files (skills, templates, lenses, `dependencies.md`) stay in the plugin copy; a template reaches the project only when you accept it. Who writes and reads each path: [What a project holds](docs/architecture.md#what-a-project-holds).
+`docs/` is the project's memory: what shipped, why, and how code is written here. `/flow:dev` searches it at the opening of every work, through `flow:docs`. The plugin's own files (skills, agents, templates, lenses, `dependencies.md`) stay in the plugin copy; a template reaches the project only when you accept it. Who writes and reads each path: [What a project holds](docs/architecture.md#what-a-project-holds).
 
 ## Project lenses
 
-`docs/impact-lenses.md` holds the project's own lenses: what a change here can break that the code alone doesn't show, such as public URLs that need redirects or an export other teams import. `/flow:dev` applies them at impact and in every plan review, on top of the lenses for the stack ([`skills/dev/lenses.md`](skills/dev/lenses.md)). Coding rules go in the guidelines, not here.
+`docs/impact-lenses.md` holds the project's own lenses: what a change here can break that the code alone doesn't show, such as public URLs that need redirects or an export other teams import. `/flow:dev` applies them at impact and in every plan review, on top of the common lenses ([`skills/dev/common-lenses.md`](skills/dev/common-lenses.md)) and the lenses of the stack presets. Coding rules go in the guidelines, not here.
 
 At the first run in a repo, `/flow:dev` offers to create the file from its template, [`skills/dev/impact-lenses.template.md`](skills/dev/impact-lenses.template.md). In a repo that is already past that first run, ask `/flow:dev` to create `docs/impact-lenses.md` from its template, then fill it in.
 
 ## Plan review lenses
 
-Every slice plan is checked by a fresh subagent with five lenses:
+Every slice plan is checked by a fresh agent, `flow:plan-reviewer`, with five lenses:
 
 1. **Mandate fidelity**: the plan does only what the slice calls for and covers its Done.
 2. **Ignored lessons**: a rule in `lessons.md` the plan doesn't follow.
@@ -118,29 +143,48 @@ The guidelines template is [`skills/dev/development-guidelines.template.md`](ski
 
 ## Configuration
 
-None required. Defaults: `docs/` as the root, `.version` at the repo root, the stack detected from `Gemfile`, `astro.config.*` or `package.json`.
+None required. Defaults: `docs/` as the root, `.version` at the repo root, `merge: local`, the stacks detected from `Gemfile`, `astro.config.*` or `package.json`.
 
 Optional `.flow.yml` at the project root:
 
 ```yaml
-root: docs              # where work/, decisions-log/ and development-guidelines.md live
-stack: astro            # rails | astro | react | node | generic
+root: docs                  # where work/, decisions-log/ and development-guidelines.md live
+stacks: [astro, datocms]    # rails | astro | datocms | react | node | generic
+merge: local                # local | pr
 changelog: docs/CHANGELOG.md
 version_file: .version
+areas: [engine, ui]         # the area words a decision may carry
+presets: [astro=my-stacks:astro]   # stack=skill pairs, replacing the shipped preset
 ```
 
-`/flow:dev` writes it in one case only: when you choose a non-default root at the first run. When `.flow.yml` is absent and a `.devflow.yml` exists, the skills read that instead, with the same keys, and `/flow:dev` suggests renaming it.
+`/flow:dev` writes `.flow.yml` only to record what you answered in the profile, on the work's branch, and in the upgrade (below).
 
-## Migrating from the symlink skills
+**Plugin options.** Three options of the plugin, set from its configuration or in `pluginConfigs` of your user settings ([`pluginConfigs`](https://code.claude.com/docs/en/settings-reference#pluginconfigs), [user configuration](https://code.claude.com/docs/en/plugins/manifest-reference#user-configuration)):
 
-If you used the four skills installed as symlinks or with `npx skills`:
+| Option | What it does |
+|---|---|
+| `model_top` | Model for the top tier: an alias such as `opus` or a model ID. Empty: Flow's default |
+| `model_mid` | Model for the mid tier. Empty: Flow's default |
+| `stack_presets` | Skill per stack, as `stack=skill` pairs, comma-separated: `astro=my-stacks:astro, rails=my-stacks:rails` |
+
+**Environment variables beat both.** `CLAUDE_CODE_SUBAGENT_MODEL_FORCE`, with `CLAUDE_CODE_SUBAGENT_MODEL`, forces the model of every subagent ([run every subagent on one model](https://code.claude.com/docs/en/sub-agents#run-every-subagent-on-one-model)), and `CLAUDE_CODE_EFFORT_LEVEL` overrides the effort of every agent ([effort level](https://code.claude.com/docs/en/model-config#set-the-effort-level)). When either is set, the models and effort in Flow's agents and in the options above don't apply. The ledger records the value of the first two.
+
+**Dependencies.** `install.sh` checks the dependencies for the current repo: it reads [`dependencies.md`](dependencies.md), shows the optional rows only for the stacks the checkout has, and installs nothing.
+
+## Upgrading from an older Flow
+
+Older versions were installed as skills named `devflow`, `devflow-docs`, `devflow-archive` and `projectflow`, configured by `.devflow.yml`. If you have them:
 
 1. **Install the plugin first** (see [Install](#install)). Until the old skills are removed, both load: `/devflow` and `/flow:dev` are two copies of the conductor.
-2. **Then remove the old skills.** Symlinks: `rm ~/.claude/skills/{devflow,devflow-docs,devflow-archive,projectflow}` (`rm -r` if they are copied folders, not symlinks). For `npx` installs: `npx skills remove -g devflow devflow-docs devflow-archive projectflow`.
-3. **New names:** `/devflow` → `/flow:dev`, `/projectflow` → `/flow:project`, `/devflow-docs` → `/flow:changelog`, `/devflow-archive` → `/flow:archive`.
-4. **Configuration:** rename `.devflow.yml` to `.flow.yml` when convenient. The old name is still read.
-5. **Personal copies of the dependencies.** If you installed `shaping`, `breadboarding`, `framing-doc` or the superpowers skills as personal skills, they still count as present and do no harm, but each skill shows twice in the listing (`shaping` and `shaping-skills:shaping`). To drop a personal copy, remove its folder or symlink under `~/.claude/skills/`, or for `npx` installs `npx skills remove -g <names>` (for example `shaping breadboarding framing-doc`, and the superpowers skills by their own names).
-6. **Existing projects.** Their `docs/` is unchanged. A `docs/work/archived.md` header that cites `/devflow-archive` can stay as it is or be edited by hand.
+2. **Remove the old skills.** Symlinks: `rm ~/.claude/skills/{devflow,devflow-docs,devflow-archive,projectflow}` (`rm -r` if they are copied folders). For `npx` installs: `npx skills remove -g devflow devflow-docs devflow-archive projectflow`.
+3. **New names:** `/devflow` is `/flow:dev`, `/projectflow` is `/flow:project`, `/devflow-docs` is `/flow:changelog`, `/devflow-archive` is `/flow:archive`.
+4. **Run `/flow:dev`** in the project. It finds the old traces on the default branch and offers the upgrade step: `.devflow.yml` renamed to `.flow.yml`, `stack:` turned into `stacks:`, the old names in `docs/work/archived.md` and in the guidelines rewritten, all in one commit on a `flow-upgrade` branch that it proposes to merge. It also lists, without editing them, the lines of your `CLAUDE.md` files, `Skill(...)` entries in `.claude/settings.json` and project-scope skill copies that still carry the old names. The upgrade is a run of its own: nothing else happens until the next run.
+
+Until the upgrade runs, the old configuration file is not read.
+
+**Superpowers may stay installed.** Inside a Flow run, its process skills don't apply; outside a Flow run they behave as before. Personal copies of `shaping`, `breadboarding` or `framing-doc` still count as present, but each shows twice in the listing (`shaping` and `shaping-skills:shaping`); remove a personal copy from `~/.claude/skills/` to drop it.
+
+Existing projects keep their `docs/` as it is.
 
 ## Develop the plugin
 
@@ -169,6 +213,10 @@ claude plugin uninstall flow@flow
 ```
 
 Projects are untouched: `docs/` is plain Markdown.
+
+## Credits
+
+Flow's agents and skills took rules and adapted text from superpowers, thoughtbot's atomic-commits and Matt Pocock's grilling skill, all MIT-licensed: [CREDITS.md](CREDITS.md).
 
 ## License
 

@@ -8,8 +8,8 @@ A dependency counts as present when a skill listed in the session has its name, 
 |---|---|---|---|---|
 | shaping-skills | `shaping-skills@flow` | `shaping`, `breadboarding`, `framing-doc` | required for the definition phases | both flows |
 | shaping-skills | `shaping-skills@flow` | `kickoff-doc` | required for its phase | `/flow:project` only |
-| datocms | `datocms@datocms-skills` | `datocms-cda`, `datocms-frontend-integrations`, `datocms-structured-text`, `datocms-cli`, `datocms-content-modeling` | optional (datocms) | `stack-datocms` preset |
-| rails-development | `rails-development@skills` | `rails-patterns`, `testing-patterns` | optional (rails) | `stack-rails` preset |
+| datocms | `datocms@datocms-skills` | `datocms-cda`, `datocms-frontend-integrations`, `datocms-structured-text`, `datocms-cli`, `datocms-content-modeling` | optional (datocms) | `flow:stack-datocms` preset |
+| rails-development | `rails-development@skills` | `rails-patterns`, `testing-patterns` | optional (rails) | `flow:stack-rails` preset |
 
 Per-stack rows (Need `optional (<stack>)`) are reported only in a project of that stack.
 
@@ -32,7 +32,7 @@ The upstream ripple-check hook is not wired. It is opt-in upstream, needs `jq`, 
 
 ### datocms
 
-Provides `datocms-cda`, `datocms-frontend-integrations`, `datocms-structured-text`, `datocms-cli` and `datocms-content-modeling`, referenced by the `stack-datocms` preset. It is served by the `datocms-skills` marketplace, from the GitHub repository `datocms/agent-skills`, so the marketplace is added first.
+Provides `datocms-cda`, `datocms-frontend-integrations`, `datocms-structured-text`, `datocms-cli` and `datocms-content-modeling`, referenced by the `flow:stack-datocms` preset. It is served by the `datocms-skills` marketplace, from the GitHub repository `datocms/agent-skills`, so the marketplace is added first.
 
 ```bash
 # user scope
@@ -45,7 +45,7 @@ claude plugin install datocms@datocms-skills --scope project
 
 ### rails-development
 
-Provides `rails-patterns` and `testing-patterns`, referenced by the `stack-rails` preset. It is served by thoughtbot's marketplace, named `skills`, from the GitHub repository `thoughtbot/skills`, so the marketplace is added first.
+Provides `rails-patterns` and `testing-patterns`, referenced by the `flow:stack-rails` preset. It is served by thoughtbot's marketplace, named `skills`, from the GitHub repository `thoughtbot/skills`, so the marketplace is added first.
 
 ```bash
 # user scope

@@ -87,7 +87,7 @@ At a phase or step that invokes a dependency, check again: if a required one isn
 
 ## Profile
 
-The project's profile is three things the conductor must know and never guess: the `stacks`, the `merge` style and the test level. It runs on every invocation, right after the dependency check and before anything is opened or resumed. **The order is fixed**: dependency check → profile questions (on a first run, with Step 0's) → find the open works → open (Step 1) or resume → the profile's write, on the work's branch. Step 1's message may share the turn with the profile's questions; the writes never come before the answers.
+The project's profile is three things the conductor must know and never guess: the `stacks`, the `merge` style and the test level. It runs on every invocation. **The order is fixed**: dependency check → read the profile and find the open works → one message (the missing profile pieces, Step 0's questions on a first run, and resume-or-new, or Step 1's questions) → the writes, on the work's branch. Nothing is written before the answers.
 
 | Piece | Lives in |
 |---|---|
@@ -96,7 +96,7 @@ The project's profile is three things the conductor must know and never guess: t
 
 `none`: no tests required. `essential`: tests required for code in the sensitive areas only. `full`: TDD on new code.
 
-**Reading.** A piece is present when it is in the checkout, or in the same file on an open `work/*` branch (`git show <branch>:<file>`): an unmerged profile lives there. Present pieces are never asked again. `merge` has its default, `local`, but is still asked once, like the others.
+**Reading.** Look for each piece in the checkout, on the default branch (or the work's `base:`) and on every open `work/*` branch, all through `git show <branch>:<file>`: an unmerged profile lives on a branch. Ask only for a piece missing everywhere. `merge` has its default, `local`, but is still asked once, like the others. When sources disagree, the most recently committed wins, and the message says which.
 
 **Proposing.** One proposal per missing piece:
 
@@ -108,10 +108,11 @@ The project's profile is three things the conductor must know and never guess: t
 
 > "Before opening: **stacks** `[node]` (detected: `package.json`, no framework); **tests** `essential`, since `vitest` is configured, sensitive areas `src/auth/`, `src/billing/`; **merge** `local` (no remote). Also: keep `docs/` for the flow's folders, and create `docs/development-guidelines.md` with only `## Tests`? Correct what's wrong."
 
-**Writing.** Never on the default branch. A new work: with the home, on `work/<slug>` after Step 2. A resume: right after the switch to the work's branch. Only what is missing is written: the configuration file gains the missing keys (a `root` chosen in Step 0 included); `## Tests` with its two lines goes at the top of the existing guidelines file, or into a new file holding only `## Tests` when there is none and the user accepted it. The full template stays an offer; a declined one is never created. Commit with explicit paths:
+Unanswered: a proposal counts as accepted, a file offer as declined, a Step 1 question is asked again. The level and areas need the guidelines file: if the user declines even the minimal one holding only `## Tests`, the level holds for this session only and is asked again at the next start (say so in the message).
+
+**Writing.** Never on the default branch. A new work: with the home, on `work/<slug>` after Step 2. A resume: after the switch to the work's branch, or at once when already on it. A piece is written into the work branch when it is missing there, copied from where it was found. The configuration file gains the missing keys (a `root` chosen in Step 0 included). The two `## Tests` lines go at the start of an existing `## Tests`; the section is added only when absent, in the existing guidelines file or in a new one holding only `## Tests`, when there is none and the user accepted it. The full template stays an offer; a declined file is never created. Commit with `git add` on the paths actually written (the configuration file in use, the guidelines, `impact-lenses.md` if accepted, under the root in use):
 
 ```bash
-git add .flow.yml docs/development-guidelines.md
 git commit -m "Record the project profile"
 ```
 
@@ -119,31 +120,29 @@ git commit -m "Record the project profile"
 
 ## Step 0 — First run in a repo
 
-The dependency check has already run. Step 0 only gathers answers, in the profile's message, and writes nothing: its writes happen with the profile's, on `work/<slug>`.
+Step 0 only gathers answers, in the profile's message, and writes nothing: its writes happen with the profile's, on `work/<slug>`.
 
-Runs once: when there is no `docs/work/`, no `.flow.yml` and no `.devflow.yml`.
+Runs once: when there is no `docs/work/`, no `.flow.yml` and no `.devflow.yml`, looked up as the profile's Reading says (checkout, default branch, `work/*` branches), so it doesn't rerun while the first work is unmerged. A repo with no commits can't hold a branch: say the profile and the home need a first commit, and ask the user to make one (never make it).
 
 ```bash
 ls -d docs docs/work docs/decisions-log docs/development-guidelines.md docs/impact-lenses.md docs/CHANGELOG.md .flow.yml .devflow.yml 2>/dev/null
 ```
 
-**`docs/` doesn't exist** → say that `docs/work/` will be created with the work's home.
+**`docs/` doesn't exist** → say that `docs/work/` will be created with the work's home, and ask the offers below.
 
 **`docs/` exists** → it's already someone's namespace. Say what this skill will add inside it (`work/`, `decisions-log/`, `development-guidelines.md`, `CHANGELOG.md`, and optionally `impact-lenses.md`), report any collision (one of those paths already present with content this skill didn't write; an existing `CHANGELOG.md` is adopted, not a collision), and ask:
 
 1. **Keep `docs/` (recommended).** The flow's folders sit next to the existing ones. If something collides, the user moves or renames it first: the flow never moves files it doesn't own.
 2. **Use a top-level `flow/` folder (discouraged).** Documentation splits in two places, and readers look in `docs/` first. If chosen, `root: flow` goes into the configuration file with the profile's write, and the home is created under it.
 
-Also in the message: if `docs/development-guidelines.md` is missing, offer to create it, from `${CLAUDE_SKILL_DIR}/development-guidelines.template.md` for the full form or with only `## Tests` for the minimum. If `docs/impact-lenses.md` is missing, offer to create it from `${CLAUDE_SKILL_DIR}/impact-lenses.template.md`, under the chosen root: the project's own lenses, applied at impact and in every plan review. Accepted files are created with the profile's write; the user fills them in. Declined → not created: an empty template is worse than none.
+Whether or not `docs/` exists, the message also holds: if `docs/development-guidelines.md` is missing, offer to create it, from `${CLAUDE_SKILL_DIR}/development-guidelines.template.md` for the full form or with only `## Tests` for the minimum. If `docs/impact-lenses.md` is missing, offer to create it from `${CLAUDE_SKILL_DIR}/impact-lenses.template.md`, under the chosen root: the project's own lenses, applied at impact and in every plan review. Accepted files are created with the profile's write; the user fills them in. Declined → not created: an empty template is worse than none.
 
 ## On start: open or resume
 
-The dependency check and the profile questions (`## Profile`) have already run, and their answers are in hand.
+Order: `## Profile`. Find the open works as the work reference, § Finding open works, says: the current checkout and every `work/*` branch.
 
-Find the open works as the work reference, § Finding open works, says: the current checkout and every `work/*` branch.
-
-- No result → new work (Step 1; its message can share the turn with the profile's questions).
-- One or more works with `phase:` other than `done` → say so and ask:
+- No result → new work (Step 1, in the same message as the profile's questions).
+- One or more works with `phase:` other than `done` → say so and ask, in the same message:
 
 > "`2026-09-02-mobile-menu` is at slice **V3**, step **execute**. Resume there, or open a new work?"
 
@@ -155,7 +154,7 @@ Resuming reloads the **standing documents**, and nothing else:
 
 A standing document is one that is still true. A closed phase is a debate that ended. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a work that resumes without it resumes on whatever was written last.
 
-On a resume, the profile's write follows the switch to the work's branch. Open with what you reloaded, in five lines — work, phase and slice, cost so far from the Log, the criterion in the frame's own words, the blockers from the last Log line — then ask. The user has to be able to see that the frame is in the room.
+Open with what you reloaded, in five lines — work, phase and slice, cost so far from the Log, the criterion in the frame's own words, the blockers from the last Log line — then ask. The user has to be able to see that the frame is in the room.
 
 ## Step 1 — Opening
 

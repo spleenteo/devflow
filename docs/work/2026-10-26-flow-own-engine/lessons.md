@@ -19,3 +19,7 @@
 - An opinionated preset written from public practice needs a review against the current library docs: API details drift (page sizes, option names, cache mechanisms).
 - Two `--plugin-dir` flags and `--settings` `pluginConfigs` combine in one headless run: a throwaway plugin can stand in for a user's custom skill.
 - The stream's `init.skills` lists only user-invocable skills: prove a hidden skill loads by a successful Skill call, not by the listing.
+- A file the conductor reads with Read is not substituted: `${user_config.*}` and `${CLAUDE_PLUGIN_ROOT}` belong in SKILL.md, never in a shared reference.
+- A reviewer gets the author's report verbatim: a trimmed copy produces findings about what the trim dropped.
+- An agent with Bash runs the full suite "for a baseline" unless its never-list forbids it: name every command class a role must not run.
+- Parallel executors in one checkout can't share a BASE..HEAD review range: review each task by its own commits.

@@ -245,6 +245,15 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - "One commit per task" counts the task's work: one commit per kind when a task holds two, and each review fix is its own named commit.
 - `effort` doesn't show in the stream JSON: the reality check's effort is shown by the dispatch carrying none, so the definition's holds.
 
+**V6 — done on 2026-10-26**
+- Five plugin agents in `agents/` (`planner`, `plan-reviewer`, `impact` on `opus`/`high`; `executor`, `task-reviewer` on `sonnet`/`medium`), dispatched as `flow:<name>`. The executor holds the test policy, the commit rules (thoughtbot's atomic-commit criteria) and the server rule, once; it can't dispatch agents or invoke skills. `shared/work.md` § Agents holds tiers, precedence, the dispatch contract and the ledger; each conductor's Models paragraph carries the substituted `${user_config.model_top}` / `${user_config.model_mid}` and the agents' path. `/flow:dev` plans, reviews, runs impact and executes on these agents, with a ledger per slice in the work folder; `/flow:project`'s reality check and reviews run on `impact` and `plan-reviewer`. No `ultrathink`; `writing-plans` and `subagent-driven-development` left `dependencies.md`; `CREDITS.md` carries superpowers' and atomic-commits' MIT notices.
+- A runtime check before planning confirmed agents as `<plugin>:<name>`, the precedence (definition < preference < request), `disallowedTools` and subagent Bash calls visible with `parent_tool_use_id`.
+- Reviews caught: variables placed in a file that is read, not substituted; parallel tasks sharing a BASE..HEAD review range; review fixes against "one commit per task"; superpowers' TDD able to take over an executor; the test policy copied into the reviewer; "passing" undefined; the final review's packet; executor reports dropping `Servers:`.
+- Demos headless on a Node repo with a one-slice, three-part work (refactor, feature, HTTP server), about $2 per full loop: `Level: none` with `model_mid: haiku` → no test file or command, executors and task reviewers on `haiku`, planner and plan-reviewer without `model`, the `critical` task's review on `opus`/`high` from `plan-reviewer.md`; `essential` on `src/auth/` with "executors on sonnet" → tests only under `test/auth/`, executors `sonnet`, reviewers `haiku`; `full` with no settings → each executor ran only its own test files, `npm test` once at the gate, ledger "definition: sonnet". No subagent Skill call, no new listening port, the server checked and stopped by the conductor at close. `/flow:project` reality check → two `flow:impact`, no `effort`.
+- The demos found three defects, fixed and re-run on a fresh copy: the planner ran the full suite while planning (now forbidden); the conductor trimmed the executor's report before the review, which produced two void findings (the reviewer now gets it verbatim); the ledger wrote each dispatch twice (one line, when the agent returns).
+- Gate green within the narrowing; `rg -i ultrathink skills agents` empty.
+
+
 ## V7 — Widen and narrow
 
 **In**

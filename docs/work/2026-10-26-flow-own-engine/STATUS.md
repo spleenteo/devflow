@@ -1,8 +1,8 @@
 ---
 status: open
 phase: slice
-slice: V6
-step: execute
+slice: V7
+step: plan
 work: flow-own-engine
 stack: generic
 updated: 2026-10-26
@@ -23,7 +23,7 @@ description: "Flow plans and runs its own work, owns its memory and the project 
 - [x] V3 Decision format
 - [x] V4 Project profile
 - [x] V5 Stack presets
-- [ ] V6 Engine
+- [x] V6 Engine
 - [ ] V7 Widen and narrow
 - [ ] V8 Upgrade and documentation
 
@@ -41,3 +41,4 @@ description: "Flow plans and runs its own work, owns its memory and the project 
 - 2026-10-26 — V3 close — decision format, check script, flow:docs decision ops, criterion in shared/work.md, 5 decisions recorded; 5 headless demos green; Gate green within narrowing; 3 fix rounds from task reviews — V4 plan — n/a — n/a
 - 2026-10-26 — V4 close — profile (stacks, tests, merge) asked once, written on work branches; per-work raise; short guidelines template; userConfig declared after a runtime check; 5 headless demos green; Gate green within narrowing; 2 fix rounds — V5 plan (asks which stacks ship) — n/a — n/a
 - 2026-10-26 — V5 close — presets astro, datocms, rails as skills; per-stack resolution (.flow.yml, userConfig, shipped); common lenses on their own; guidelines draft; per-stack dependency rows and install.sh filtering; 7 demos green (init listing check replaced by Skill results); Gate green within narrowing; 2 fix rounds — V6 plan; owner to review the presets' rules — n/a — n/a
+- 2026-10-26 — V6 close — five agents (planner, plan-reviewer, impact, executor, task-reviewer) with model and effort; Flow's own plan, execution and review; § Agents and the ledger; test policy, commit and server rules once in the executor; no ultrathink; plan skills out of dependencies.md; CREDITS.md; 5 demos green plus one re-run after 3 demo fixes; Gate green within narrowing; 3 fix rounds — V7 plan — n/a — n/a

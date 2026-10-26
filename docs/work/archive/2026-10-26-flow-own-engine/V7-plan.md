@@ -7,7 +7,7 @@ description: "Plan for V7: flow:brainstorm and flow:grill, ported and credited; 
 
 # V7 — Widen and narrow · plan
 
-**Mandate**: [`slices.md` § V7](slices.md#v7--widen-and-narrow). **Guidelines**: [`docs/development-guidelines.md`](../../development-guidelines.md). **Lessons**: [`lessons.md`](lessons.md). **Decisions**: `2026-10-25-no-grill-me-dependency`, `2026-10-26-flow-writes-and-runs-its-own-plans`. **Sources**: superpowers 7.0.0 `skills/brainstorming/` (`SKILL.md`, `builder-check-prompt.md`; MIT, Jesse Vincent), in the local plugin cache; `mattpocock/skills` `skills/productivity/grilling/SKILL.md` and `LICENSE` (MIT, Matt Pocock), fetched to the session scratchpad at this plan.
+**Mandate**: [`slices.md` § V7](slices.md#v7--widen-and-narrow). **Guidelines**: [`docs/development-guidelines.md`](../../../development-guidelines.md). **Lessons**: [`lessons.md`](lessons.md). **Decisions**: `2026-10-25-no-grill-me-dependency`, `2026-10-26-flow-writes-and-runs-its-own-plans`. **Sources**: superpowers 7.0.0 `skills/brainstorming/` (`SKILL.md`, `builder-check-prompt.md`; MIT, Jesse Vincent), in the local plugin cache; `mattpocock/skills` `skills/productivity/grilling/SKILL.md` and `LICENSE` (MIT, Matt Pocock), fetched to the session scratchpad at this plan.
 
 **Execution rules**: executors on `sonnet`; reviewers on `opus` for `critical` tasks, `sonnet` otherwise; current checkout on `work/flow-own-engine`; parallel executors commit with the pathspec form; demos headless on throwaway repos, flags as an array, a `--resume` loop where questions come first, every turn's answer written out.
 

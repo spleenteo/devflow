@@ -7,7 +7,7 @@ description: "Plan for V6: five plugin agents with model and effort, Flow's own 
 
 # V6 — Engine · plan
 
-**Mandate**: [`slices.md` § V6](slices.md#v6--engine). **Spike**: [`spike-model-effort.md`](spike-model-effort.md), plus the runtime check below. **Guidelines**: [`docs/development-guidelines.md`](../../development-guidelines.md). **Lessons**: [`lessons.md`](lessons.md). **Decisions**: `2026-10-26-flow-writes-and-runs-its-own-plans`, `2026-10-26-atomic-commit-criteria-absorbed-not-a-dependency`.
+**Mandate**: [`slices.md` § V6](slices.md#v6--engine). **Spike**: [`spike-model-effort.md`](spike-model-effort.md), plus the runtime check below. **Guidelines**: [`docs/development-guidelines.md`](../../../development-guidelines.md). **Lessons**: [`lessons.md`](lessons.md). **Decisions**: `2026-10-26-flow-writes-and-runs-its-own-plans`, `2026-10-26-atomic-commit-criteria-absorbed-not-a-dependency`.
 
 **Execution rules**: executors on `sonnet`; reviewers on `opus` for `critical` tasks, `sonnet` otherwise; current checkout on `work/flow-own-engine`; parallel executors commit with the pathspec form; check the tree before re-dispatching; demos headless on throwaway repos, flags as an array, pre-answered prompts saying where to stop.
 

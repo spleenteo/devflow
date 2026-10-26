@@ -35,9 +35,9 @@ A kind of work appears where Flow's own plan, review or execution measurably fai
 
 ## References
 
-- [frame](../work/2026-10-26-flow-own-engine/frame.md)
-- [shaping](../work/2026-10-26-flow-own-engine/shaping.md) (R0, A3)
-- [slices](../work/2026-10-26-flow-own-engine/slices.md) (V6, V7)
+- [frame](../work/archive/2026-10-26-flow-own-engine/frame.md)
+- [shaping](../work/archive/2026-10-26-flow-own-engine/shaping.md) (R0, A3)
+- [slices](../work/archive/2026-10-26-flow-own-engine/slices.md) (V6, V7)
 
 ## Status log
 

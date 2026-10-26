@@ -7,7 +7,7 @@ description: "Plan for V5: three opinionated stack presets (astro, datocms, rail
 
 # V5 — Stack presets · plan
 
-**Mandate**: [`slices.md` § V5](slices.md#v5--stack-presets). **Stacks shipped** (asked at this plan, 2026-10-26): `astro`, `datocms`, `rails`. **Guidelines**: [`docs/development-guidelines.md`](../../development-guidelines.md). **Lessons**: [`lessons.md`](lessons.md). **Builds on**: V4's Profile in `skills/dev/SKILL.md`, the `stack_presets` option in `plugin.json`.
+**Mandate**: [`slices.md` § V5](slices.md#v5--stack-presets). **Stacks shipped** (asked at this plan, 2026-10-26): `astro`, `datocms`, `rails`. **Guidelines**: [`docs/development-guidelines.md`](../../../development-guidelines.md). **Lessons**: [`lessons.md`](lessons.md). **Builds on**: V4's Profile in `skills/dev/SKILL.md`, the `stack_presets` option in `plugin.json`.
 
 **Execution rules**: executors on `sonnet`; reviewers on `opus` for `critical` tasks, `sonnet` otherwise; current checkout on `work/flow-own-engine`; check the tree before re-dispatching a failed executor; demos headless on throwaway repos, flags as an array, two turns where a question comes first; a skill's work checked where it ran.
 

@@ -6,6 +6,7 @@ step: null
 work: flow-own-engine
 stack: generic
 updated: 2026-10-26
+archived: 2026-10-26
 tags: [work, flow-own-engine]
 description: "Flow plans and runs its own work, owns its memory and the project profile, and drops superpowers"
 ---

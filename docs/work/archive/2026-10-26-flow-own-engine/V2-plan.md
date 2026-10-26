@@ -7,7 +7,7 @@ description: "Plan for V2: the forked flow:docs skill owns changelog, version an
 
 # V2 — `flow:docs` · plan
 
-**Mandate**: [`slices.md` § V2](slices.md#v2--flowdocs). **Guidelines**: [`docs/development-guidelines.md`](../../development-guidelines.md) (Tests, Naming, Language, Commits, Gate). **Lessons**: [`lessons.md`](lessons.md). **Spike**: [`spike-skill-context.md`](spike-skill-context.md) (fork mechanics, runtime test).
+**Mandate**: [`slices.md` § V2](slices.md#v2--flowdocs). **Guidelines**: [`docs/development-guidelines.md`](../../../development-guidelines.md) (Tests, Naming, Language, Commits, Gate). **Lessons**: [`lessons.md`](lessons.md). **Spike**: [`spike-skill-context.md`](spike-skill-context.md) (fork mechanics, runtime test).
 
 **Execution rules for this slice** (the new engine arrives in V6): executors on the mid tier (`sonnet`), reviewers on the most capable (`opus`) for tasks marked `critical`, `sonnet` otherwise; current checkout on `work/flow-own-engine`, no worktree; before re-dispatching a failed executor, check the tree; verification by running the plugin on throwaway repos in the session scratchpad.
 

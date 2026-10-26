@@ -34,8 +34,8 @@ The work splits into parts that are each usable and consistent alone, or the bra
 
 ## References
 
-- [shaping](../work/2026-10-26-flow-own-engine/shaping.md) (Release)
-- [slices](../work/2026-10-26-flow-own-engine/slices.md)
+- [shaping](../work/archive/2026-10-26-flow-own-engine/shaping.md) (Release)
+- [slices](../work/archive/2026-10-26-flow-own-engine/slices.md)
 
 ## Status log
 

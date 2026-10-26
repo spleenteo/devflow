@@ -36,9 +36,9 @@ Skill listing cost of the shipped presets becomes a problem, or a stack needs pa
 
 ## References
 
-- [shaping](../work/2026-10-26-flow-own-engine/shaping.md) (R4, A2, A2.2 comparison)
-- [spike on personal settings](../work/2026-10-26-flow-own-engine/spike-personal-settings.md)
-- [slices](../work/2026-10-26-flow-own-engine/slices.md) (V5)
+- [shaping](../work/archive/2026-10-26-flow-own-engine/shaping.md) (R4, A2, A2.2 comparison)
+- [spike on personal settings](../work/archive/2026-10-26-flow-own-engine/spike-personal-settings.md)
+- [slices](../work/archive/2026-10-26-flow-own-engine/slices.md) (V5)
 
 ## Status log
 

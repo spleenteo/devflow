@@ -35,9 +35,9 @@ The workflow moves to a PR per small unit of change, making atomic-commits' hook
 
 ## References
 
-- [frame](../work/2026-10-26-flow-own-engine/frame.md) (Commits)
-- [shaping](../work/2026-10-26-flow-own-engine/shaping.md) (R5.4)
-- [slices](../work/2026-10-26-flow-own-engine/slices.md) (V6)
+- [frame](../work/archive/2026-10-26-flow-own-engine/frame.md) (Commits)
+- [shaping](../work/archive/2026-10-26-flow-own-engine/shaping.md) (R5.4)
+- [slices](../work/archive/2026-10-26-flow-own-engine/slices.md) (V6)
 
 ## Status log
 

@@ -7,7 +7,7 @@ description: "Plan for V4: the project profile (stacks, test level with sensitiv
 
 # V4 — Project profile · plan
 
-**Mandate**: [`slices.md` § V4](slices.md#v4--project-profile). **Spike**: [`spike-personal-settings.md`](spike-personal-settings.md), § Runtime check (encoding chosen). **Guidelines**: [`docs/development-guidelines.md`](../../development-guidelines.md). **Lessons**: [`lessons.md`](lessons.md).
+**Mandate**: [`slices.md` § V4](slices.md#v4--project-profile). **Spike**: [`spike-personal-settings.md`](spike-personal-settings.md), § Runtime check (encoding chosen). **Guidelines**: [`docs/development-guidelines.md`](../../../development-guidelines.md). **Lessons**: [`lessons.md`](lessons.md).
 
 **Execution rules**: executors on `sonnet`; reviewers on `opus` for `critical` tasks, `sonnet` otherwise; current checkout on `work/flow-own-engine`; check the tree before re-dispatching a failed executor; demos headless on throwaway repos, flags as an array, two turns with `--resume <session_id>` where a question must be asked before the answer.
 

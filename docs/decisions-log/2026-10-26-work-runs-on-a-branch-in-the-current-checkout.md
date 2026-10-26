@@ -35,9 +35,9 @@ Several people or agents routinely work on the same checkout at once, or most pr
 
 ## References
 
-- [frame](../work/2026-10-26-flow-own-engine/frame.md) (Branches, commits, merge)
-- [shaping](../work/2026-10-26-flow-own-engine/shaping.md) (R5, A4)
-- [slices](../work/2026-10-26-flow-own-engine/slices.md) (V1)
+- [frame](../work/archive/2026-10-26-flow-own-engine/frame.md) (Branches, commits, merge)
+- [shaping](../work/archive/2026-10-26-flow-own-engine/shaping.md) (R5, A4)
+- [slices](../work/archive/2026-10-26-flow-own-engine/slices.md) (V1)
 
 ## Status log
 

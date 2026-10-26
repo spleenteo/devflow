@@ -7,7 +7,7 @@ description: "Plan for V1, the work layer: one shared reference for the work's h
 
 # V1 — Work layer · plan
 
-**Mandate**: [`slices.md` § V1](slices.md#v1--work-layer). **Guidelines**: [`docs/development-guidelines.md`](../../development-guidelines.md) (Tests, Naming, Language, Commits, Gate). No `lessons.md` yet.
+**Mandate**: [`slices.md` § V1](slices.md#v1--work-layer). **Guidelines**: [`docs/development-guidelines.md`](../../../development-guidelines.md) (Tests, Naming, Language, Commits, Gate). No `lessons.md` yet.
 
 **Execution rules for this slice** (the new engine arrives in V6): executors on the mid tier (`sonnet`), reviewers on the most capable (`opus`) for tasks marked `critical`; no worktree, current checkout on `work/flow-own-engine`; no test framework, verification by running the plugin on throwaway repos outside this repo.
 

@@ -7,7 +7,7 @@ description: "Plan for V3: one decision format for both layouts inside flow:docs
 
 # V3 — Decision format · plan
 
-**Mandate**: [`slices.md` § V3](slices.md#v3--decision-format). **Source**: the brief [`docs/briefs/2026-10-25-decisions-log.md`](../../briefs/2026-10-25-decisions-log.md) (its evidence and project names stay out of the repo). **Guidelines**: [`docs/development-guidelines.md`](../../development-guidelines.md). **Lessons**: [`lessons.md`](lessons.md). **Builds on**: `skills/docs/SKILL.md` (V2's request contract).
+**Mandate**: [`slices.md` § V3](slices.md#v3--decision-format). **Source**: the brief [`docs/briefs/2026-10-25-decisions-log.md`](../../../briefs/2026-10-25-decisions-log.md) (its evidence and project names stay out of the repo). **Guidelines**: [`docs/development-guidelines.md`](../../../development-guidelines.md). **Lessons**: [`lessons.md`](lessons.md). **Builds on**: `skills/docs/SKILL.md` (V2's request contract).
 
 **Execution rules**: executors on `sonnet`; reviewers on `opus` for `critical` tasks, `sonnet` otherwise; current checkout on `work/flow-own-engine`; check the tree before re-dispatching a failed executor; demos on throwaway repos in the session scratchpad, flags passed as an array.
 

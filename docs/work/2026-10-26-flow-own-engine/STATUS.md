@@ -1,8 +1,8 @@
 ---
 status: open
-phase: slicing
-slice: null
-step: null
+phase: slice
+slice: V1
+step: plan
 work: flow-own-engine
 stack: generic
 updated: 2026-10-26
@@ -18,7 +18,14 @@ description: "Flow plans and runs its own work, owns its memory and the project 
 
 ## Slices
 
-- [ ] (defined during slicing)
+- [ ] V1 Work layer
+- [ ] V2 `flow:docs`
+- [ ] V3 Decision format
+- [ ] V4 Project profile
+- [ ] V5 Stack presets
+- [ ] V6 Engine
+- [ ] V7 Widen and narrow
+- [ ] V8 Upgrade and documentation
 
 ## Log
 
@@ -27,3 +34,5 @@ description: "Flow plans and runs its own work, owns its memory and the project 
 - 2026-10-26 — frame — brainstorming in session, frame written — builder check, then shaping — n/a — n/a
 - 2026-10-26 — frame — builder check: 5 questions, 2 answered by the owner, 3 settled as calls; frame approved — shaping, spikes 2-4 — n/a — n/a
 - 2026-10-26 — shaping — R0–R8, shape A selected; 3 spikes (fork verified at runtime); release: one, v0.2.0; presets: skills, opinionated, replaceable; fidelity check: 8 findings applied — breadboard skipped, slicing next — n/a — n/a
+- 2026-10-26 — slicing — 8 slices; fidelity check: 9 findings applied — impact — n/a — n/a
+- 2026-10-26 — impact — 2 subagents (common lenses, repo lenses): 18 problems after dedup, all fixed in slices.md, no reordering — V1 plan — n/a — n/a

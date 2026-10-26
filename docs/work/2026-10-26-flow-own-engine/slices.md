@@ -14,7 +14,7 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 ## Gate narrowing, until V8 closes
 
 - **Old names.** The `.devflow.yml` fallback sentence and the "devflow work … merged" note are allowed wherever V1–V7 move them (the work-layer reference, `flow:docs`, the thin `/flow:changelog` and `/flow:archive` entry points), on top of the places the Gate already lists. V8 removes them all but the upgrade step.
-- **Links.** From V5 on, links to `skills/dev/lenses.md` in `README.md` and `docs/architecture.md` may break: add `--glob '!README.md' --glob '!docs/architecture.md'` to the link check's `rg --files` call until V8 rewrites both.
+- **Links.** From V3 on, links in `README.md` to files V3–V5 remove or move (`skills/dev/decisions-log.md`, `skills/dev/lenses.md`, the guideline and lens templates) may break: add `--glob '!README.md'` to the link check's `rg --files` call until V8 rewrites it. `docs/architecture.md` stays checked.
 
 | Slice | Parts | Depends on |
 |---|---|---|
@@ -35,6 +35,10 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - Archiving moves in from `/flow:archive`, which stays as a thin entry point (A5.2).
 - Opening a work creates `work/<slug>` in the current checkout; a worktree only when the user asks (A4.1).
 - The closing sequence proposes a local merge into `main` and runs it after an ok; `merge: pr` in `.flow.yml` or the user's request switches to a PR; push and tag still need an ok (A4.3). This slice defines the `.flow.yml` key `merge` (`local` | `pr`, default `local`); V4 adds the question that fills it.
+- Until V6 replaces it, the execute step's instruction adds an override: current checkout on `work/<slug>`, no worktree.
+- The project layout's archive is its own procedure: a sibling `archive/` folder, possibly outside git, no deny wall, no `archived.md` unless the folder is a repo.
+- The merge target is the repo's default branch, detected, never assumed to be `main`.
+- "Doesn't merge or push" in `skills/dev/SKILL.md` becomes the new close; push and tag still need an ok.
 
 **Out**: decisions, changelog (V2, V3); the questions that fill `.flow.yml` (V4).
 
@@ -44,6 +48,8 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - `/flow:archive` archives a closed work there, links fixed, `archived.md` row written.
 - `/flow:project` opens a project in a plain folder with the same `STATUS.md` shape.
 - Closing that work proposes a local merge, runs it after an ok, and leaves no worktree; with `merge: pr` in `.flow.yml` it proposes a PR instead.
+- A project folder's closed project is archived to its sibling `archive/` as the project procedure says.
+- In a throwaway repo whose default branch is `master`, the close merges into `master`.
 
 **Gotchas**: the reference is read by two skills with different layouts; every path in it must say which layout it belongs to. `${CLAUDE_PLUGIN_ROOT}` is substituted in skill text only, not in Bash.
 
@@ -54,6 +60,9 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - Changelog and `.version` operations move in from `/flow:changelog`, which stays as a thin entry point (A6.3).
 - Memory search: key words over changelog, decisions and `archived.md` (A6.4); search by `touches:` arrives with V3.
 - `dev` and `project` replace their own changelog and memory-search instructions with requests to `flow:docs`.
+- `flow:docs` never asks: the conductor, or `/flow:changelog` when invoked by hand, asks first (current version when `.version` is missing, one release or two, objections to the level, the `git status` check) and the request carries the answers.
+- Always cited by its qualified name `flow:docs`; its description is narrow (called by Flow's conductors and `/flow:changelog`), so other skills named `docs` don't collide.
+- In the project layout, memory search also covers the sibling projects' `STATUS.md`, `lessons.md` and decisions, as `project` does today.
 
 **Out**: the decision format (V3).
 
@@ -62,6 +71,9 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - "What do we know about X" from `/flow:dev` returns matching entries through `flow:docs`.
 - `/flow:changelog` invoked by hand writes the same entry through `flow:docs`.
 - In a `project` folder, `flow:docs` finds and writes in the project layout.
+- On a throwaway repo with no `.version`, the conductor asks the current version before calling `flow:docs`; the fork asks nothing.
+- With another skill named `docs` loaded, closing a work still reaches `flow:docs` (stream JSON).
+- In a folder of sibling projects, a search finds a lesson recorded in a neighbour.
 
 **Gotchas**: a forked skill receives no conversation history: every request must carry the paths and slugs it needs.
 
@@ -73,6 +85,7 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - The check script (Bash and awk) next to `flow:docs`; files without `kind:` are legacy, skipped and counted; optional copy into a project with a version header.
 - Search by `touches:` against a plan's files.
 - Dogfooding: the five decisions of this work recorded in the new format: superpowers leaves; branch in the main checkout and local merge; presets as opinionated, replaceable skills; atomic-commits absorbed, not a dependency; one release.
+- The test for proposing a decision ("does the choice outlive the work?", a real alternative discarded, a problem deferred on purpose) stays in the work-layer reference, where conductors read it in session; `flow:docs` holds only the format.
 
 **Out**: converting this repo's three existing decisions (they stay legacy).
 
@@ -90,6 +103,9 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - Test levels none / essential / full in the guidelines' `## Tests`; at opening, a work touching a sensitive area gets a proposed raise, recorded as `tests:` in its `STATUS.md` (A1.3).
 - `userConfig` in `plugin.json` for personal settings: model preference per tier and preset mappings (A1.2), never written to a repo.
 - The guidelines template becomes the short form: references, test level, gate, deviations.
+- A project's existing `stack:` key is read as a one-item `stacks` list, so it isn't asked again; V8 converts it; the `STATUS.md` template's `stack:` field follows.
+- Before planning: a runtime check of `userConfig` on a throwaway plugin loaded with `--plugin-dir` and from a local marketplace: where values are stored, how a list renders in `${user_config.KEY}`, an unset value. Every option gets a default and none is `required`; mappings use whatever encoding the check proves.
+- The skill text saying `.flow.yml` is written only at Step 0 is corrected: the profile writes it back.
 
 **Out**: the presets themselves (V5); the prompts that obey the test level (V6).
 
@@ -98,6 +114,8 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - A repo with `## Tests` already filled is asked only for what's missing.
 - Opening a work whose request touches a declared sensitive area proposes a raise; accepted, `tests:` appears in that work's `STATUS.md` and the project's level is unchanged.
 - `claude plugin validate .` passes with `userConfig` declared.
+- A repo with `stack: astro` in `.flow.yml` isn't asked its stack.
+- The `userConfig` check is recorded in the spike on personal settings, with the encoding chosen.
 
 ## V5 — Stack presets
 
@@ -108,6 +126,9 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - First-run draft of `docs/development-guidelines.md` from the resolved presets and the code's observed conventions (A2.3); when the file already exists, only its missing sections are proposed, never a rewrite. After the draft, gate and test level come only from the guidelines.
 - Per-stack optional rows in `dependencies.md`, reported only in that stack's projects (A2.4).
 - Impact uses the common lenses plus the resolved presets' lenses.
+- `install.sh` keeps parsing five columns: a per-stack row carries the stack in the Need cell (e.g. `optional (astro)`) and the script labels it.
+- Impact gets a preset's lenses by invoking the resolved preset by name, or the conductor puts the lens text in the packet; never a path into another plugin.
+- Preset descriptions say they are invoked only by Flow's conductors and carry no bare stack keywords, so they don't trigger on their own.
 
 **Out**: presets for stacks nobody here uses.
 
@@ -117,6 +138,8 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - The same with the mapping in `userConfig` instead of `.flow.yml`.
 - A repo with its own `docs/development-guidelines.md` gets only the missing sections proposed; existing sections are untouched.
 - The start check reports a stack's optional dependencies only in a repo of that stack.
+- `./install.sh` in a throwaway Astro repo labels the Astro rows and omits the others.
+- A session in an Astro repo asked a generic Astro question doesn't invoke the preset by itself.
 
 ## V6 — Engine
 
@@ -128,6 +151,7 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - Server rule in the executor prompt (A4.2).
 - Every `ultrathink` removed; effort set by the agent definitions.
 - Rules taken from superpowers credited with their MIT licence.
+- `project`'s reality check and plan review get an agent each (or reuse impact and plan reviewer, stated), with their effort, so removing `ultrathink` there doesn't leave them without one.
 
 **Out**: removing superpowers from `dependencies.md` (V7, after brainstorming is replaced).
 
@@ -139,6 +163,7 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - One commit per task in `git log`, each with a single kind of work.
 - With a `userConfig` model preference and then an explicit request in the prompt, the stream JSON shows the request winning over the preference, and the preference over the agent definition.
 - No background server is left running after execute (`lsof -i` on the usual dev ports, before and after).
+- `/flow:project`'s reality check runs on its agent, with the effort of its definition (stream JSON).
 
 **Gotchas**: plugin agents ignore `permissionMode`, `hooks`, `mcpServers`.
 
@@ -149,12 +174,15 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - `flow:grill` from `grilling` (MIT, credited): frontier rounds with recommendations, criterion anchor, caller's target, parked questions, decision candidates handed to `flow:docs` (A7.2).
 - Definition path in `dev` and `project`: brainstorm → grill → frame; inside a slice, grill on the doubt, replacing "one question at a time" (A7.3).
 - superpowers removed from `dependencies.md` and from every skill (A3.5).
+- Conductors cite `flow:brainstorm` and `flow:grill` by qualified name only and say not to use any other `brainstorming` skill, so superpowers' or a personal one can't take over.
+- The decision `2026-10-25-no-grill-me-dependency.md` gets a status-log line: partly superseded by `flow:grill` (one-question rule replaced; `grilling` ported, still not a dependency).
 
 **Done**
 - `rg -i superpowers skills agents dependencies.md` returns only credit lines.
 - `/flow:brainstorm` on a clear one-line request exits and says so; on a visual topic it proposes an artifact and starts no server.
 - `/flow:grill` on a small plan asks a numbered frontier round and records a parked question in the target file.
 - `/flow:dev` on a product request runs brainstorm → grill → frame; `/flow:project` follows the same path.
+- The brainstorm → grill → frame path runs with superpowers still installed and enabled, and its `brainstorming` is not invoked (stream JSON).
 
 ## V8 — Upgrade and documentation
 
@@ -162,6 +190,8 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - One upgrade step in the work layer (A8.1): recognises old traces, lists the changes, runs after an ok, commits on the work's branch or `work/flow-upgrade`; points at `CLAUDE.md` lines without editing them; also brings the project to this work's conventions (profile, presets, merge rule).
 - Fallback sentences for `.devflow.yml` and "devflow work … merged" removed everywhere else (A8.2).
 - README, `docs/architecture.md`, `dependencies.md` and the guidelines' Gate updated to the new shape.
+- Also stale before V8 and fixed here: "doesn't merge" in `README.md` and `docs/architecture.md`; the `#project-memory` anchor in `docs/architecture.md`; the `superpowers:writing-plans` example in the guidelines' Naming; README's coexistence note for users who keep superpowers installed.
+- Existing `stack:` keys converted to `stacks:` by the upgrade step.
 
 **Done**
 - On a throwaway repo carrying old traces, the start proposes the upgrade, runs it after an ok and commits it on a branch; `main` untouched.

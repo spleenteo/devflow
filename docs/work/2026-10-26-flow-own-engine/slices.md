@@ -271,6 +271,14 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - `/flow:dev` on a product request runs brainstorm → grill → frame; `/flow:project` follows the same path.
 - The brainstorm → grill → frame path runs with superpowers still installed and enabled, and its `brainstorming` is not invoked (stream JSON).
 
+**Deviations found while planning V7**
+- The builder check runs on `flow:plan-reviewer` with one lens; the agents' descriptions widen from "Flow's conductors" to "Flow's skills".
+- The brainstorm writes `brainstorm.md` and the grill targets it; the conductor writes `frame.md` from both when there is no source material.
+- Every Flow entry skill states process ownership (no other brainstorming, planning, execution, TDD or worktree skill applies inside it), naming process kinds, not plugins.
+- The brainstorm's spike becomes a proposal to the caller; visuals are local files, never a server or a published page.
+- The grill looks facts up with the built-in `Explore`.
+- The grill-me decision keeps `status: active` with a status-log line; legacy, no `kind:`.
+
 ## V8 — Upgrade and documentation
 
 **In**

@@ -200,7 +200,7 @@ Two environment variables beat all of this, and Flow can't see past them: `CLAUD
 - First line `# Ledger — V<n>`. At the start of execute the conductor runs `printenv CLAUDE_CODE_SUBAGENT_MODEL_FORCE CLAUDE_CODE_SUBAGENT_MODEL` once and writes the result on the second line.
 - One line per dispatch: `- <task> · <agent> · <model> · <outcome> · <commits>`. The model is the passed value, or `definition: <alias>` when none was passed, plus `forced` when the variable is set.
 - `- T<n>: complete` when a task's review passes; `Ruling: <what> — <why> — <cost if wrong>` for each ruling.
-- Each agent's report is appended under its line, trimmed to status, commits, tests run, concerns.
+- Each agent's report is appended under its line, trimmed to status, commits, tests run, `Servers:`, concerns.
 - On resume at `step: execute` the ledger is reloaded, and tasks marked complete are never dispatched again.
 
 ## Closing a work

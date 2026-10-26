@@ -191,7 +191,7 @@ Flow's own agents live in the plugin's `agents/` folder, one file per role, disp
 
 A role whose definition is mid, dispatched on the top tier with no request and no preference, takes `model` and `effort` from the frontmatter of `plan-reviewer.md` in the agents folder (read it). With a preference for the top tier, it takes that model and the same `effort`.
 
-Two environment variables beat all of this, and Flow can't see past them: `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` (with `CLAUDE_CODE_SUBAGENT_MODEL`) forces the model of every subagent ([model choice](https://code.claude.com/docs/en/sub-agents.md#choose-a-model)), and `CLAUDE_CODE_EFFORT_LEVEL` overrides every effort ([effort level](https://code.claude.com/docs/en/model-config.md#set-the-effort-level)). Name them to the user in one sentence when a model they asked for doesn't seem to apply.
+Two environment variables beat all of this, and Flow can't see past them: `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` (with `CLAUDE_CODE_SUBAGENT_MODEL`) forces the model of every subagent ([model choice](https://code.claude.com/docs/en/sub-agents.md#choose-a-model), [one model for all](https://code.claude.com/docs/en/sub-agents.md#run-every-subagent-on-one-model)), and `CLAUDE_CODE_EFFORT_LEVEL` overrides every effort ([effort level](https://code.claude.com/docs/en/model-config.md#set-the-effort-level)). Name them to the user in one sentence when a model they asked for doesn't seem to apply.
 
 **Dispatch contract.** The prompt is the slice packet (or the conductor's own packet) verbatim at the top, then the role's instruction. Paths in a packet or an instruction are expanded absolute paths, never variables: a subagent substitutes nothing.
 

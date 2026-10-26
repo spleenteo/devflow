@@ -16,6 +16,11 @@ Usage: install.sh [--help]
 Checks the skills listed in dependencies.md (next to this script). For each one
 prints ok or missing; for a missing one prints the user-scope install command.
 Exit 1 if a required skill is missing, 0 otherwise. Installs nothing.
+
+Rows marked optional (<stack>) are shown only when the current directory has that
+stack: from .flow.yml (stacks: or stack:) in the checkout, else from signals
+(Gemfile + config/application.rb, astro.config.*, package.json dependencies).
+Only the checkout's .flow.yml is read: not .devflow.yml, not other branches.
 USAGE
 }
 
@@ -36,21 +41,46 @@ enabled_plugins() {
     /"enabled":/ { if ($0 ~ /true/ && id != "") print id; id = "" }'
 }
 
-# Table rows as: plugin-id <TAB> skill <TAB> need (required|optional)
+# Stacks of the current directory, space-separated and padded (" astro datocms ").
+detect_stacks() {
+  local out="" f v d
+  if [ -f .flow.yml ]; then
+    v="$(sed -n 's/^stacks:[[:space:]]*\[\(.*\)\].*/\1/p; s/^stack:[[:space:]]*\([^[:space:]#]*\).*/\1/p' .flow.yml | tr -d "[],'\"" | tr '\n' ' ')"
+    out=" $(echo $v) "
+    [ "$out" = "  " ] || { echo "$out"; return 0; }
+  fi
+  out=" "
+  if [ -f Gemfile ] && [ -f config/application.rb ]; then out="${out}rails "; fi
+  for f in astro.config.*; do [ -e "$f" ] && { out="${out}astro "; break; }; done
+  local js=0
+  case "$out" in *" astro "*) js=1 ;; esac
+  if [ -f package.json ]; then
+    d="$(cat package.json)"
+    if printf '%s' "$d" | grep -q '"react"[[:space:]]*:'; then out="${out}react "; js=1; fi
+    if printf '%s' "$d" | grep -Eq '"(@datocms/cda-client|@datocms/astro|react-datocms|vue-datocms|@datocms/svelte|datocms-structured-text-utils|@datocms/cli)"[[:space:]]*:'; then out="${out}datocms "; js=1; fi
+    [ "$js" = 1 ] || out="${out}node "
+  fi
+  echo "$out"
+}
+
+# Table rows as: plugin-id <TAB> skill <TAB> need (required|optional) <TAB> stack (- if none)
 rows() {
   awk -F'|' '
     /^\| *Source/ || /^\|---/ { next }
     /^\|/ && NF >= 6 {
       id = $3; gsub(/[ `]/, "", id)
       need = ($5 ~ /^ *required/) ? "required" : "optional"
+      st = "-"
+      if (match($5, /\([^)]*\)/)) st = substr($5, RSTART + 1, RLENGTH - 2)
       s = $4
       while (match(s, /`[^`]+`/)) {
-        print id "\t" substr(s, RSTART + 1, RLENGTH - 2) "\t" need
+        print id "\t" substr(s, RSTART + 1, RLENGTH - 2) "\t" need "\t" st
         s = substr(s, RSTART + RLENGTH)
       }
     }' "$DEPS"
 }
 
+STACKS="$(detect_stacks)"
 PLUGINS="$(enabled_plugins)"
 HAVE_CLAUDE=0; command -v claude >/dev/null 2>&1 && HAVE_CLAUDE=1
 
@@ -61,12 +91,17 @@ present() {   # present <plugin-id> <skill>: its plugin is enabled, or it is a p
 
 REQ_MISSING=0; OPT_MISSING=0; SEEN=" "
 echo "flow dependencies (from dependencies.md)"
-while IFS=$'\t' read -r id skill need; do
+while IFS=$'\t' read -r id skill need stack; do
+  label=""; tag="$need"
+  if [ "$stack" != "-" ]; then
+    case "$STACKS" in *" $stack "*) ;; *) continue ;; esac
+    label=" ($stack)"; tag="$need, $stack"
+  fi
   if present "$id" "$skill"; then
-    echo "  ok       $skill"
+    echo "  ok       $skill$label"
     continue
   fi
-  echo "  missing  $skill ($need)"
+  echo "  missing  $skill ($tag)"
   if [ "$need" = required ]; then REQ_MISSING=1; else OPT_MISSING=1; fi
   case "$SEEN" in *" $id "*) continue ;; esac
   SEEN="$SEEN$id "

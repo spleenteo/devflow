@@ -52,7 +52,8 @@ phase: <frame | shaping | breadboard | slicing | impact | slice | done>
 slice: null
 step: null
 work: <slug>
-stack: <detected>
+stacks: [<detected>]
+tests: <level, only when raised>
 base: <branch the work was cut from>
 updated: YYYY-MM-DD
 tags: [work, <slug>]
@@ -105,7 +106,7 @@ description: "<what the user wants to achieve>"
 <!-- date — slice — what happened — spent (time, money) — remaining — blockers -->
 ```
 
-**Both.** `work:` (repo) or `project:` (project) is the bare name; the date lives in the folder name. `phase:` says where the work is; when it's `slice`, `slice:` and `step:` say which slice and where in it (`plan`, `review`, `execute`, `close`). `phase:` moves when a definition phase closes, together with `updated:` and a Log line. Without these three fields an interrupted work shows up the next morning as finished, or as never started. After a verification, the Log line states the outcome: *"09-02 — impact — 2 problems, fixed in V2 and V4 — 14 min — $2.10"*.
+**Both.** `work:` (repo) or `project:` (project) is the bare name; the date lives in the folder name. `phase:` says where the work is; when it's `slice`, `slice:` and `step:` say which slice and where in it (`plan`, `review`, `execute`, `close`). `phase:` moves when a definition phase closes, together with `updated:` and a Log line. Without these three fields an interrupted work shows up the next morning as finished, or as never started. (repo) `tests:` is present only when the level was raised for this work, and overrides the project's level for it. After a verification, the Log line states the outcome: *"09-02 — impact — 2 problems, fixed in V2 and V4 — 14 min — $2.10"*.
 
 ## `slices.md` and `lessons.md`
 

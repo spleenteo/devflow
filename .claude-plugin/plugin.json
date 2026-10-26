@@ -6,5 +6,22 @@
   },
   "license": "MIT",
   "homepage": "https://github.com/spleenteo/flow",
-  "repository": "https://github.com/spleenteo/flow"
+  "repository": "https://github.com/spleenteo/flow",
+  "userConfig": {
+    "model_top": {
+      "type": "string",
+      "title": "Top-tier model",
+      "description": "Model for Flow's top tier: an alias like opus or sonnet, or a model ID. Empty means Flow's default for the tier."
+    },
+    "model_mid": {
+      "type": "string",
+      "title": "Mid-tier model",
+      "description": "Model for Flow's mid tier: an alias like opus or sonnet, or a model ID. Empty means Flow's default for the tier."
+    },
+    "stack_presets": {
+      "type": "string",
+      "title": "Stack presets",
+      "description": "Skill to use per stack, as comma-separated pairs in the form stack=skill, stack=skill. Example: astro=my-stacks:astro, rails=my-stacks:rails"
+    }
+  }
 }

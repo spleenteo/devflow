@@ -5,13 +5,15 @@ description: Use when opening a development work in a repo, resuming an interrup
 
 # Flow: dev
 
+Running `/flow:dev` is the user's explicit choice of process: inside it no other process skill applies (brainstorming, grilling, planning, plan execution, test-driven development or worktree skills, from any plugin or personal). Name `flow:brainstorm` and `flow:grill` by their qualified names.
+
 Runs a development work from idea to code, one slice at a time.
 
 The high-level plan is the slice list, produced by shaping. The detailed plan of each slice is written right before executing it, after the previous slice is closed: executing slice N teaches things the plan of N+1 must contain, and a plan written weeks earlier ignores them.
 
 ## Why
 
-The skills that do the actual work (`shaping` (`shaping-skills:shaping`), `breadboarding` (`shaping-skills:breadboarding`), `framing-doc` (`shaping-skills:framing-doc`)) come from outside, don't know each other and don't know the repo's paths: `brainstorming` (`superpowers:brainstorming`) saves to `docs/superpowers/specs/`, `shaping` wherever it lands. Without a conductor, every work restarts the debate about which phases apply and where files go, state is lost when the session ends, and the return to the user between steps disappears.
+The skills that do the actual work (`shaping` (`shaping-skills:shaping`), `breadboarding` (`shaping-skills:breadboarding`), `framing-doc` (`shaping-skills:framing-doc`)) come from outside, don't know each other and don't know the repo's paths: `shaping` saves wherever it lands. For a problem that isn't clear, Flow brings its own dialogue, `flow:brainstorm` then `flow:grill`, and this skill tells each where to write. Without a conductor, every work restarts the debate about which phases apply and where files go, state is lost when the session ends, and the return to the user between steps disappears.
 
 This skill keeps the thread: it opens the work's home, picks the path, invokes each tool at the right moment telling it where to write and what to read, records progress on disk, and has plans verified by someone else before executing.
 
@@ -160,7 +162,7 @@ Resuming reloads the **standing documents**, and nothing else:
 
 | Always reloaded | Never reloaded |
 |---|---|
-| `STATUS.md`; the `## The criterion` block of `frame.md` when the work has one; the sections of `docs/development-guidelines.md` that apply; `lessons.md`; the `description:` line of the `docs/decisions-log/` files that match the work (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords` from the `description:` in `STATUS.md`); the current slice's plan; at `step: execute`, the slice's ledger (tasks marked complete are never dispatched again) | `shaping.md`; `breadboard.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
+| `STATUS.md`; the `## The criterion` block of `frame.md` when the work has one; the sections of `docs/development-guidelines.md` that apply; `lessons.md`; the `description:` line of the `docs/decisions-log/` files that match the work (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords` from the `description:` in `STATUS.md`); the current slice's plan; at `step: execute`, the slice's ledger (tasks marked complete are never dispatched again) | `brainstorm.md`; `shaping.md`; `breadboard.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
 
 A standing document is one that is still true. A closed phase is a debate that ended. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a work that resumes without it resumes on whatever was written last.
 
@@ -174,7 +176,7 @@ One message, five questions, each with the answer this skill proposes from what 
 2. **Code name?** Propose a short lowercase slug with hyphens, checked against `docs/work/` and `docs/work/archived.md`.
 3. **Source material?** Call transcripts, threads, notes. If yes, the frame starts from them with `framing-doc`.
 4. **The visible-outcome test.** *Can you already say in one sentence what changes for the product's users, without answering "it depends"?* **Yes** → technical work: skip to slicing. **No** → product work: start from the frame. State your reading: *"I read this as product work: describing the outcome I'd say 'it depends on which pages change'. If it's already defined for you, I'll skip to slicing."*
-5. **If product work: is the problem already clear?** Yes → skip the frame, start from shaping. No → frame, using `brainstorming` as the dialogue technique.
+5. **If product work: is the problem already clear?** Yes → skip the frame, start from shaping. No → the definition path: `flow:brainstorm` (path `<work dir>/brainstorm.md`), then `flow:grill` (target `brainstorm.md`; `layout: repo`, `dir`, `work`, `slice` and `area` for decision candidates), then the frame.
 
 Before sending the message, check the project memory with the key words of the request (`flow:docs`, `op: search`, `layout: repo`, `dir`). If a changelog entry, a decision or an archived work touches the same area, say so in the same message: *"v1.9 moved the list filters into `FilterBar`; the decision of 2026-06-12 rules out server-side filtering. I'll take both into account."*
 
@@ -194,13 +196,15 @@ For each phase: invoke the tool telling it where to save, commit, update `phase:
 
 | `phase:` | When | Tool | Produces |
 |---|---|---|---|
-| `frame` | The problem isn't defined yet | `framing-doc` with source material, else `brainstorming` | `frame.md` |
+| `frame` | The problem isn't defined yet | `flow:brainstorm` → `flow:grill`, then `framing-doc` with source material, else this skill writes the frame from `brainstorm.md` | `brainstorm.md`, `frame.md` |
 | `shaping` | Several solutions with different outcomes | `shaping` | `shaping.md` |
 | `breadboard` | The work introduces places or affordances that don't exist yet. On existing code, skip by default and say so | `breadboarding` | `breadboard.md` |
 | `slicing` | Always, even with one slice | `shaping` (slicing section) or `breadboarding` | `slices.md` |
 | `impact` | Always, after slicing | Two `flow:impact` agents (below) | Corrections in `slices.md` |
 
-If the tool the row picks for the case at hand isn't listed in the session, stop that phase and give its commands from `dependencies.md`. Never swap in another tool (`brainstorming` in place of a missing `framing-doc`).
+If the tool the row picks for the case at hand isn't listed in the session, stop that phase and give its commands from `dependencies.md`. Never swap in another tool for a missing `framing-doc`.
+
+**The definition path.** A product work whose problem isn't clear runs `flow:brainstorm`, passing `<work dir>/brainstorm.md`; then `flow:grill` with that file as target; then the frame. With source material the frame is `framing-doc`, given `brainstorm.md` too. Without, this skill writes `frame.md` with the `## The criterion` block on top, built from `brainstorm.md` and the grill's answers, and carries the parked questions into its body. `brainstorm.md`, the grill's writes and the frame are committed on the work branch.
 
 ### The criterion
 
@@ -227,7 +231,7 @@ A technical work that skipped the frame has no criterion, and nothing here appli
 
 **The criterion travels with every invocation.** `shaping`, `framing-doc` and `breadboarding` don't know the work: put the `## The criterion` block verbatim at the top of the prompt, above the path instruction, with the guideline sections that bear on it. Without it a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
 
-**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), settle that point in dialogue before moving on: one question at a time, each with the answer you'd propose, until it closes or the user parks it as an open question. It's tightening, not a phase.
+**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `flow:grill` with the point and the document it belongs to as target, before moving on: it closes the point in rounds or the user parks it. It's tightening, not a phase.
 
 **If an unknown is technical** (how a library behaves, what a piece of code really does, whether a platform limit holds), it's a spike: a `spike-<topic>.md` with questions and outcomes, done before the plan of the slice that depends on it. A plan is not written on top of a guess.
 
@@ -342,6 +346,6 @@ Code, changelog, version and archived work land on the target in one changeset. 
 | Changelog and version | `flow:docs` (by hand: `/flow:changelog`) | the `flow` plugin |
 | Archiving | `/flow:archive` | the `flow` plugin |
 
-`shaping`, `breadboarding`, `framing-doc`, `brainstorming` aren't in the table because they aren't moments: they're tools this skill picks up when needed.
+`shaping`, `breadboarding`, `framing-doc`, `flow:brainstorm`, `flow:grill` aren't in the table because they aren't moments: they're tools this skill picks up when needed.
 
 A work run with this skill can be one action of a `/flow:project` plan: the project's row says *"flow:dev work `<slug>` merged"* (the older *"devflow work … merged"* means the same), this skill runs the work in its repo, and the row closes at the merge. The two skills share their skeleton and are kept in sync by hand.

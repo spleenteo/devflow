@@ -5,13 +5,15 @@ description: Use when planning and running a project that isn't software, where 
 
 # Flow: project
 
+Running `/flow:project` is the user's explicit choice of process: inside it no other process skill applies (brainstorming, grilling, planning, plan execution, test-driven development or worktree skills, from any plugin or personal). Name `flow:brainstorm` and `flow:grill` by their qualified names.
+
 Runs a project from idea to done, one slice at a time, when the executor is people rather than code.
 
 Same skeleton as `/flow:dev`: the high-level plan is the slice list produced by shaping; each slice's action plan is written right before it starts, after the previous one is closed, because the world changes between slices and a plan written months earlier ignores it. What changes: the home is a folder, execution happens in the world and the skill records it, verification checks reality (money, time, people, permissions) instead of code.
 
 ## Why
 
-`brainstorming` (`superpowers:brainstorming`), `framing-doc` (`shaping-skills:framing-doc`), `shaping` (`shaping-skills:shaping`) and `kickoff-doc` (`shaping-skills:kickoff-doc`) are thinking tools. They don't know each other, don't know where the project lives, and carry no state across weeks. A project that spans months needs three things on disk: where we are, what was decided and why, what the last slice taught. This skill keeps the thread and invokes each tool at the right moment, telling it where to write.
+`framing-doc` (`shaping-skills:framing-doc`), `shaping` (`shaping-skills:shaping`) and `kickoff-doc` (`shaping-skills:kickoff-doc`) are thinking tools, and Flow's own `flow:brainstorm` and `flow:grill` join them for a problem that isn't clear. They don't know each other, don't know where the project lives, and carry no state across weeks. A project that spans months needs three things on disk: where we are, what was decided and why, what the last slice taught. This skill keeps the thread and invokes each tool at the right moment, telling it where to write.
 
 ## What it does NOT do
 
@@ -33,7 +35,7 @@ Same skeleton as `/flow:dev`: the high-level plan is the slice list produced by 
 |---|---|
 | Home | The folder the user names at opening, never a code repo's `docs/` |
 | Work reference | Home, `STATUS.md`, slice bookkeeping, close and archive for the **project** layout: `${CLAUDE_PLUGIN_ROOT}/shared/work.md` (in the repo: [shared/work.md](../../shared/work.md)), called "the work reference" below |
-| Files | `STATUS.md`, `frame.md`, `shaping.md`, `kickoff.md`, `slices.md`, `lessons.md`, `S<n>-plan.md`, `constraints.md`, `decisions/`, `report.md` |
+| Files | `STATUS.md`, `brainstorm.md`, `frame.md`, `shaping.md`, `kickoff.md`, `slices.md`, `lessons.md`, `S<n>-plan.md`, `constraints.md`, `decisions/`, `report.md` |
 | Constraints | `constraints.md`: appetite, non-negotiables, people and roles, calendar. Template in `${CLAUDE_SKILL_DIR}/constraints.template.md` |
 | Decisions | `decisions/YYYY-MM-DD-<slug>.md`. Proposed here, written by `flow:docs` on a yes. Criterion and requests: the work reference, § Decisions |
 | Sub-projects | A slice too big for one plan becomes a sub-project: the work reference, § Home |
@@ -87,7 +89,7 @@ Resuming reloads the **standing documents**, and nothing else:
 
 | Always reloaded | Never reloaded |
 |---|---|
-| `STATUS.md`; `constraints.md`; the `## The criterion` block of `frame.md`; `lessons.md`; the `description:` line of each file in `decisions/`; the current slice's plan | `shaping.md`; `kickoff.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
+| `STATUS.md`; `constraints.md`; the `## The criterion` block of `frame.md`; `lessons.md`; the `description:` line of each file in `decisions/`; the current slice's plan | `brainstorm.md`; `shaping.md`; `kickoff.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
 
 A standing document is one that is still true. A closed phase is a debate that ended. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a project that resumes without it resumes on whatever was written last, which is usually a detail.
 
@@ -103,7 +105,7 @@ One message, seven questions, each with the answer this skill proposes from what
 4. **Appetite.** How much time and how much money, as a box, not an estimate: *"three months and 20k, then we stop and look."* Becomes `appetite:` in the frontmatter and the first section of `constraints.md`.
 5. **Who's involved?** People and roles: who does, who decides, who must be asked. Goes into `constraints.md`.
 6. **Source material?** Call transcripts, notes, messages, documents. If yes, the frame starts from them with `framing-doc`.
-7. **The visible-outcome test.** *Can you already say in one sentence what will be true when this is done, without answering "it depends"?* **Yes** → skip to slicing. **No** → start from the frame; and if the problem itself isn't clear, the frame uses `brainstorming` as the dialogue technique. State your reading rather than asking cold.
+7. **The visible-outcome test.** *Can you already say in one sentence what will be true when this is done, without answering "it depends"?* **Yes** → skip to slicing. **No** → start from the frame; and if the problem itself isn't clear, the definition path: `flow:brainstorm` (path `<home>/brainstorm.md`), then `flow:grill` (target `brainstorm.md`; `layout: project`, `dir`, `project`, `slice` and `area` for decision candidates), then the frame. State your reading rather than asking cold.
 
 Before sending the message, check the project memory with the key words of the request (`flow:docs`, `op: search`, `layout: project`, `dir` the parent of the folder proposed for question 3) and flag what it finds.
 
@@ -125,13 +127,15 @@ For each phase: invoke the tool telling it where to save, update `phase:`, stop.
 
 | `phase:` | When | Tool | Produces |
 |---|---|---|---|
-| `frame` | The problem isn't defined yet | `framing-doc` with source material, else `brainstorming` | `frame.md` |
+| `frame` | The problem isn't defined yet | `flow:brainstorm` → `flow:grill`, then `framing-doc` with source material, else this skill writes the frame from `brainstorm.md` | `brainstorm.md`, `frame.md` |
 | `shaping` | Several ways with different outcomes | `shaping`, with the appetite as a hard constraint on every shape | `shaping.md` |
 | `kickoff` | The people who will execute meet to agree on the shape | `kickoff-doc` on the call's transcript | `kickoff.md` |
 | `slicing` | Always, even with one slice | `shaping` (slicing section) | `slices.md` |
 | `reality` | Always, after slicing | `flow:impact`, two, or one (below) | Corrections in `slices.md` |
 
-If the tool the row picks for the case at hand isn't listed in the session (`kickoff-doc` included), stop that phase and give its commands from `dependencies.md`. Never swap in another tool (`brainstorming` in place of a missing `framing-doc`).
+If the tool the row picks for the case at hand isn't listed in the session (`kickoff-doc` included), stop that phase and give its commands from `dependencies.md`. Never swap in another tool for a missing `framing-doc`.
+
+**The definition path.** A problem that isn't clear runs `flow:brainstorm`, passing `<home>/brainstorm.md`; then `flow:grill` with that file as target; then the frame. With source material the frame is `framing-doc`, given `brainstorm.md` too. Without, this skill writes `frame.md` with the `## The criterion` block on top, built from `brainstorm.md` and the grill's answers, and carries the parked questions into its body. All of them are committed in the home.
 
 ### The criterion
 
@@ -160,7 +164,7 @@ A frame written before this convention gets the block added at the top of its ne
 
 **The criterion travels with every invocation.** `shaping`, `framing-doc` and `kickoff-doc` don't know the project: put the `## The criterion` block and `constraints.md` verbatim at the top of the prompt, above the path instruction. Without them a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
 
-**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), settle that point in dialogue before moving on: one question at a time, each with the answer you'd propose, until it closes or the user parks it as an open question.
+**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `flow:grill` with the point and the document it belongs to as target, before moving on: it closes the point in rounds or the user parks it.
 
 **If an unknown is factual** (does the permit apply, what does the supplier charge, is the person available), it's a spike: a `spike-<topic>.md` with questions and answers, done before the plan that depends on it. A plan is not written on top of a guess.
 
@@ -205,7 +209,7 @@ Written in session with the user: the plan needs what only they know (who, when,
 <from the reality check, plus what the previous slices taught>
 
 ## To settle before starting
-<open questions; settle each in dialogue, one question at a time>
+<open questions; settle them with `flow:grill`, target this plan>
 ```
 
 An action that is software is written as *"flow:dev work `<slug>` in `<repo>` merged"* (rows written as *"devflow work … merged"* are read the same), and that work is opened in its repo with `/flow:dev` when its turn comes. A slice that needs its own plan of several slices becomes a sub-project (the work reference, § Home); the parent slice's Done becomes "sub-project done".

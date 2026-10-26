@@ -31,3 +31,7 @@ The flow depends on no grilling skill. When a point stays vague, the conductor s
 
 - [`slices.md`](../work/archive/2026-10-25-flow-plugin/slices.md), V3 deviations and close
 - https://github.com/mattpocock/skills
+
+## Status log
+
+- 2026-10-26 — partly superseded by flow:grill: grill rounds replace the one-question rule; grilling is ported with credit, still not a dependency

@@ -93,7 +93,7 @@ At a phase or step that invokes a dependency, check again: if a required one isn
 
 ## Upgrade check
 
-Runs right after the dependency check, before the profile. Look on the default branch for the old traces the work reference, § Upgrade, lists. When there are some, follow that section: one message, one question, and the run ends there. **An upgrade is a run of its own**: no profile, no Step 0, no work opened or resumed. The next run starts on the upgraded state. Nothing found on the default branch: go on to the profile, after the resume check there (§ Upgrade, Open work branches).
+Runs right after the dependency check, before the profile. Look on the default branch for the old traces the work reference, § Upgrade, lists. When there are some, follow that section: one message, one question, and the run ends there. **An upgrade is a run of its own**: no profile, no Step 0, no work opened or resumed. The next run starts on the upgraded state. Nothing found on the default branch: go on to the profile, after the resume check there (§ Upgrade, Resume on an old file).
 
 ## Profile
 

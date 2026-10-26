@@ -160,7 +160,7 @@ Resuming reloads the **standing documents**, and nothing else:
 
 | Always reloaded | Never reloaded |
 |---|---|
-| `STATUS.md`; the `## The criterion` block of `frame.md` when the work has one; the sections of `docs/development-guidelines.md` that apply; `lessons.md`; the `description:` line of the `docs/decisions-log/` files that match the work (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords` from the `description:` in `STATUS.md`); the current slice's plan | `shaping.md`; `breadboard.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
+| `STATUS.md`; the `## The criterion` block of `frame.md` when the work has one; the sections of `docs/development-guidelines.md` that apply; `lessons.md`; the `description:` line of the `docs/decisions-log/` files that match the work (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords` from the `description:` in `STATUS.md`); the current slice's plan; at `step: execute`, the slice's ledger (tasks marked complete are never dispatched again) | `shaping.md`; `breadboard.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
 
 A standing document is one that is still true. A closed phase is a debate that ended. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a work that resumes without it resumes on whatever was written last.
 
@@ -253,7 +253,7 @@ From here `phase: slice`. For each slice, in `slices.md` order, four steps and t
 
 ### `step: plan`
 
-Dispatch `flow:planner` with the packet, the effective test level, the previous slice's plan path when there is one (a model for tone; the impact findings are already in `slices.md`) and this instruction:
+Dispatch `flow:planner` with the packet, the effective test level, the previous slice's plan path when there is one (a model for tone; the impact findings are already in `slices.md`), the expanded absolute path of `executor.md` in the agents folder (its test policy is the one the plan points to) and this instruction:
 
 > Save the plan to `docs/work/2026-09-02-mobile-menu/V2-plan.md`. Test level: `<level>`. Mark dependencies between tasks (`depends on: T1`) and mark `critical` the tasks that touch shared or risky code.
 
@@ -277,21 +277,24 @@ Approved fixes go into the plan in place. If the structure changes (tasks split,
 
 ### `step: execute`
 
-If `subagent-driven-development` isn't listed in the session, stop this step and give its commands from `dependencies.md`. Otherwise run it on the plan, with the packet and these overrides stated in the instruction:
+Check the tree first (`git status --short`): a dead run may have left files, and a task whose files are already changed is finished or reset, not dispatched blind. Then the ledger, `docs/work/<dir>/V<n>-ledger.md`, as § Agents describes it: first line `# Ledger — V<n>`, the `printenv` line on the second (run once, now), one line per dispatch with the model as passed or `definition: <alias>` (plus `forced`), `- T<n>: complete` when a review passes, `Ruling:` lines, each report trimmed under its line. Tasks marked complete are never dispatched again.
 
-- task reviewers on a smaller model, unless the task is marked `critical`;
-- tasks without pending dependencies dispatched in parallel;
-- the final whole-branch review only if the plan has more than four tasks or touches files shared with other slices;
-- current checkout on `work/<slug>`, no worktree (temporary: removed when `flow-own-engine` V6 replaces this skill's execution).
+Current checkout on `work/<slug>`, no worktree. The loop runs without stopping between tasks:
 
-That skill runs without stopping between tasks and settles conflicts with rulings in its ledger: it stops only for its own four reasons (irreversible operations, security, side effects outside the worktree, a plan broken beyond guessing). This skill doesn't interrupt it to fix the plan; the rulings are read at the close.
+- **Order.** A task with no pending dependency whose files are disjoint from the others' runs in parallel with them; tasks that share a file, or a build step that would see the other's half-written files, run one after another.
+- **Dispatch `flow:executor`**: packet verbatim on top, the task text, the Interfaces of the tasks it depends on. Model by § Agents (mid tier).
+- **Status.** `DONE` → review. `DONE_WITH_CONCERNS` → read the concerns, then review. `NEEDS_CONTEXT` → answer from the repo and the packet, and continue the same executor. `BLOCKED` → more context; then the top tier; then split the task; else a ruling, or a stop.
+- **Review** with `flow:task-reviewer`: packet on top, the task text, the executor's report, the task's own commits (`git show <shas>`, from the report), never a BASE..HEAD range that parallel tasks share, and the expanded absolute path of `executor.md` in the agents folder (the Models paragraph), whose test policy and commit rules it checks against. Mid tier; top tier when the task is `critical`.
+- **Findings.** Rounds 1 and 2 go back to the same executor with SendMessage (a deferred tool: load it first; when it can't be reached, a fresh executor with the findings and the commits), each followed by a review of the fix commits. Round 3 is a fresh executor on the top tier, then a review. After that, a ruling and on: `Ruling: <what> — <why> — <cost if wrong>`. The task passes → `- T<n>: complete`.
+- **Stops** only for an irreversible step, a security matter, a side effect outside the checkout, a plan broken beyond guessing. This skill doesn't interrupt the loop to fix the plan; the rulings are read at the close.
+- **Final review**, `flow:task-reviewer` on the top tier over the slice's commits, only when the plan has more than four tasks or touches files shared with other slices. Its findings get one fix dispatch and one review; what remains is ruled.
 
 ### `step: close`
 
-1. Verify the slice's Done as written in `slices.md`, plus the gate: the `## Gate` section of the guidelines if present, else tests green, typecheck or lint green, build green. If the slice is a refactor, the Done is a regression checklist written before starting and run by hand before committing.
-2. Lessons, in two places. The narrative under the slice in `slices.md`, as **"V<n> — done on <date>"**: what execution revealed, the rulings taken from the ledger. The rules, one line each, appended to `lessons.md`: *"before declaring something unused, grep all of `src`, value and setter, and say in the report where you looked."* A ruling that discarded a real alternative is a decision candidate (see the work reference, § Decisions).
+1. Verify the slice's Done as written in `slices.md`, plus the gate: the `## Gate` section of the guidelines if present, else tests green, typecheck or lint green, build green. The full suite runs here and only here, through the gate. The server rule binds this skill too: start no dev server or watcher unless a check needs one, stop whatever was started before moving on, and `lsof -nP -iTCP -sTCP:LISTEN` when in doubt. If the slice is a refactor, the Done is a regression checklist written before starting and run by hand before committing.
+2. Lessons, in two places. The narrative under the slice in `slices.md`, as **"V<n> — done on <date>"**: what execution revealed, the rulings read from the ledger. The rules, one line each, appended to `lessons.md`: *"before declaring something unused, grep all of `src`, value and setter, and say in the report where you looked."* A ruling that discarded a real alternative is a decision candidate (see the work reference, § Decisions).
 3. Update `STATUS.md` as the work reference says (§ `slices.md` and `lessons.md`, closing a slice), with wall-clock and cost in the Log line.
-4. Commit. **Second stop.** One message: what closed, the gate result, the new rules, the decision candidate if any with the question whether to record it, and: *"V3 closed and committed. Plan V4, or stop here?"*
+4. Commit, the ledger with it. **Second stop.** One message: what closed, the gate result, the new rules, the decision candidate if any with the question whether to record it, and: *"V3 closed and committed. Plan V4, or stop here?"*
 
 A closed slice isn't reopened (rule in the same section).
 

@@ -38,7 +38,7 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Root | `docs/` | Everything this skill writes lives under it: `docs/work/`, `docs/decisions-log/`, `docs/development-guidelines.md`, `docs/CHANGELOG.md`. Checked at first run (Step 0) |
 | Stack | `rails`, `astro`, `react`, `node`, `generic` | `Gemfile` + `config/application.rb` → rails; `astro.config.*` → astro; `package.json` with `react` in dependencies → react; `package.json` without → node; else generic |
 | Guidelines | `docs/development-guidelines.md` | Read if present; its relevant sections go into every context packet. Template in `${CLAUDE_SKILL_DIR}/development-guidelines.template.md` |
-| Decisions | `docs/decisions-log/` | Read by impact and review; written here, on request, at the close of a step (for now). Format in `${CLAUDE_SKILL_DIR}/decisions-log.md` |
+| Decisions | `docs/decisions-log/` | Read by impact and review; written here, on request, at the close of a step (until `flow:docs` takes it over). Format in `${CLAUDE_SKILL_DIR}/decisions-log.md` |
 | Changelog | `docs/CHANGELOG.md` | Written by `flow:docs`; searched at opening. An existing one is adopted, not replaced |
 | Work reference | `${CLAUDE_PLUGIN_ROOT}/shared/work.md` (in the repo: [shared/work.md](../../shared/work.md)) | The how of a work's home, `STATUS.md`, slice-close bookkeeping, close, merge and archive. This skill says when; the reference says how. Read it when a step points to it |
 | Impact lenses | Per stack, in `${CLAUDE_SKILL_DIR}/lenses.md` | Chosen from the detected stack |
@@ -121,7 +121,7 @@ Resuming reloads the **standing documents**, and nothing else:
 
 | Always reloaded | Never reloaded |
 |---|---|
-| `STATUS.md`; the `## The criterion` block of `frame.md` when the work has one; the sections of `docs/development-guidelines.md` that apply; `lessons.md`; the `description:` line of the `docs/decisions-log/` files that match the work (`flow:docs`, `op: descriptions`, with `layout: repo` and `dir`); the current slice's plan | `shaping.md`; `breadboard.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
+| `STATUS.md`; the `## The criterion` block of `frame.md` when the work has one; the sections of `docs/development-guidelines.md` that apply; `lessons.md`; the `description:` line of the `docs/decisions-log/` files that match the work (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords` from the `description:` in `STATUS.md`); the current slice's plan | `shaping.md`; `breadboard.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
 
 A standing document is one that is still true. A closed phase is a debate that ended. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a work that resumes without it resumes on whatever was written last.
 
@@ -210,7 +210,7 @@ On a one-slice work, impact is often the check that saves you: the twenty-line f
 
 From here `phase: slice`. For each slice, in `slices.md` order, four steps and two stops. `step:` in `STATUS.md` says which.
 
-**The slice packet**, built once per slice and placed verbatim at the top of every subagent prompt in it: the `## The criterion` block when the work has one; the slice's section of `slices.md`; `lessons.md`; the sections of `docs/development-guidelines.md` that apply (tests, naming, placement, gate); the descriptions of matching decisions (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`); the contents of `docs/impact-lenses.md` when present. `shaping.md and `breadboard.md` only if the slice's section points to them.
+**The slice packet**, built once per slice and placed verbatim at the top of every subagent prompt in it: the `## The criterion` block when the work has one; the slice's section of `slices.md`; `lessons.md`; the sections of `docs/development-guidelines.md` that apply (tests, naming, placement, gate); the descriptions of matching decisions (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`); the contents of `docs/impact-lenses.md` when present. `shaping.md` and `breadboard.md` only if the slice's section points to them.
 
 ### `step: plan`
 

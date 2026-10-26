@@ -9,6 +9,8 @@ Configuration (repo) lives in `.flow.yml` at the repository root; if it's absent
 
 ## Home
 
+### Creating the home
+
 **repo.** A work's home is a dated folder, and a branch in the current checkout:
 
 ```bash
@@ -20,6 +22,22 @@ mkdir -p <root>/work/$(date +%Y-%m-%d)-<slug>
 Record `$base` as `base:` in `STATUS.md`: the close needs it to find the merge target in a repo without a remote. A git worktree only when the user asks for one (two works in parallel, a busy checkout); never by default. The user's dev server, editor and browser see the work as it is.
 
 **project.** The home is the folder the user named; inside a documents vault, propose `<vault>/<Name>/`. Create it with `mkdir -p "<home>"` and touch nothing outside it. A slice too big for one plan becomes a sub-project: `S<n>-<slug>/` inside the home, with its own `STATUS.md` and `parent:` set.
+
+### Finding open works
+
+**repo.** A work's `STATUS.md` lives on its branch, so the checkout alone doesn't show works opened elsewhere. Look in both places:
+
+```bash
+rg "^phase:" docs/work/*/STATUS.md 2>/dev/null
+for b in $(git for-each-ref --format='%(refname:short)' 'refs/heads/work/*'); do
+  git ls-tree -r --name-only "$b" -- docs/work | grep '/STATUS.md$' | grep -v '/archive/' |
+    while read -r f; do printf '%s  %s  %s\n' "$b" "$f" "$(git show "$b:$f" | grep -m1 '^phase:')"; done
+done
+```
+
+A work whose `phase:` isn't `done` and whose branch isn't the current one: say so, and offer `git switch work/<slug>` before reloading anything. With uncommitted changes in the checkout, ask first.
+
+**project.** `rg "^phase:" <home>/STATUS.md <home>/*/STATUS.md 2>/dev/null`.
 
 ## `STATUS.md`
 

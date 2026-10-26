@@ -26,6 +26,7 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Pass whole documents to subagents | Each subagent gets a context packet: what it needs, nothing else |
 | Touch `CLAUDE.md` or write config on its own | `.flow.yml` is written only to record a layout the user chose at first run (Step 0) |
 | Write the changelog or archive itself | It invokes `/flow:changelog` and `/flow:archive` in the closing sequence (Step 6), each after asking |
+| Merge, push or tag without an ok | Each is proposed and waits for its own yes (Step 6) |
 | Install its dependencies | It prints the commands from `dependencies.md`; the user runs them |
 
 **The rule that matters most**: a long session where the skill barrels ahead is worse than no skill. At the two stops of every slice, return to the user.
@@ -39,10 +40,11 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Guidelines | `docs/development-guidelines.md` | Read if present; its relevant sections go into every context packet. Template in `${CLAUDE_SKILL_DIR}/development-guidelines.template.md` |
 | Decisions | `docs/decisions-log/` | Read by impact and review; written on request at the close of a step. Format in `${CLAUDE_SKILL_DIR}/decisions-log.md` |
 | Changelog | `docs/CHANGELOG.md` | Written by `/flow:changelog`; read at opening. An existing one is adopted, not replaced |
+| Work reference | `${CLAUDE_PLUGIN_ROOT}/shared/work.md` (in the repo: [shared/work.md](../../shared/work.md)) | The how of a work's home, `STATUS.md`, slice-close bookkeeping, close, merge and archive. This skill says when; the reference says how. Read it when a step points to it |
 | Impact lenses | Per stack, in `${CLAUDE_SKILL_DIR}/lenses.md` | Chosen from the detected stack |
 | Project lenses | `docs/impact-lenses.md` | Read if present by impact and every plan review, on top of the stack lenses. Template in `${CLAUDE_SKILL_DIR}/impact-lenses.template.md` |
 
-Configuration lives in `.flow.yml` at the project root. If it's absent and a `.devflow.yml` exists, read that instead: same keys. When it reads `.devflow.yml`, say so once in the session and suggest renaming it. A project can override the defaults with `.flow.yml`: keys `root`, `stack`, `changelog`, `version_file`. Read if present. The skill writes it in one case only: Step 0, to record a non-default root the user chose. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
+Configuration lives in `.flow.yml` at the project root. If it's absent and a `.devflow.yml` exists, read that instead: same keys. When it reads `.devflow.yml`, say so once in the session and suggest renaming it. A project can override the defaults with `.flow.yml`: keys `root`, `stack`, `changelog`, `version_file`, `merge` (`local` | `pr`, default `local`). Read if present. The skill writes it in one case only: Step 0, to record a non-default root the user chose. Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
 
 ## Project memory
 
@@ -102,9 +104,7 @@ Then, if `docs/impact-lenses.md` is missing, offer to create it the same way fro
 
 The dependency check (`## Dependencies`) has already run.
 
-```bash
-rg "^phase:" docs/work/*/STATUS.md 2>/dev/null
-```
+Find the open works as the work reference, § Finding open works, says: the current checkout and every `work/*` branch.
 
 - No result → new work (Step 1).
 - One or more works with `phase:` other than `done` → say so and ask:
@@ -137,43 +137,11 @@ If the doubt is about the domain (what the code does today, which rule applies),
 
 ## Step 2 — Create the home
 
-```bash
-mkdir -p docs/work/$(date +%Y-%m-%d)-<slug>
-```
+The work opens on branch `work/<slug>` in the current checkout, with its dated folder under `docs/work/`. No worktree unless the user asks. Commands: the work reference, § Creating the home.
 
-With `STATUS.md` inside:
+Write `STATUS.md` in it as § `STATUS.md` (repo) says: `description` is the answer to question 1, **Entry** is the visible-outcome test answer, and `base:` records the branch the work was cut from. `phase:`, `slice:` and `step:` are kept current as that section says: without them an interrupted work shows up the next morning as finished, or as never started.
 
-```markdown
----
-status: open
-phase: <frame | shaping | breadboard | slicing | impact | slice | done>
-slice: null
-step: null
-work: <slug>
-stack: <detected>
-updated: YYYY-MM-DD
-tags: [work, <slug>]
-description: "<answer to question 1>"
----
-
-# Status — <Readable name>
-
-> Update at the **end of every session**: done, remaining, blockers.
-
-**Entry**: <product | technical>, decided on <date> because <visible-outcome test answer>.
-
-## Slices
-
-- [ ] (defined during slicing)
-
-## Log
-
-<!-- date — step — done — remaining — wall-clock — cost -->
-```
-
-`lessons.md` is created at the first slice close: one rule per line, the digest that every later subagent reads instead of `slices.md` in full.
-
-`work:` is the bare slug; the date lives in the directory name. `phase:` says where the work is; when it's `slice`, `slice:` and `step:` say which slice and where in it. Without these three fields an interrupted work shows up the next morning as finished, or as never started.
+`lessons.md` is created at the first slice close (§ `slices.md` and `lessons.md`).
 
 ## Step 3 — Define: from problem to slices
 
@@ -268,7 +236,8 @@ If `subagent-driven-development` isn't listed in the session, stop this step and
 
 - task reviewers on a smaller model, unless the task is marked `critical`;
 - tasks without pending dependencies dispatched in parallel;
-- the final whole-branch review only if the plan has more than four tasks or touches files shared with other slices.
+- the final whole-branch review only if the plan has more than four tasks or touches files shared with other slices;
+- current checkout on `work/<slug>`, no worktree (temporary: removed when `flow-own-engine` V6 replaces this skill's execution).
 
 That skill runs without stopping between tasks and settles conflicts with rulings in its ledger: it stops only for its own four reasons (irreversible operations, security, side effects outside the worktree, a plan broken beyond guessing). This skill doesn't interrupt it to fix the plan; the rulings are read at the close.
 
@@ -276,10 +245,10 @@ That skill runs without stopping between tasks and settles conflicts with ruling
 
 1. Verify the slice's Done as written in `slices.md`, plus the gate: the `## Gate` section of the guidelines if present, else tests green, typecheck or lint green, build green. If the slice is a refactor, the Done is a regression checklist written before starting and run by hand before committing.
 2. Lessons, in two places. The narrative under the slice in `slices.md`, as **"V<n> — done on <date>"**: what execution revealed, the rulings taken from the ledger. The rules, one line each, appended to `lessons.md`: *"before declaring something unused, grep all of `src`, value and setter, and say in the report where you looked."* A ruling that discarded a real alternative is a decision candidate (see `${CLAUDE_SKILL_DIR}/decisions-log.md`).
-3. Tick the slice in `STATUS.md`, set `slice:` to the next one and `step:` to `plan`, add the Log line with wall-clock and cost.
+3. Update `STATUS.md` as the work reference says (§ `slices.md` and `lessons.md`, closing a slice), with wall-clock and cost in the Log line.
 4. Commit. **Second stop.** One message: what closed, the gate result, the new rules, the decision candidate if any with the question whether to record it, and: *"V3 closed and committed. Plan V4, or stop here?"*
 
-A closed slice isn't reopened. If a later slice finds an earlier one was wrong, the fix goes into the current slice, stated in `slices.md`, or becomes a new slice at the end.
+A closed slice isn't reopened (rule in the same section).
 
 ## Step 5 — Closing a definition phase
 
@@ -295,12 +264,15 @@ Applies to frame, shaping, breadboard, slicing and impact. Five moves, in order:
 
 When the last slice is closed and the user confirms the work is complete, run the closing sequence. Each step asks before running; the user may stop at any point.
 
-1. **Close the work.** `phase: done`, `status: closed`, final Log line, commit.
-2. **Docs.** Ask, then invoke `/flow:changelog`: changelog entry and `.version`, committed on the branch.
-3. **Archive.** Ask, then invoke `/flow:archive`: the work folder moves to `docs/work/archive/`, committed on the branch.
-4. **Report.** Where the work lived, phases done and skipped (with why), slice count, what the verifications found, version assigned, total wall-clock and cost from the Log. Then say it plainly: the branch is ready to merge into `main`. This skill doesn't merge or push.
+Mechanics of each move: the work reference, § Closing a work (repo) and § Archive, repo.
 
-Code, changelog, version and archived work land on `main` in one changeset. If the merge review asks for changes that need the work's documents, move them back with `git mv`: they're plain files in git.
+1. **Close the work.** Mark it closed, final Log line, commit.
+2. **Docs.** Ask, then invoke `/flow:changelog`: changelog entry and `.version`, committed on the branch.
+3. **Archive.** Ask, then invoke `/flow:archive`: the work folder moves to the archive, committed on the branch.
+4. **Merge.** Ask. Find the target and merge as the reference says: with `merge: local` (the default) propose the local merge and run it after an ok; with `merge: pr` propose a pull request and merge nothing. Push and tag each need their own ok. The branch is deleted only on request.
+5. **Report.** Where the work lived, phases done and skipped (with why), slice count, what the verifications found, version assigned, total wall-clock and cost from the Log, and what was merged, pushed or tagged (or that nothing was).
+
+Code, changelog, version and archived work land on the target in one changeset. If something after the close needs the work's documents, the reference says how to move them back.
 
 ## The short path
 

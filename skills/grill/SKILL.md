@@ -35,7 +35,7 @@ The session is done when the frontier is empty, nothing is left silently assumed
 
 **Criterion anchor.** When a `## The criterion` block is in reach, each question names the line of the criterion it serves. A question that serves none is not asked: it is parked. The caller passes the frame's path; by hand, look for `frame.md` beside the target, else there is no anchor. Before a criterion exists (the definition path, ahead of the frame) there is no anchor: don't ask for one.
 
-**Target.** The caller passes the file the answers land in (`brainstorm.md`, `slices.md`, a plan). By hand, it is the file the user names, else ask. Settled answers go under `## Settled` in the target (created when missing), one line each: `- <question title> — <answer>`, as the rounds close. Called: the caller commits on the work branch. By hand: write, don't commit, and say so.
+**Target.** The caller passes the file the answers land in (`brainstorm.md`, `slices.md`, a plan). By hand, it is the file the user names, else ask. Settled answers go under `## Settled` in the target (created when missing), one line each: `- <question title> — <answer>`, as the rounds close. Write in the target's language, whatever language the conversation is in. Called: the caller commits on the work branch. By hand: write, don't commit, and say so.
 
 **Parked questions.** A question that serves no criterion line, or that the user defers, goes to the target under `## Parked questions`, one line each, `- YYYY-MM-DD — <question>`. Create the section when it is missing.
 

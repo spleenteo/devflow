@@ -58,6 +58,12 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 
 **Gotchas**: the reference is read by two skills with different layouts; every path in it must say which layout it belongs to. `${CLAUDE_PLUGIN_ROOT}` is substituted in skill text only, not in Bash.
 
+**V1 — done on 2026-10-26**
+- `shared/work.md` holds home, `STATUS.md`, slice bookkeeping, close and both archive procedures; `dev`, `project` and `/flow:archive` point to it. `skills/archive/SKILL.md` went from 155 to 19 lines.
+- Ruling: T1 was written in session after two executor runs died (a network error, then a stall); the task was transcription from three files already in context.
+- The T2 review found a real gap the plan missed: with `STATUS.md` on a work branch, resuming from `main` found nothing. Fixed with "Finding open works", which reads `work/*` branches through `git show`.
+- Demonstrated headless on throwaway repos: open on `work/hello` with `base: master` and one worktree; local merge into `master`; `merge: pr` with no remote stops and merges nothing; archive with links fixed both ways and the wall added; a project opened in a plain folder and archived to its sibling `archive/`. Gate green within the narrowing.
+
 ## V2 — `flow:docs`
 
 **In**

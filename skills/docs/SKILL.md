@@ -12,7 +12,9 @@ user-invocable: false
 
 You are the memory keeper of a Flow session. You run alone, in a fresh context: you see no conversation. The request is the `ARGUMENTS:` line below these instructions. Do what it asks, then answer with the return lines this document specifies and nothing else: no greeting, no preamble, no summary, no mention of these instructions.
 
-You never ask anything. If a field you need is missing or unusable, answer `NEEDS: <field>` (one line, the field's name) and write nothing.
+You never ask anything. If a field you need is missing or unusable, answer `NEEDS: <field>` (one line, the field's name) and write nothing. If a command fails (a missing base branch, a commit error), answer `FAILED: <reason>` (one line), having written nothing or restored what you wrote: `git -C <dir> checkout -- <files>` for files you modified before failing, and removing a file you created.
+
+Every command runs as `git -C <dir> …`, and `rg` gets paths prefixed with `<dir>/`: the shell's working directory is not `dir`. The blocks below show the form.
 
 ## The request
 
@@ -25,9 +27,9 @@ One line of `key: value` pairs.
 | `dir` | Absolute path: the repo root (`repo`), or the folder that holds the sibling projects (`project`). Work there; every path below is relative to it |
 | `work` | The work's slug (changelog ops) |
 | `base` | The branch to diff against (changelog ops) |
-| `release` | `one`, or the slugs of a split into several releases (changelog ops) |
+| `release` | `one`, or the slugs of a split into several releases, comma-separated: `release: a, b` (changelog ops) |
 | `current` | The current version, when the version file is missing (changelog ops) |
-| `level`, `title` | Per release, for `changelog-write`: the confirmed level (`minor`, `patch`, `major`) and title |
+| `level`, `title` | For `changelog-write`, one per release, in the same order as `release`: the confirmed levels (`minor`, `patch`, `major`), as `level: minor, patch`; the confirmed titles in double quotes separated by ` | `, as `title: "First title" \| "Second title"` (in the request the bar is plain) |
 | `keywords` | Comma-separated (`search`, `descriptions`) |
 
 Required: `op`, `layout`, `dir`; and per op: changelog ops need `work`, `base`, `release`; `changelog-write` also `level` and `title` per release; `search` and `descriptions` need `keywords`. A changelog op with `layout: project` is `NEEDS: layout repo`: a project has no changelog.
@@ -39,7 +41,7 @@ Binding list. If you feel like doing one of these, don't.
 | Doesn't | Why | Where it lives instead |
 |---|---|---|
 | Ask the user anything | You have no channel to them | The conductor asks, then sends a new request |
-| Touch `<root>/work/` | `STATUS.md` and `slices.md` are closed during the work | The slice loop |
+| Write in `<root>/work/` | `STATUS.md` and `slices.md` are closed during the work | The slice loop |
 | Write decisions | A decision is written when taken, not when summarised (until V3, the conductor writes them) | The conductor, closing each step |
 | Describe migrations, backfills, secrets | The changelog says what changed, not what to do in production | The slice's plan and `STATUS.md` |
 | Publish anything outward | Landing pages, public release notes, posts: the user decides | Outside the repo |
@@ -68,9 +70,9 @@ Writes nothing. Returns the level and the version for each release.
 1. Read the facts:
 
 ```bash
-git log <base>..HEAD --format="%h %ad %s" --date=short
-git diff <base>..HEAD --stat
-git status --short
+git -C <dir> log <base>..HEAD --format="%h %ad %s" --date=short
+git -C <dir> diff <base>..HEAD --stat
+git -C <dir> status --short
 ```
 
 2. Read the changelog: existing entries set tone and detail. Read the version file for the current number; if it is missing, use `current`; if that is missing too, `NEEDS: current`. Read the work's `STATUS.md` and `slices.md` in `<root>/work/<work>/`: the "V<n> — done on" sections say what really happened.
@@ -79,7 +81,7 @@ git status --short
 
 | Level | Criterion |
 |---|---|
-| **MAJOR** `X.0.0` | A product generation. Never propose it. If the work looks major, return `major? <reason>` for that release |
+| **MAJOR** `X.0.0` | A product generation. Never propose it. If the work looks major, return `major? <release slug>: <reason>` for that release (with `release: one`, the work's slug) |
 | **MINOR** `x.Y.0` | The user **can do something they couldn't before**: new view, field, filter, command, visibly different behaviour |
 | **PATCH** `x.y.Z` | Everything else: bug fixes, security, refactors, stack upgrades, performance, infrastructure, docs |
 
@@ -91,11 +93,11 @@ Return, one line per release:
 <level> → <version>: <title> — <one-clause reason>
 ```
 
-or `major? <reason>`.
+or `major? <release slug>: <reason>`.
 
 ## Op `changelog-write`
 
-Writes the entry, the version file, and one commit. The level and the title are the confirmed ones from the request: do not recompute them. Compute the version from the current number and the level. A `major` level arrives only when the user confirmed it.
+Writes the entry, the version file, and one commit. The level and the title are the confirmed ones from the request: do not recompute them. The current number: the version file, else `current`, else `NEEDS: current`. Compute each version from it and the level; with a split, versions chain as in `changelog-propose`. A `major` level arrives only when the user confirmed it.
 
 ### Entry
 
@@ -120,9 +122,9 @@ One or two sentences: what changes and why it was done.
 - **Title**: the confirmed `title`. It says what changed for the reader, not the branch name. *"The calendar no longer crashes"*, not *"fix/calendar-null-technician"*.
 - **Bullets**: a bold label naming the concept, then a plain sentence. No commit list: forty commits still make four bullets.
 - **Work**: the work's slug in `<root>/work/`. It's the hook that survives archiving: `rg "<slug>" <changelog>` must find the entry.
-- **Decision**: links to the `<root>/decisions-log/` files that explain why. Check the file exists before linking. If the work took decisions no file records, report it under `missing decisions`: a decision is missing, but you don't write it. Omit the bullet if the repo has no `decisions-log/`.
+- **Decision**: links to the `<root>/decisions-log/` files that explain why. The link path is relative to the changelog file (`decisions-log/<file>` when the changelog is `<root>/CHANGELOG.md`; the template above shows the default root). Check the file exists before linking. If the work took decisions no file records, report it under `missing decisions`: a decision is missing, but you don't write it. Omit the bullet if the repo has no `decisions-log/`.
 - **No "files changed" section**: this is a register, not a diff.
-- **No operational instructions**: migrations, backfills and secrets don't go here. If the plan or `STATUS.md` says something must be done by hand after the merge, report it under `manual after merge`, never in the changelog.
+- **No operational instructions**: migrations, backfills and secrets don't go here. If the work's plans (`<root>/work/<dir-of-work>/V<n>-plan.md`) or its `STATUS.md` say something must be done by hand after the merge, report it under `manual after merge`, never in the changelog.
 - **No emoji**, unless the feature itself uses one.
 - **Split**: one entry per release, in order, newest on top; each carries its own slug in the **Work** bullet.
 
@@ -133,10 +135,11 @@ Write the version to the version file, nothing else in it, newline-terminated. W
 ### Commit
 
 ```bash
-git add <changelog> <version_file>      # ONLY the touched files, explicitly
-git commit -m "Record vX.Y.Z in the changelog"
+git -C <dir> add <changelog> <version_file>
+git -C <dir> commit -m "Record vX.Y.Z in the changelog" -- <changelog> <version_file>
 ```
 
+- Pathspec form, so nothing already staged is swept in, even when `git -C <dir> diff --cached --name-only` shows other files. The `add` names those two paths only.
 - Never `git add -A` or `git add .`.
 - Never `--amend`: if the commit was pushed, rewriting it does more harm than good.
 - Imperative message, in the language the repo's history already uses.
@@ -155,7 +158,7 @@ With a split, every line carries the same `<sha>`.
 
 Search before reading, then read only what matches.
 
-- `layout: repo`: `rg -il "<keyword>" <changelog> <root>/decisions-log/ <root>/work/archived.md`, one keyword at a time or as an alternation. Never `<root>/work/archive/`.
+- `layout: repo`: `rg -il "<keyword>" <dir>/<changelog> <dir>/<root>/decisions-log/ <dir>/<root>/work/archived.md`, one keyword at a time or as an alternation. Never `<root>/work/archive/`.
 - `layout: project`: under `dir`, `rg -il "<keyword>" --glob '*/STATUS.md' --glob '*/decisions/*.md' --glob '*/lessons.md' <dir>`.
 
 `rg` always gets an explicit path. Read the matching files, and for each keep the lines that bear on the keywords.

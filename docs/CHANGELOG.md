@@ -2,6 +2,27 @@
 
 What shipped, by version, newest first. Each entry names the work it came from; the version lives in `.version`.
 
+## v0.2.0 — 2026-10-26 — Flow runs on its own engine
+
+Flow no longer borrows its planning, review and dialogue steps from other plugins: it writes, reviews and runs its own work, keeps its own memory, and knows each project's profile. Existing projects move over with a guided upgrade.
+
+- **Work layer**: the rules for opening, running, closing and resuming a work live once, in a shared reference that `/flow:dev`, `/flow:project` and `/flow:archive` all follow. A work runs on its own branch in the current checkout and closes with a local merge after an ok.
+- **Changelog and memory**: `flow:docs` records changelog entries and versions, and searches past decisions; `/flow:changelog` is now only an entry point to it.
+- **Decisions**: decisions have one format (kind, area, files touched, status log) with a check script, and `flow:docs` writes, updates and checks them.
+- **Project profile**: the first time, `/flow:dev` asks which stacks, tests and merge rules the project uses, and writes them on the work branch; the guidelines template is shorter.
+- **Stack presets**: Astro, DatoCMS and Rails knowledge ships as `flow:stack-<name>` skills; a project or a user can map a stack to a skill of their own, which replaces the shipped one entirely.
+- **Own agents**: planner, plan reviewer, impact, executor and task reviewer run slice plans and reviews, with a ledger of each dispatch and one commit per task. The plan and review skills of other plugins leave the dependencies, with credit given in `CREDITS.md`.
+- **Brainstorm and grill**: `flow:brainstorm` and `flow:grill` replace the borrowed dialogues, before the frame and when stress-testing a plan; both also work by hand.
+- **Upgrade**: projects on the old layout are upgraded as a run of their own, on a branch, merged after an ok; the old-name fallbacks are removed. README and architecture are rewritten for the new shape.
+- **Work**: `flow-own-engine`
+- **Decision**: [Flow writes and runs its own plans](decisions-log/2026-10-26-flow-writes-and-runs-its-own-plans.md)
+- **Decision**: [stack presets are replaceable skills](decisions-log/2026-10-26-stack-presets-are-replaceable-skills.md)
+- **Decision**: [a work runs on a branch in the current checkout](decisions-log/2026-10-26-work-runs-on-a-branch-in-the-current-checkout.md)
+- **Decision**: [atomic commit criteria absorbed, not a dependency](decisions-log/2026-10-26-atomic-commit-criteria-absorbed-not-a-dependency.md)
+- **Decision**: [flow-own-engine ships as one release](decisions-log/2026-10-26-flow-own-engine-ships-as-one-release.md)
+
+---
+
 ## v0.1.0 — 2026-10-25 — The conductors become the `flow` plugin
 
 The four personal skills are now one Claude Code plugin, installed from GitHub instead of symlinked from a clone, so every project can use the same released version and a teammate gets it from the project's settings.

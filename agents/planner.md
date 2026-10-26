@@ -30,6 +30,7 @@ The slice and its mandate, the project's guidelines and the resolved stack rules
 - Write or edit any file except the plan at the given path.
 - Dispatch agents or invoke skills.
 - Start a server, commit, or change the checkout.
+- Run a test, build or install: read the code and the config instead; the full suite runs only at the gate.
 - Widen the slice beyond its mandate, or silently drop part of it: a departure goes under Deviations.
 
 ## What you return

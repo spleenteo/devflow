@@ -161,6 +161,12 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - Stale prose in `README.md` and `docs/architecture.md` about `stack:` and when `.flow.yml` is written is left for V8.
 - Unverified until V6 and the release: `${user_config.*}` substitution in an installed plugin, and whether an update opens the configuration dialog.
 
+**V4 — done on 2026-10-26**
+- `/flow:dev` gained a **Profile** section: `stacks` and `merge` in the configuration file in use, `Level:` and `Sensitive areas:` at the top of `## Tests`; looked up in the checkout, the default branch and open `work/*` branches; missing pieces asked in one message with Step 0's questions; written only on a work branch, with the home or after the switch. Opening proposes a per-work raise when the request touches a sensitive area. The guidelines template is the short form (References, Tests, Gate, Deviations); `STATUS.md` carries `stacks:` and `tests:`; `plugin.json` declares `model_top`, `model_mid`, `stack_presets`.
+- The userConfig runtime check changed the design: defaults aren't substituted and an unset value reaches the model literally, so options have no defaults and skills treat a literal or empty value as unset.
+- Reviews caught: the profile committing on the default branch; a new `.flow.yml` hiding a `.devflow.yml`; Step 0 contradicting the profile; ten conductor-level gaps (default branch not read, declined guidelines, partial answers, Step 0 rerunning while the first work is unmerged).
+- Demonstrated headless: first start asks stacks, tests and merge with Step 0 in one message and writes nothing; the answers land on `work/<slug>` with `master` untouched; a later resume asks nothing; filled `## Tests` → only stacks and merge asked; `stack: astro` kept and not asked; `.devflow.yml` extended in place with the `notes/` root honoured; a password-reset work gets `tests: full` proposed and recorded while `## Tests` stays `essential`; a footer work gets no raise; a new work copies the profile from the unmerged branch without asking. Gate green within the narrowing (two new `.devflow.yml` sentences in the profile fall under it).
+
 ## V5 — Stack presets
 
 **In**

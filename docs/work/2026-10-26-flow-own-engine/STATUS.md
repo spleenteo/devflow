@@ -1,8 +1,8 @@
 ---
 status: open
 phase: slice
-slice: V4
-step: execute
+slice: V5
+step: plan
 work: flow-own-engine
 stack: generic
 updated: 2026-10-26
@@ -21,7 +21,7 @@ description: "Flow plans and runs its own work, owns its memory and the project 
 - [x] V1 Work layer
 - [x] V2 `flow:docs`
 - [x] V3 Decision format
-- [ ] V4 Project profile
+- [x] V4 Project profile
 - [ ] V5 Stack presets
 - [ ] V6 Engine
 - [ ] V7 Widen and narrow
@@ -39,3 +39,4 @@ description: "Flow plans and runs its own work, owns its memory and the project 
 - 2026-10-26 — V1 close — work layer shipped (shared/work.md; dev, project, archive point to it); 5 headless demos + check 6 green; Gate green within narrowing; T1 written in session after 2 executor failures — V2 plan — n/a — n/a
 - 2026-10-26 — V2 close — flow:docs shipped (fork: changelog, version, search); /flow:changelog an entry point; conductors send requests; 6 headless demos green; Gate green within narrowing; 2 fix rounds from task reviews — V3 plan — n/a — n/a
 - 2026-10-26 — V3 close — decision format, check script, flow:docs decision ops, criterion in shared/work.md, 5 decisions recorded; 5 headless demos green; Gate green within narrowing; 3 fix rounds from task reviews — V4 plan — n/a — n/a
+- 2026-10-26 — V4 close — profile (stacks, tests, merge) asked once, written on work branches; per-work raise; short guidelines template; userConfig declared after a runtime check; 5 headless demos green; Gate green within narrowing; 2 fix rounds — V5 plan (asks which stacks ship) — n/a — n/a

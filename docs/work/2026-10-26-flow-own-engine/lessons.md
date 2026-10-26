@@ -12,3 +12,6 @@
 - A fork told to "fix what the check reports" will invent content to pass: name the fields it may never choose and make those `NEEDS:`.
 - A file a skill installs into a folder it also searches must be excluded from those searches.
 - A two-turn demo (`--resume <session_id>` from the stream's `init` event) proves a proposal stops before writing.
+- Anything a conductor writes at start lands on the default branch unless the text says where: tie every write to the work branch.
+- State a piece of configuration may live on several branches: read the default branch and open `work/*` branches before asking.
+- A runtime check of a platform feature can overturn a spike's documented reading: run it before planning on it.

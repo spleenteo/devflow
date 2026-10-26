@@ -86,6 +86,13 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - With another skill named `docs` loaded, closing a work still reaches `flow:docs` (stream JSON).
 - In a folder of sibling projects, a search finds a lesson recorded in a neighbour.
 
+**Deviations found while planning V2**
+- The project layout writes nothing in V2: a project has no changelog, and its decisions arrive in V3. The Done's "finds and writes in the project layout" is met by search here and by decisions in V3.
+- The changelog takes two calls, `changelog-propose` then `changelog-write`, so the user can object to the level while the fork never asks and the level rule lives in `flow:docs` only.
+- The questions and the propose/write flow live in `shared/work.md` § Closing a work, followed by both the conductor's close and `/flow:changelog`.
+- `flow:docs` is `user-invocable: false` and cited without a slash, unlike the Naming rule's `/flow:<skill>`; V8 updates the rule.
+- `background: false` can be verified only headless here, where Claude waits anyway: an interactive check is left to the user.
+
 **Gotchas**: a forked skill receives no conversation history: every request must carry the paths and slugs it needs.
 
 ## V3 — Decision format
@@ -103,6 +110,7 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 **Done**
 - The check script passes on the five new decisions and reports the three old ones as legacy.
 - On a throwaway repo, `/flow:dev` records a decision through `flow:docs`, and a direct request to `flow:docs` to search by a file path finds it through `touches:`.
+- In a project folder, `/flow:project` records a decision through `flow:docs` in the project layout (deferred from V2).
 
 **Gotchas**: the brief's evidence and project names stay out of the repo.
 

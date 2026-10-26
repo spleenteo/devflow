@@ -13,10 +13,10 @@ Opinions for a site built with Astro, read by Flow's conductors. A project that 
 1. Pages are static by default; opt a route out with `export const prerender = false` only when its data is per request (session, query string, preview), because static output is the cheapest and most cacheable.
 2. Set `output` once in `astro.config.*` and keep it; do not mix per-route overrides in both directions, because two defaults make the rendering mode of a route impossible to read.
 3. Components are `.astro` unless they need client state or events; a framework component gets a `client:*` directive only for that interactivity, because every island ships JavaScript.
-4. Prefer `client:visible` or `client:idle` over `client:load`, and never `client:only` without a reason written in a comment, because eager hydration costs the first paint.
+4. Prefer `client:idle` over `client:load`, and `client:visible` for below-the-fold parts only, and never `client:only` without a reason written in a comment, because eager hydration costs the first paint.
 5. Content comes through typed queries (content collections with a schema, or generated types for a CMS), never untyped `fetch` in a page, because a renamed field must fail the build, not the page.
-6. Read environment variables through `import.meta.env`; only `PUBLIC_` ones may reach client code, and secrets stay in server-side code, because anything else leaks into the bundle.
-7. Images go through `astro:assets` (`<Image />`, `<Picture />`) with explicit `alt` and dimensions, and fonts are self-hosted, because remote assets add requests and layout shift.
+6. Declare environment variables with `astro:env` (`envField`, context `server`, access `secret`) in Astro 5; `import.meta.env` is replaced at build, so it cannot supply runtime secrets on SSR routes. Only public client variables (`PUBLIC_`) may reach client code, because anything else leaks into the bundle.
+7. Local images go through `astro:assets` (`<Image />`, `<Picture />`) with explicit `alt` and dimensions; CMS assets go through the CMS preset's component; remote images through `astro:assets` need `image.domains` or `remotePatterns`; fonts are self-hosted, because remote assets add requests and layout shift.
 8. Set `lang` and `dir` on the root element from the route's locale, and use logical CSS properties (`margin-inline-start`) over physical ones, because right-to-left locales break otherwise.
 9. Client scripts that must survive navigation re-attach on `astro:page-load` when the site uses `<ClientRouter />`, because the router replaces the DOM and loses listeners.
 10. Generate the sitemap and `robots.txt` from the config (`@astrojs/sitemap`, an endpoint), with `site` set, because hand-kept lists drift from the routes.
@@ -35,11 +35,14 @@ Opinions for a site built with Astro, read by Flow's conductors. A project that 
 
 ## Tests
 
-Level `essential` when a test runner is configured (`vitest`, `@playwright/test`, a `scripts.test`), else `none`. Sensitive areas: form and API endpoints (`src/pages/api/`), middleware and auth, data import and content-transform code, redirect and locale-routing logic.
+Level: essential
+Sensitive areas: `src/pages/api/`, middleware and auth, data import and content-transform code, redirect and locale-routing logic
+
+Essential when a test runner is configured (`vitest`, `@playwright/test`, a `scripts.test`), else none, with empty areas.
 
 ## Gate
 
-- `npx astro check` (types and diagnostics)
+- `npx astro check` (types and diagnostics), only when `@astrojs/check` is a dependency, else it prompts to install and hangs
 - `npm run build` (the build catches broken routes and content schemas)
 - `npm test` when `scripts.test` exists
 

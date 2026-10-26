@@ -176,7 +176,7 @@ One message, five questions, each with the answer this skill proposes from what 
 2. **Code name?** Propose a short lowercase slug with hyphens, checked against `docs/work/` and `docs/work/archived.md`.
 3. **Source material?** Call transcripts, threads, notes. If yes, the frame starts from them with `framing-doc`.
 4. **The visible-outcome test.** *Can you already say in one sentence what changes for the product's users, without answering "it depends"?* **Yes** → technical work: skip to slicing. **No** → product work: start from the frame. State your reading: *"I read this as product work: describing the outcome I'd say 'it depends on which pages change'. If it's already defined for you, I'll skip to slicing."*
-5. **If product work: is the problem already clear?** Yes → skip the frame, start from shaping. No → the definition path: `flow:brainstorm` (path `<work dir>/brainstorm.md`), then `flow:grill` (target `brainstorm.md`; `layout: repo`, `dir`, `work`, `slice` and `area` for decision candidates), then the frame.
+5. **If product work: is the problem already clear?** Yes → skip the frame, start from shaping. No → the definition path: `flow:brainstorm` (path `<work dir>/brainstorm.md`), then `flow:grill` (target `brainstorm.md`; `layout: repo`, `dir`, `work` and `area` (from `areas:` in the configuration file, else a free kebab-case word per the work reference § Decisions; no slice yet) for decision candidates), then the frame.
 
 Before sending the message, check the project memory with the key words of the request (`flow:docs`, `op: search`, `layout: repo`, `dir`). If a changelog entry, a decision or an archived work touches the same area, say so in the same message: *"v1.9 moved the list filters into `FilterBar`; the decision of 2026-06-12 rules out server-side filtering. I'll take both into account."*
 
@@ -204,7 +204,7 @@ For each phase: invoke the tool telling it where to save, commit, update `phase:
 
 If the tool the row picks for the case at hand isn't listed in the session, stop that phase and give its commands from `dependencies.md`. Never swap in another tool for a missing `framing-doc`.
 
-**The definition path.** A product work whose problem isn't clear runs `flow:brainstorm`, passing `<work dir>/brainstorm.md`; then `flow:grill` with that file as target; then the frame. With source material the frame is `framing-doc`, given `brainstorm.md` too. Without, this skill writes `frame.md` with the `## The criterion` block on top, built from `brainstorm.md` and the grill's answers, and carries the parked questions into its body. `brainstorm.md`, the grill's writes and the frame are committed on the work branch.
+**The definition path.** A product work whose problem isn't clear runs `flow:brainstorm`, passing `<work dir>/brainstorm.md`; then `flow:grill` with that file as target; then the frame. With source material the frame is `framing-doc`, given `brainstorm.md` too. Without, this skill writes `frame.md` with the `## The criterion` block on top, built from `brainstorm.md` and the grill's answers, and carries the parked questions into its body. `brainstorm.md`, the grill's writes and the frame are committed on the work branch, and the `flow:grill` calls pass the decision fields as in Step 1, plus the `frame.md` path once the frame exists so the criterion anchor applies. Its early exits: on a clear request or a small change, go back to Step 1's question and treat the problem as clear (shaping, as that question says); on "skipped", run `flow:grill` with `brainstorm.md` created as its target, holding the request as given, then the frame.
 
 ### The criterion
 
@@ -231,7 +231,7 @@ A technical work that skipped the frame has no criterion, and nothing here appli
 
 **The criterion travels with every invocation.** `shaping`, `framing-doc` and `breadboarding` don't know the work: put the `## The criterion` block verbatim at the top of the prompt, above the path instruction, with the guideline sections that bear on it. Without it a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
 
-**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `flow:grill` with the point and the document it belongs to as target, before moving on: it closes the point in rounds or the user parks it. It's tightening, not a phase.
+**If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `flow:grill` with the point and the document it belongs to as target (and the `frame.md` path, so the criterion anchor applies), passing the decision fields as in Step 1 with the current slice where one exists, and committing the target afterwards per the work reference, before moving on: it closes the point in rounds or the user parks it. It's tightening, not a phase.
 
 **If an unknown is technical** (how a library behaves, what a piece of code really does, whether a platform limit holds), it's a spike: a `spike-<topic>.md` with questions and outcomes, done before the plan of the slice that depends on it. A plan is not written on top of a guess.
 

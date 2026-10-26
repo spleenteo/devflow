@@ -114,7 +114,7 @@ Every slice plan is checked by a fresh subagent with five lenses:
 4. **Guideline compliance**: tests, naming and placement follow `docs/development-guidelines.md`.
 5. **Project lenses**: the lenses in `docs/impact-lenses.md`; "project lenses: none" when the file is absent.
 
-The guidelines template is [`skills/dev/development-guidelines.template.md`](skills/dev/development-guidelines.template.md); the decisions format is [`skills/dev/decisions-log.md`](skills/dev/decisions-log.md).
+The guidelines template is [`skills/dev/development-guidelines.template.md`](skills/dev/development-guidelines.template.md); the decisions format is [`skills/docs/decisions.md`](skills/docs/decisions.md).
 
 ## Configuration
 

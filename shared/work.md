@@ -132,7 +132,7 @@ description: "<what the user wants to achieve>"
 
 **Propose, never write unasked.** At the close of a step, and during execution when one shows up: *"This choice discarded X. Record it?"* One question, with the candidate's gist. Decisions are written when taken, never in bulk at the end: by then the reason has faded.
 
-**On a yes**, invoke the Skill tool with skill `flow:docs` and args a header line plus one note line per item (a repeated label gives several items), self-contained since the fork sees no conversation. Repo layout (`work` is the slug, or `null` outside a work; `areas` from `.flow.yml` bound `area`):
+**On a yes**, invoke the Skill tool with skill `flow:docs` and args a header line plus one note line per item (a repeated label gives several items), self-contained since the fork sees no conversation. Repo layout (`work` is the slug, or `null` outside a work; `area` is required: one of `areas` in `.flow.yml`, or a free kebab-case word when the project declares none):
 
 ```
 op: decision-write, layout: repo, dir: <absolute repo root>, kind: decision, slug: <what-was-decided>, work: <slug>

@@ -5,7 +5,7 @@ description: Use to run by hand the changelog and version step for a finished `/
 
 # Flow: changelog
 
-Records a finished `/flow:dev` work in the changelog and bumps the version, before it lands on `main`.
+Records a finished `/flow:dev` work in the changelog and bumps the version, on the work's branch before the merge.
 
 ## When it runs
 

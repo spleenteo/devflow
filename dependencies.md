@@ -2,12 +2,11 @@
 
 `flow` does not bundle the skills it hands work to, and it never installs anything: it reads this file, tells you what is missing and prints the commands. You run them.
 
-A dependency counts as present when a skill listed in the session has its name, or its segment after `:` equals it. `superpowers:writing-plans` and a personal `writing-plans` both count.
+A dependency counts as present when a skill listed in the session has its name, or its segment after `:` equals it. `shaping-skills:shaping` and a personal `shaping` both count.
 
 | Source | Install as | Skills | Need | Used by |
 |---|---|---|---|---|
 | superpowers | `superpowers@claude-plugins-official` | `brainstorming` | required | frame, both flows |
-| superpowers | `superpowers@claude-plugins-official` | `writing-plans`, `subagent-driven-development` | required | `/flow:dev` slice loop |
 | shaping-skills | `shaping-skills@flow` | `shaping`, `breadboarding`, `framing-doc` | required for the definition phases | both flows |
 | shaping-skills | `shaping-skills@flow` | `kickoff-doc` | required for its phase | `/flow:project` only |
 | datocms | `datocms@datocms-skills` | `datocms-cda`, `datocms-frontend-integrations`, `datocms-structured-text`, `datocms-cli`, `datocms-content-modeling` | optional (datocms) | `stack-datocms` preset |
@@ -19,7 +18,7 @@ Project scope is shared with the team through the project's settings: it writes 
 
 ### superpowers
 
-Provides `brainstorming`, `writing-plans` and `subagent-driven-development`. Its marketplace, `claude-plugins-official`, is known by default: no marketplace line.
+Provides `brainstorming`, and leaves this file when Flow ports brainstorming. Its marketplace, `claude-plugins-official`, is known by default: no marketplace line.
 
 ```bash
 # user scope

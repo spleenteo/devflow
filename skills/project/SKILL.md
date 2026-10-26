@@ -52,11 +52,15 @@ op: search, layout: project, dir: <absolute folder holding the projects>, keywor
 
 ## Cost discipline
 
-Few subagents here: two at the reality check, one per plan review. The cost is the user's time. Three rules:
+Few subagents here: two at the reality check, one per plan review. The cost is the user's time. The top tier runs the reality check, the reviews and the fidelity check, where a missed hole costs most. Three rules:
 
 1. **Two stops per slice.** After the reviewed plan, after the close. Plan and review run back to back.
 2. **One message per verification.** Findings ranked by severity, each with a recommended action, one question at the end.
 3. **Packets, not documents.** A subagent gets the slice's section of `slices.md`, `lessons.md`, `constraints.md`, the matching decisions, and the plan. Not `shaping.md` unless the slice's section points to it.
+
+## Models
+
+Flow's agents are in `${CLAUDE_PLUGIN_ROOT}/agents/` (dispatched as `flow:<name>`). Preference for the top tier: `${user_config.model_top}`; for the mid tier: `${user_config.model_mid}`. A value that is empty, or begins with `${`, is unset. Which model each dispatch takes, the dispatch contract and the ledger: the work reference, § Agents (`${CLAUDE_PLUGIN_ROOT}/shared/work.md`).
 
 ## Dependencies
 
@@ -164,14 +168,14 @@ A frame written before this convention gets the block added at the top of its ne
 
 ### `phase: reality`, once, on `slices.md`
 
-The slices against the world, before the first plan. Two subagents in parallel, both with `ultrathink` in the prompt. Packet: `slices.md` in full, `constraints.md`, `shaping.md` if it exists, the matching decisions.
+The slices against the world, before the first plan. Two `flow:impact` dispatches in parallel, each with its lenses from the table in the packet. Packet: `slices.md` in full, `constraints.md`, `shaping.md` if it exists, the matching decisions.
 
-| Subagent | Lenses |
+| Dispatch | Lenses |
 |---|---|
 | **Resources** | **Money**: cost per slice against the appetite; what's unpriced; when payments fall. **Time**: durations, lead times of third parties, seasons and holidays, hard dates. **People**: who does each slice, availability, who must say yes and hasn't yet. **Permissions and rules**: permits, contracts, warranties, insurance, legal constraints |
 | **Sequence** | **Dependencies and reversibility**: what must happen before what; what can't be undone; where the point of no return sits and what must be certain before it. **Existence**: the suppliers, documents, budgets, tools and people the slices name exist and are reachable. **Pre-mortem**: it's six months later and the project failed; the three most likely reasons, each with the slice it hits and the cheapest check to run now |
 
-On a one-slice project, one subagent with all the lenses.
+On a one-slice project, one `flow:impact` with all the lenses.
 
 Report in one message: findings ranked by severity, each as **what** · **where** (slice) · **why it's a problem** · **recommended fix**; lenses that found nothing named as such; one question at the end: *"Apply the recommended fixes? Say which to skip."*
 
@@ -210,7 +214,7 @@ Writing the plan surfaces deviations from the mandate: an action that belongs to
 
 ### `step: review`
 
-Right after the plan, one subagent, never in session: whoever just wrote the plan is the worst head for finding its holes. `ultrathink` only if the slice crosses a point of no return or has more than eight actions. Packet plus the plan.
+Right after the plan, one `flow:plan-reviewer`, never in session: whoever just wrote the plan is the worst head for finding its holes. Packet, the plan as the object and the lens table below.
 
 | Lens | Looks for |
 |---|---|
@@ -247,7 +251,7 @@ A closed slice isn't reopened; if a later slice finds it was wrong, the fix goes
 
 Applies to frame, shaping, kickoff, slicing and reality. Four moves, in order:
 
-1. **Fidelity check**, before anything is reported. For each requirement, shape or slice just produced: which line of the criterion does it serve? Whatever traces back to nothing is named in the report, with what it would take to keep it. On `shaping.md` and `slices.md` — the documents the rest of the project inherits, and the ones the client reads — a subagent runs it, with a packet of the criterion, `constraints.md` and the document alone. On the others, in session. The frame phase checks itself differently: that the criterion block exists and that the body doesn't contradict it.
+1. **Fidelity check**, before anything is reported. For each requirement, shape or slice just produced: which line of the criterion does it serve? Whatever traces back to nothing is named in the report, with what it would take to keep it. On `shaping.md` and `slices.md` — the documents the rest of the project inherits, and the ones the client reads — a `flow:plan-reviewer` runs it, with a packet of the criterion, `constraints.md` and the document alone. On the others, in session. The frame phase checks itself differently: that the criterion block exists and that the body doesn't contradict it.
 2. **Update `STATUS.md`**: `phase:`, `updated:`, Log line.
 3. **Decision candidate** in the same report, when the work reference, § Decisions, says so: a real alternative discarded, a known problem deferred on purpose, a choice that will surprise whoever reads the plan later. Propose it; never write it unasked, and on a yes send the `decision-write` request that section shows.
 4. **Stop and ask** before the next phase.

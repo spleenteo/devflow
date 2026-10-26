@@ -118,6 +118,12 @@ Every slice is demonstrated by running the plugin from this checkout on a throwa
 - On a throwaway repo, `/flow:dev` records a decision through `flow:docs`, and a direct request to `flow:docs` to search by a file path finds it through `touches:`.
 - In a project folder, `/flow:project` records a decision through `flow:docs` in the project layout (deferred from V2).
 
+**Deviations found while planning V3**
+- The `area` vocabulary lives in `.flow.yml` (`areas:`) only, not in a log README; the check reads it through `--areas`.
+- This repo gets a `.flow.yml` holding only `areas:`, to dogfood the vocabulary.
+- `decision-write` takes a multi-line request: a header line of fields, then the conductor's labelled notes.
+- Stale prose in `docs/architecture.md` and `README.md:117` about the old decision files is left for V8; no link breaks outside `README.md`.
+
 **Gotchas**: the brief's evidence and project names stay out of the repo.
 
 ## V4 — Project profile

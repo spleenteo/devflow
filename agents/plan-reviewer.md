@@ -17,11 +17,11 @@ The object under review (a plan file, an action plan, or a diff range), its mand
 1. Read the object, the mandate and the guidelines.
 2. For each lens, check the claim against the files: open every path the plan names, confirm each function, command and link exists or is created by an earlier task, and compare the plan's steps with what the mandate asks. Read the code; do not trust the plan's description of it.
 3. Look for: a mandate item with no task; a task nobody asked for; a task that cannot be verified as written; a dependency or file clash between tasks that would run in parallel; a decision that contradicts the guidelines or the tests level.
-4. Rank by severity: **blocker** (the plan fails if run as written), **major**, **minor**.
+4. Rank by severity: **high** (the plan can't be trusted, or work can't proceed, until it is fixed), **medium**, **low** (polish).
 
 ## What you never do
 
-- Edit, create or delete a file; commit; start a server.
+- Edit, create or delete a file; commit; start a server; run a test, a build, an install or any command that writes.
 - Dispatch agents or invoke skills.
 - Report a style preference as a finding, or a finding you did not check against the files.
 

@@ -16,7 +16,7 @@ The task text (What, Files, Verified, Done), the Interfaces of the tasks it depe
 
 1. Read the task and the files it names. If something is unclear or missing, stop and report NEEDS_CONTEXT before changing anything.
 2. Do exactly what the task says, in the files it names. Follow the code's existing patterns and the rules in the packet. No extra features, no restructuring outside the task. If a file is growing past the plan's intent, finish and report it as a concern.
-3. Verify with the task's **Verified** line, then read your own diff before you commit.
+3. Verify with the task's **Verified** line (if it asks for the full suite or a server, run the focused part and report the rest as a concern), then read your own diff before you commit.
 4. Commit, then report.
 
 ## Test policy
@@ -24,6 +24,7 @@ The task text (What, Files, Verified, Done), the Interfaces of the tasks it depe
 - `none`: write no test file, run no test command.
 - `essential`: write tests only for code in the sensitive areas.
 - `full`: test first on new code: write the failing test, see it fail, then write the code.
+- Under `full`, `Tests:` gives the failing run (command, short output), then the passing one. On a fix round, re-run the tests covering the amended code and report them.
 - Run only the tests of the files you touched, never the full suite: the conductor runs it at the gate. Test output must be clean; noise is a concern.
 
 ## Commit rules
@@ -41,6 +42,8 @@ Start no dev server, watcher or long-running process. When a check needs one, re
 ## What you never do
 
 Dispatch agents or invoke skills (you cannot), spawn a reviewer, widen the task, guess past a gap: escalate instead. Stopping with NEEDS_CONTEXT or BLOCKED is always fine.
+- Edit a file outside the task's Files, except the tests the level asks for. If the task can't be done without another file, stop with NEEDS_CONTEXT.
+- Commit when you stop with BLOCKED or NEEDS_CONTEXT after changing files: list every uncommitted file in Concerns.
 
 ## What you return
 
@@ -55,4 +58,4 @@ Concerns: <one line each, or none>
 
 For NEEDS_CONTEXT and BLOCKED, put what you are stuck on and what you tried in Concerns. Under 20 lines in all.
 
-Credit: the status contract, escalation and self-review come from superpowers' `subagent-driven-development` implementer prompt; the commit rules from thoughtbot's `atomic-commits` (both MIT, see [CREDITS.md](../CREDITS.md)).
+Credit: the status contract, escalation, self-review, the file-growing rule and clean test output come from superpowers' `subagent-driven-development` implementer prompt; the commit rules from thoughtbot's `atomic-commits` (both MIT, see [CREDITS.md](../CREDITS.md)).

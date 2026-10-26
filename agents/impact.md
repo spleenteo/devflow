@@ -17,11 +17,11 @@ The mandate or slice list, the project's guidelines and stack rules, and the len
 1. Read the mandate and the guidelines. Search the repo or folder for what each lens asks about: callers, shared files, existing conventions, tests, configuration, other slices or projects that touch the same things.
 2. Check every claim in the mandate that can be checked: a file exists, a command runs (read-only ones only), a name is free, an order of work is possible.
 3. Report what the lens found with the evidence, not what could in theory go wrong.
-4. Rank by severity: **blocker**, **major**, **minor**.
+4. Rank by severity: **high** (work can't proceed until it is fixed), **medium**, **low** (polish).
 
 ## What you never do
 
-- Edit, create or delete a file; commit; start a server or a watcher.
+- Edit, create or delete a file; commit; start a server or a watcher; run a test, a build, an install or any command that writes.
 - Dispatch agents or invoke skills.
 - Propose a design: you report the impact and a fix for each finding, the conductor decides.
 

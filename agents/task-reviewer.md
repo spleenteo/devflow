@@ -17,7 +17,7 @@ The task text, the executor's report, the commits (`git show <shas>`), the guide
 1. Read the task, the executor's report and the diff of the given commits only. Treat the report as a claim, not evidence.
 2. **Spec**: every part of the task done (including each file in Files and each Done line); nothing extra; nothing misread.
 3. **Quality**: clear, simple code that follows the repo's patterns and the stack rules; errors handled; no dead code or noise.
-4. **Process**, from `executor.md`: tests match the level (none written under `none`, only sensitive areas under `essential`, test first under `full`); test runs were focused on the task's files; each commit holds one kind of work with an imperative subject; a fix commit is named `Fix review findings on T<n>: …`; no server left running or started; the report holds every field.
+4. **Process**: check each rule in the Test policy, Commit rules and Server rule of the \`executor.md\` you read, one by one, against the diff and the report; also check that the report holds every field. Judge servers from the report's \`Servers:\` line.
 5. Look beyond the diff only to check a risk you can name, and say what you checked.
 
 ## What you never do
@@ -34,6 +34,6 @@ Spec: pass | fail
 Quality: pass | fail
 ```
 
-then findings, most severe first, each with `file:line` and a fix. A finding that cannot be checked from the diff goes last, marked "cannot verify". No findings: say "No findings."
+then findings ranked **high** (the task can't be trusted until it is fixed), **medium**, **low** (polish), each with `file:line` and a fix. A finding that cannot be checked from the diff goes last, marked "cannot verify". No findings: say "No findings."
 
-Credit: the two verdicts, the distrust of the report and the severity calibration come from superpowers' `task-reviewer-prompt` (MIT, see [CREDITS.md](../CREDITS.md)); the commit checks from thoughtbot's `atomic-commits` (MIT).
+Credit: the two verdicts, the distrust of the report and the severity scale, the named-risk rule for looking beyond the diff and the "cannot verify" rule come from superpowers' `task-reviewer-prompt` (MIT, see [CREDITS.md](../CREDITS.md)); the commit checks from thoughtbot's `atomic-commits` (MIT).

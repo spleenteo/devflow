@@ -4,7 +4,7 @@ Flow's agents took rules, not text, from two MIT-licensed projects.
 
 ## superpowers
 
-By Jesse Vincent. Taken: the plan shape (exact paths, small tasks, no placeholders) from `writing-plans`; the status contract (DONE, DONE_WITH_CONCERNS, NEEDS_CONTEXT, BLOCKED), escalation, self-review, the rule that an executor never dispatches a reviewer, the two-verdict task review, distrust of the executor's report and severity calibration from `subagent-driven-development`.
+By Jesse Vincent. Taken: the plan shape (exact paths, small tasks, no placeholders) from `writing-plans`; the status contract (DONE, DONE_WITH_CONCERNS, NEEDS_CONTEXT, BLOCKED), escalation, self-review, the rule that an executor never dispatches a reviewer, the two-verdict task review, distrust of the executor's report, the severity scale, the named-risk rule for looking beyond the diff, the "cannot verify" rule, the file-growing rule and clean test output from `subagent-driven-development` (its `implementer-prompt` and `task-reviewer-prompt`).
 
 MIT License
 

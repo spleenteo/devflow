@@ -176,7 +176,7 @@ Flow's own agents live in the plugin's `agents/` folder, one file per role, disp
 | Role | Agent | Tier | Used for |
 |---|---|---|---|
 | Planner | `flow:planner` | top | Writes a slice's plan |
-| Plan reviewer | `flow:plan-reviewer` | top | Plan reviews, the fidelity check, the action-plan review |
+| Plan reviewer | `flow:plan-reviewer` | top | Plan reviews, the fidelity check, the action-plan review, the builder check (`flow:brainstorm`) |
 | Impact | `flow:impact` | top | Impact and the reality check, with the lenses in the packet |
 | Executor | `flow:executor` | mid | One task of a plan |
 | Task reviewer | `flow:task-reviewer` | mid | A task's commits; top tier for a `critical` task, the final review and a third fix round |

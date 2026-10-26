@@ -1,6 +1,6 @@
 ---
 name: planner
-description: "Flow agent, dispatched only by Flow's conductors with a context packet; never for general requests."
+description: "Flow agent, dispatched only by Flow's skills with a context packet; never for general requests."
 tools: Read, Grep, Glob, Bash, Write
 model: opus
 effort: high

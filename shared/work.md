@@ -352,7 +352,7 @@ Pointed at and never edited, each as `<file>:<line> — <new name>`, or as the c
 - lines of `CLAUDE.md`, `.claude/CLAUDE.md` and `CLAUDE.local.md` naming `/devflow`, `/devflow-docs`, `/devflow-archive`, `/projectflow` or `.devflow.yml`;
 - `Skill(...)` entries for those skills in `.claude/settings.json`;
 - project-scope copies of those skills under `.claude/skills/`;
-- open `work/*` branches whose checkout still holds an old file: nothing refreshes them on its own. The command, for the user to run after the upgrade merges: `git switch work/<slug> && git merge <default>`.
+- open `work/*` branches whose tree still holds an old file: nothing refreshes them on its own. The command, for the user to run after the upgrade merges: `git switch work/<slug> && git merge <default>`.
 
 **project.** In the home and its sub-projects, rows of `slices.md` and `S<n>-plan.md` reading "devflow work `<slug>` in `<repo>` merged" become "flow:dev work `<slug>` in `<repo>` merged".
 
@@ -362,7 +362,7 @@ Pointed at and never edited, each as `<file>:<line> — <new name>`, or as the c
 
 **Declined.** The run stops there: nothing is opened or resumed, and nothing is written. Say that the old configuration (repo) or the old rows (project) are no longer read and that the upgrade will be offered again next time.
 
-**Resume on an old file.** On a resume, `/flow:dev` and `/flow:project` also check the checkout, once the work is known. When the checkout still holds an old file from the first table, nothing runs on it:
+**Resume on an old file.** **repo**, on a resume in `/flow:dev` (project homes have no branches), before any write. Read the work's branch, not the current checkout, since the user may still be on the default branch: `git show work/<slug>:.devflow.yml`, and likewise the other old files of the first table. When the branch still holds one, nothing runs on it:
 
-- **(a)** The default branch has no traces left: propose merging the default branch into the work's branch (`git merge <default>`), with its own ok, and stop until it is done.
-- **(b)** The old file exists only on this branch, because the default branch never had it: stop, say so, and point to the rename on that branch, for the user to make: `git mv .devflow.yml .flow.yml`, and `stack:` to `stacks:` in it.
+- **(a)** The default branch has no traces left: propose merging the default branch into the work's branch (`git merge <default>`), with its own ok, and stop until it is done. The clean-tree check comes before the merge's switch.
+- **(b)** The old file exists only on this branch, because the default branch never had it: stop, say so, and point to the same rewrite as the first table, for the user to make on that branch: the rename (`git mv .devflow.yml .flow.yml`) when `.flow.yml` is absent, else the key merge into the existing `.flow.yml` and removal of the old file; and `stack:` to `stacks:`.

@@ -93,11 +93,11 @@ At a phase or step that invokes a dependency, check again: if a required one isn
 
 ## Upgrade check
 
-Runs right after the dependency check, before the profile. Look on the default branch for the old traces the work reference, § Upgrade, lists. When there are some, follow that section: one message, one question, and the run ends there. **An upgrade is a run of its own**: no profile, no Step 0, no work opened or resumed. The next run starts on the upgraded state. Nothing found on the default branch: go on to the profile, after the resume check there (§ Upgrade, Resume on an old file).
+Runs right after the dependency check, before the profile. Look on the default branch for the old traces the work reference, § Upgrade, lists. When there are some, follow that section: one message, one question, and the run ends there. **An upgrade is a run of its own**: no profile, no Step 0, no work opened or resumed. The next run starts on the upgraded state. Nothing found on the default branch: go on to the profile.
 
 ## Profile
 
-The project's profile is three things the conductor must know and never guess: the `stacks`, the `merge` style and the test level. It runs on every invocation. **The order is fixed**: dependency check → upgrade check → read the profile and find the open works → one message (the missing profile pieces, Step 0's questions on a first run, and resume-or-new, or Step 1's questions) → the writes, on the work's branch. Nothing is written before the answers.
+The project's profile is three things the conductor must know and never guess: the `stacks`, the `merge` style and the test level. It runs on every invocation. **The order is fixed**: dependency check → upgrade check → read the profile and find the open works → one message (the missing profile pieces, Step 0's questions on a first run, and resume-or-new, or Step 1's questions) → on a resume, § Upgrade, Resume on an old file (stops before any write) → the writes, on the work's branch. Nothing is written before the answers.
 
 | Piece | Lives in |
 |---|---|
@@ -155,7 +155,7 @@ Whether or not `docs/` exists, the message also holds: if `docs/development-guid
 
 ## On start: open or resume
 
-Order: `## Profile`. Find the open works as the work reference, § Finding open works, says: the current checkout and every `work/*` branch.
+Order: `## Profile`; on a resume, § Upgrade, Resume on an old file, runs before any write. Find the open works as the work reference, § Finding open works, says: the current checkout and every `work/*` branch.
 
 - No result → new work (Step 1, in the same message as the profile's questions).
 - One or more works with `phase:` other than `done` → say so and ask, in the same message:

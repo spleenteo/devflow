@@ -5,7 +5,7 @@ description: "Plan of V2 of the design-flow work: /flow:design composes from the
 
 # V2 — Compose and promote, by hand
 
-**Mandate**: [slices.md § V2](slices.md) (criterion: [frame.md](frame.md); Pen mechanics: [spike](spike-pen-libraries.md), its § Follow-up probe included). **Guidelines**: [development-guidelines.md](../../development-guidelines.md). **Lessons**: [lessons.md](lessons.md). **Execution rules**: the executor's policy, `agents/executor.md` in the plugin; test level `none`. Never touch `docs/design/flow_home-page.pen`.
+**Mandate**: [slices.md § V2](slices.md) (criterion: [frame.md](frame.md); Pen mechanics: [spike](spike-pen-libraries.md), its § Follow-up probe included). **Guidelines**: [development-guidelines.md](../../../development-guidelines.md). **Lessons**: [lessons.md](lessons.md). **Execution rules**: the executor's policy, `agents/executor.md` in the plugin; test level `none`. Never touch `docs/design/flow_home-page.pen`.
 
 ## The slice, decided here
 

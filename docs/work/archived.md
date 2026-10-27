@@ -11,3 +11,4 @@ description: "Index of the works archived in docs/work/archive/, a folder Claude
 |---|---|---|---|
 | `flow-plugin` | 2026-10-25 | Turned the four personal skills into the `flow` Claude Code plugin, installable from GitHub, with soft dependencies, project impact lenses and architecture docs | `docs/CHANGELOG.md` v0.1.0 · 3 decisions |
 | `flow-own-engine` | 2026-10-26 | Made Flow plan and run its own work, own its memory and the project profile, and drop superpowers | `docs/CHANGELOG.md` v0.2.0 · 5 decisions |
+| `design-flow` | 2026-10-27 | Added `/flow:design`, an agnostic design skill with a swappable tool adapter (Pen first), a design phase in `/flow:dev` and design rows in `/flow:project` plans | `docs/CHANGELOG.md` v0.3.0 · 2 decisions |

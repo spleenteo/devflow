@@ -5,7 +5,7 @@ description: "Plan of V1 of the design-flow work: the /flow:design skill by hand
 
 # V1 — The skill by hand: place, index, medium
 
-**Mandate**: [slices.md § V1](slices.md) (criterion: [frame.md](frame.md); Pen mechanics: [spike](spike-pen-libraries.md); adapter notes: [shaping.md](shaping.md) § Adapter implementation notes). **Guidelines**: [development-guidelines.md](../../development-guidelines.md). **Lessons**: none yet (no `lessons.md` in the work dir). **Execution rules**: the executor's policy, `agents/executor.md` in the plugin; test level `none`. Never touch `docs/design/flow_home-page.pen`.
+**Mandate**: [slices.md § V1](slices.md) (criterion: [frame.md](frame.md); Pen mechanics: [spike](spike-pen-libraries.md); adapter notes: [shaping.md](shaping.md) § Adapter implementation notes). **Guidelines**: [development-guidelines.md](../../../development-guidelines.md). **Lessons**: none yet (no `lessons.md` in the work dir). **Execution rules**: the executor's policy, `agents/executor.md` in the plugin; test level `none`. Never touch `docs/design/flow_home-page.pen`.
 
 ## The slice, decided here
 

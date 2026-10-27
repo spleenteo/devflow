@@ -17,7 +17,7 @@ The user already runs the loop by hand: on a product feature, shaping described 
 ## What the first release holds
 
 - A tool-agnostic `/flow:design` skill that owns the loop: discovery, reuse, promotion on approval, choice of medium, consent at every change of direction.
-- A replaceable adapter, `flow:design-pen`, resolved through the presets chain with `design` as its key; the project names its tool with `design: <tool>` in `.flow.yml`. Recorded in [the decision](../../decisions-log/2026-10-27-design-is-agnostic-skill-plus-tool-adapter.md).
+- A replaceable adapter, `flow:design-pen`, resolved through the presets chain with `design` as its key; the project names its tool with `design: <tool>` in `.flow.yml`. Recorded in [the decision](../../../decisions-log/2026-10-27-design-is-agnostic-skill-plus-tool-adapter.md).
 - An optional `design` phase in `/flow:dev`, between shaping (or breadboard) and slicing, offered only when the work touches a UI; corrected requirements go back into `shaping.md`.
 - In `/flow:project`, no fixed phase: the conductor proposes `/flow:design` for a slice when its context calls for an artifact.
 - `docs/design/` as the only place for design files, from the repo root or the project's home; an index in `docs/design/README.md` plus a note inside each file; a README template shipped by Flow; stray design files found on first run are proposed for a move.

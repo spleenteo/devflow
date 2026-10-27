@@ -35,7 +35,7 @@ A second adapter is written and the skill/adapter boundary turns out to be in th
 
 ## References
 
-- [brainstorm](../work/2026-10-27-design-flow/brainstorm.md)
+- [brainstorm](../work/archive/2026-10-27-design-flow/brainstorm.md)
 
 ## Status log
 

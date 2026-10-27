@@ -6,7 +6,7 @@ description: "Shaping of the design-flow work: requirements, two shapes for wher
 
 # Design flow — Shaping
 
-Inputs: [frame.md](frame.md) (the criterion), [brainstorm.md](brainstorm.md) (its `## Settled` section is fixed: those answers are requirements here, not options), [the decision on skill plus adapter](../../decisions-log/2026-10-27-design-is-agnostic-skill-plus-tool-adapter.md).
+Inputs: [frame.md](frame.md) (the criterion), [brainstorm.md](brainstorm.md) (its `## Settled` section is fixed: those answers are requirements here, not options), [the decision on skill plus adapter](../../../decisions-log/2026-10-27-design-is-agnostic-skill-plus-tool-adapter.md).
 
 ## Requirements (R)
 

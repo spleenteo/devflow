@@ -6,7 +6,7 @@ description: "Slices of the design-flow work: shape A cut into four demo-able in
 
 # Design flow — Slices
 
-Mandate: [shaping.md](shaping.md), shape A. Criterion: [frame.md](frame.md). Decisions: [skill plus adapter](../../decisions-log/2026-10-27-design-is-agnostic-skill-plus-tool-adapter.md), [design runs as a dev phase](../../decisions-log/2026-10-27-design-runs-as-a-dev-phase.md). Pen mechanics: [spike](spike-pen-libraries.md).
+Mandate: [shaping.md](shaping.md), shape A. Criterion: [frame.md](frame.md). Decisions: [skill plus adapter](../../../decisions-log/2026-10-27-design-is-agnostic-skill-plus-tool-adapter.md), [design runs as a dev phase](../../../decisions-log/2026-10-27-design-runs-as-a-dev-phase.md). Pen mechanics: [spike](spike-pen-libraries.md).
 
 Every slice is demonstrated in a throwaway repo outside this one (session scratchpad or `/tmp`, never committed) and, from V2 on, in the user's test bed project. The test bed is named only in conversation, never in a shipped file.
 

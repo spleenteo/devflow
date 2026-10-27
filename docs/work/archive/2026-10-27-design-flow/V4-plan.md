@@ -5,7 +5,7 @@ description: "Plan of V4 of the design-flow work: /flow:design finds a project's
 
 # V4 — `/flow:project`, and the plugin's own docs
 
-**Mandate**: [slices.md § V4](slices.md) (criterion: [frame.md](frame.md); decision: [design runs as a dev phase](../../decisions-log/2026-10-27-design-runs-as-a-dev-phase.md)). **Guidelines**: [development-guidelines.md](../../development-guidelines.md). **Lessons**: [lessons.md](lessons.md). **Execution rules**: the executor's policy, `agents/executor.md` in the plugin; test level `none`. Never touch `docs/design/flow_home-page.pen`.
+**Mandate**: [slices.md § V4](slices.md) (criterion: [frame.md](frame.md); decision: [design runs as a dev phase](../../../decisions-log/2026-10-27-design-runs-as-a-dev-phase.md)). **Guidelines**: [development-guidelines.md](../../../development-guidelines.md). **Lessons**: [lessons.md](lessons.md). **Execution rules**: the executor's policy, `agents/executor.md` in the plugin; test level `none`. Never touch `docs/design/flow_home-page.pen`.
 
 ## The slice, decided here
 

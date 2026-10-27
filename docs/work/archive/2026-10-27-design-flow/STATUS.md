@@ -5,6 +5,7 @@ work: design-flow
 stacks: [generic]
 base: main
 updated: 2026-10-27
+archived: 2026-10-27
 tags: [work, design-flow]
 description: "Understand whether and how Flow should support design with design files in the repo (Pen today), and in which form: a flow, a preset or a guideline."
 ---

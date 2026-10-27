@@ -34,7 +34,7 @@ When /flow:design runs inside a /flow:dev work it is a phase of that work: `phas
 
 ## References
 
-- [shaping](../work/2026-10-27-design-flow/shaping.md)
+- [shaping](../work/archive/2026-10-27-design-flow/shaping.md)
 
 ## Status log
 

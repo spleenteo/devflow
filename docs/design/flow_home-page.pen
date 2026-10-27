@@ -1,0 +1,2386 @@
+{
+  "version": "2.21",
+  "children": [
+    {
+      "type": "frame",
+      "id": "U2NhOn",
+      "x": 0,
+      "y": 0,
+      "name": "Home Page",
+      "clip": true,
+      "width": 1440,
+      "fill": "$bg-dark",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "SudDu",
+          "name": "Hero",
+          "clip": true,
+          "width": "fill_container",
+          "height": 920,
+          "fill": "$bg-dark",
+          "layout": "none",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "j60HaF",
+              "x": 240,
+              "y": 420,
+              "name": "Frost Glow",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1,
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#7CCBF244",
+                    "position": 0
+                  },
+                  {
+                    "color": "#7CCBF200",
+                    "position": 1
+                  }
+                ]
+              },
+              "width": 960,
+              "height": 640
+            },
+            {
+              "type": "frame",
+              "id": "d4xrBp",
+              "x": 0,
+              "y": 0,
+              "name": "Nav",
+              "width": 1440,
+              "padding": [
+                28,
+                64
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "bfXkd",
+                  "name": "Wordmark",
+                  "fill": "$text-dark",
+                  "content": "flow",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 28,
+                  "fontWeight": "700",
+                  "letterSpacing": -1
+                },
+                {
+                  "type": "frame",
+                  "id": "nxPNn",
+                  "name": "Nav Links",
+                  "gap": 40,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "qbIrT",
+                      "name": "Two kinds of work",
+                      "fill": "$text-dark-2",
+                      "content": "Two kinds of work",
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "HNr5k",
+                      "name": "How a slice goes",
+                      "fill": "$text-dark-2",
+                      "content": "How a slice goes",
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "b3iRTU",
+                      "name": "State on disk",
+                      "fill": "$text-dark-2",
+                      "content": "State on disk",
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "qpQHg",
+                      "name": "Install",
+                      "fill": "$text-dark-2",
+                      "content": "Install",
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "iXWvF",
+                  "name": "GitHub Link",
+                  "cornerRadius": 9999,
+                  "stroke": "$line-dark",
+                  "strokeWidth": 1,
+                  "gap": 8,
+                  "padding": [
+                    10,
+                    18
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "W1il6y",
+                      "name": "GitHub Icon",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "github",
+                      "library": "lucide",
+                      "fill": "$text-dark"
+                    },
+                    {
+                      "type": "text",
+                      "id": "k2b4u",
+                      "name": "GitHub Label",
+                      "fill": "$text-dark",
+                      "content": "spleenteo/flow",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Hnxw0",
+              "x": 220,
+              "y": 140,
+              "name": "Statement",
+              "width": 1000,
+              "layout": "vertical",
+              "gap": 26,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "NVo13",
+                  "name": "Eyebrow",
+                  "cornerRadius": 9999,
+                  "stroke": "$line-dark",
+                  "strokeWidth": 1,
+                  "padding": [
+                    6,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "i9awk",
+                      "name": "Eyebrow Label",
+                      "fill": "$accent",
+                      "content": "A plugin for Claude Code",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 13,
+                      "fontWeight": "500",
+                      "letterSpacing": 0.4
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "otDAR",
+                  "name": "Headline Line 1",
+                  "fill": "$text-dark",
+                  "content": "From idea to done,",
+                  "lineHeight": 1,
+                  "fontFamily": "$font-heading",
+                  "fontSize": 88,
+                  "fontWeight": "700",
+                  "letterSpacing": -3
+                },
+                {
+                  "type": "frame",
+                  "id": "B4vJb6",
+                  "name": "Headline Line 2",
+                  "gap": 24,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "c9tuyl",
+                      "name": "one",
+                      "fill": "$text-dark",
+                      "content": "one",
+                      "lineHeight": 1,
+                      "fontFamily": "$font-heading",
+                      "fontSize": 88,
+                      "fontWeight": "700",
+                      "letterSpacing": -3
+                    },
+                    {
+                      "type": "text",
+                      "id": "z8AXV",
+                      "name": "slice",
+                      "fill": "$accent",
+                      "content": "slice",
+                      "lineHeight": 1,
+                      "fontFamily": "$font-heading",
+                      "fontSize": 88,
+                      "fontWeight": "800",
+                      "letterSpacing": -3
+                    },
+                    {
+                      "type": "text",
+                      "id": "BvfJF",
+                      "name": "at a time.",
+                      "fill": "$text-dark",
+                      "content": "at a time.",
+                      "lineHeight": 1,
+                      "fontFamily": "$font-heading",
+                      "fontSize": 88,
+                      "fontWeight": "700",
+                      "letterSpacing": -3
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "z1evTA",
+                  "name": "Subhead",
+                  "fill": "$text-dark-2",
+                  "textGrowth": "fixed-width",
+                  "width": 640,
+                  "content": "Flow runs a piece of work and keeps its state on disk, so it picks up days later in a new session. It returns to you at two points per slice.",
+                  "lineHeight": 1.5,
+                  "textAlign": "center",
+                  "fontFamily": "$font-body",
+                  "fontSize": 19,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "ghbyg",
+                  "name": "Actions",
+                  "gap": 14,
+                  "padding": [
+                    6,
+                    0,
+                    0,
+                    0
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "LsG0Y",
+                      "name": "Primary Action",
+                      "fill": "$accent",
+                      "cornerRadius": 9999,
+                      "gap": 10,
+                      "padding": [
+                        16,
+                        28
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "B13pbx",
+                          "name": "Primary Label",
+                          "fill": "$accent-ink",
+                          "content": "Install the plugin",
+                          "fontFamily": "$font-body",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "P0NKa",
+                          "name": "Arrow",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "arrow-right",
+                          "library": "lucide",
+                          "fill": "$accent-ink"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xNVoL",
+                      "name": "Secondary Action",
+                      "cornerRadius": 9999,
+                      "stroke": "$line-dark",
+                      "strokeWidth": 1,
+                      "padding": [
+                        16,
+                        26
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "D9sO5m",
+                          "name": "Secondary Label",
+                          "fill": "$text-dark",
+                          "content": "How it works",
+                          "fontFamily": "$font-body",
+                          "fontSize": 16,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ouMkj",
+              "x": 70,
+              "y": 672,
+              "name": "Grill Window",
+              "clip": true,
+              "width": 520,
+              "fill": "$surface-dark",
+              "cornerRadius": 12,
+              "stroke": "$line-dark",
+              "strokeWidth": 1,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000066",
+                "offset": {
+                  "x": 0,
+                  "y": 24
+                },
+                "blur": 60
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "X6dJxE",
+                  "name": "Title Bar",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "padding": [
+                    14,
+                    18
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "ZaHTs",
+                      "name": "Dot 1",
+                      "fill": "#2B3745",
+                      "width": 10,
+                      "height": 10
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "xvNVc",
+                      "name": "Dot 2",
+                      "fill": "#2B3745",
+                      "width": 10,
+                      "height": 10
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "ZI42v",
+                      "name": "Dot 3",
+                      "fill": "#2B3745",
+                      "width": 10,
+                      "height": 10
+                    },
+                    {
+                      "type": "text",
+                      "id": "Jxg3m",
+                      "name": "Window Title",
+                      "fill": "$text-dark-2",
+                      "content": "/flow:grill",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "B9r2O",
+                  "name": "Body",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 7,
+                  "padding": [
+                    8,
+                    22,
+                    28,
+                    22
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "bNlkR",
+                      "name": "Line",
+                      "fill": "$accent",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "❯ /flow:grill",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "c74sG",
+                      "name": "Line",
+                      "fill": "$text-dark",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "1. Who resumes this work, and when?",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "J6PJ9",
+                      "name": "Line",
+                      "fill": "$text-dark-2",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "   Recommended: any session, days later.",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "sgyPU",
+                      "name": "Line",
+                      "fill": "$text-dark",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "2. What must the first slice prove?",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "AUTFB",
+                      "name": "Line",
+                      "fill": "$text-dark-2",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "   Recommended: one outcome you can check.",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "MLftH",
+                      "name": "Line",
+                      "fill": "$text-dark",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "3. Where does the state live?",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "jzksi",
+                      "name": "Line",
+                      "fill": "$text-dark-2",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "   Recommended: on disk, in the repo.",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "C4Gddm",
+              "x": 880,
+              "y": 712,
+              "name": "Decisions Window",
+              "clip": true,
+              "width": 490,
+              "fill": "$surface-dark",
+              "cornerRadius": 12,
+              "stroke": "$line-dark",
+              "strokeWidth": 1,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000066",
+                "offset": {
+                  "x": 0,
+                  "y": 24
+                },
+                "blur": 60
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ovynm",
+                  "name": "Title Bar",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "padding": [
+                    14,
+                    18
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "TeSPl",
+                      "name": "Dot 1",
+                      "fill": "#2B3745",
+                      "width": 10,
+                      "height": 10
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "tkuSB",
+                      "name": "Dot 2",
+                      "fill": "#2B3745",
+                      "width": 10,
+                      "height": 10
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "JZvKx",
+                      "name": "Dot 3",
+                      "fill": "#2B3745",
+                      "width": 10,
+                      "height": 10
+                    },
+                    {
+                      "type": "text",
+                      "id": "ul0kl",
+                      "name": "Window Title",
+                      "fill": "$text-dark-2",
+                      "content": "docs/decisions-log",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "H3ErI",
+                  "name": "Body",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 7,
+                  "padding": [
+                    8,
+                    22,
+                    28,
+                    22
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "W1sYkT",
+                      "name": "Line",
+                      "fill": "$text-dark",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "2026-10-25-soft-dependencies.md",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "RtoRW",
+                      "name": "Line",
+                      "fill": "$text-dark-2",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Flow checks for its dependencies and never installs them.",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ser5D",
+                      "name": "Line",
+                      "fill": "$text-dark",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "2026-10-25-projects-declare-marketplace-without-ref.md",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "VN3Bh",
+                      "name": "Line",
+                      "fill": "$text-dark-2",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Main holds released states only.",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "k8f3lX",
+              "x": 330,
+              "y": 612,
+              "name": "Dev Window",
+              "clip": true,
+              "width": 780,
+              "fill": "$surface-dark",
+              "cornerRadius": 12,
+              "stroke": "$line-dark",
+              "strokeWidth": 1,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000066",
+                "offset": {
+                  "x": 0,
+                  "y": 24
+                },
+                "blur": 60
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "B17XU3",
+                  "name": "Title Bar",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "padding": [
+                    14,
+                    18
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "Evo3B",
+                      "name": "Dot 1",
+                      "fill": "#2B3745",
+                      "width": 10,
+                      "height": 10
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "R8zRb",
+                      "name": "Dot 2",
+                      "fill": "#2B3745",
+                      "width": 10,
+                      "height": 10
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "xsfdw",
+                      "name": "Dot 3",
+                      "fill": "#2B3745",
+                      "width": 10,
+                      "height": 10
+                    },
+                    {
+                      "type": "text",
+                      "id": "fT1tA",
+                      "name": "Window Title",
+                      "fill": "$text-dark-2",
+                      "content": "/flow:dev",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "xPpUW",
+                  "name": "Body",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 7,
+                  "padding": [
+                    8,
+                    22,
+                    28,
+                    22
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "N27j9k",
+                      "name": "Line",
+                      "fill": "$accent",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "❯ /flow:dev resume home-page",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "C4gKHh",
+                      "name": "Line",
+                      "fill": "$text-dark",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "✓ Dependencies checked",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "FFpxt",
+                      "name": "Line",
+                      "fill": "$text-dark",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "✓ Plan for the next slice written, reviewed by a fresh agent",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "X4BQx",
+                      "name": "Line",
+                      "fill": "$accent",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "● Back to you: approve the plan to start the build",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "A02sA",
+                      "name": "Line",
+                      "fill": "$text-dark-2",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "  Slices",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "kSXK8",
+                      "name": "Line",
+                      "fill": "$text-dark",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "  ✓ 1  Hero and navigation",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Z3Qqia",
+                      "name": "Line",
+                      "fill": "$accent",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "  ● 2  Sections and copy",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "TTgDz",
+                      "name": "Line",
+                      "fill": "$text-dark-2",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "  ○ 3  Install and footer",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "u2jq7",
+          "name": "Two Kinds of Work",
+          "width": "fill_container",
+          "fill": "$bg-light",
+          "layout": "vertical",
+          "gap": 64,
+          "padding": [
+            110,
+            120
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "CAg6P",
+              "name": "Section Header",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "skrmc",
+                  "name": "Eyebrow",
+                  "fill": "$text-light-2",
+                  "content": "TWO KINDS OF WORK",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 13,
+                  "fontWeight": "600",
+                  "letterSpacing": 1.2
+                },
+                {
+                  "type": "text",
+                  "id": "t2J2WX",
+                  "name": "Title",
+                  "fill": "$text-light",
+                  "textGrowth": "fixed-width",
+                  "width": 820,
+                  "content": "One flow, whether you write code or run a project.",
+                  "lineHeight": 1.05,
+                  "textAlign": "center",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 52,
+                  "fontWeight": "700",
+                  "letterSpacing": -1.5
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "zjMit",
+              "name": "Work Types",
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "guLrN",
+                  "name": "Dev",
+                  "width": "fill_container",
+                  "stroke": "$line-light",
+                  "strokeWidth": {
+                    "right": 1
+                  },
+                  "layout": "vertical",
+                  "gap": 20,
+                  "padding": [
+                    0,
+                    64,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "j4Ybyn",
+                      "name": "Command",
+                      "fill": "$bg-dark",
+                      "cornerRadius": 4,
+                      "padding": [
+                        7,
+                        14
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Lz4qI",
+                          "name": "Command Label",
+                          "fill": "$accent",
+                          "content": "/flow:dev",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "Zj74K",
+                      "name": "Title",
+                      "fill": "$text-light",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Software work, in a repository",
+                      "lineHeight": 1.05,
+                      "fontFamily": "$font-heading",
+                      "fontSize": 34,
+                      "fontWeight": "700",
+                      "letterSpacing": -1
+                    },
+                    {
+                      "type": "text",
+                      "id": "rkXDi",
+                      "name": "Body",
+                      "fill": "$text-light-2",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Takes the work from idea to a branch merged after your ok, locally or by pull request when you set it up. Works with any stack and adds nothing to your project's CLAUDE.md.",
+                      "lineHeight": 1.6,
+                      "fontFamily": "$font-body",
+                      "fontSize": 17,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Y7wrTA",
+                      "name": "Points",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": [
+                        8,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "QxbRl",
+                          "name": "Point",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "GGFO3",
+                              "name": "Check",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "check",
+                              "library": "lucide",
+                              "fill": "$text-light"
+                            },
+                            {
+                              "type": "text",
+                              "id": "pygxe",
+                              "name": "Point Label",
+                              "fill": "$text-light",
+                              "content": "Resumes an interrupted work in a new session",
+                              "fontFamily": "$font-body",
+                              "fontSize": 16,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "fa8uz",
+                          "name": "Point",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "g4B1a",
+                              "name": "Check",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "check",
+                              "library": "lucide",
+                              "fill": "$text-light"
+                            },
+                            {
+                              "type": "text",
+                              "id": "y63E97",
+                              "name": "Point Label",
+                              "fill": "$text-light",
+                              "content": "Moves to the next slice when you say so",
+                              "fontFamily": "$font-body",
+                              "fontSize": 16,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "QX7As",
+                          "name": "Point",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "RLVfx",
+                              "name": "Check",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "check",
+                              "library": "lucide",
+                              "fill": "$text-light"
+                            },
+                            {
+                              "type": "text",
+                              "id": "zpcNA",
+                              "name": "Point Label",
+                              "fill": "$text-light",
+                              "content": "Records the changelog and the version",
+                              "fontFamily": "$font-body",
+                              "fontSize": 16,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "nBRwr",
+                  "name": "Project",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 20,
+                  "padding": [
+                    0,
+                    0,
+                    0,
+                    64
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "vGUFs",
+                      "name": "Command",
+                      "fill": "$bg-dark",
+                      "cornerRadius": 4,
+                      "padding": [
+                        7,
+                        14
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "SUerA",
+                          "name": "Command Label",
+                          "fill": "$accent",
+                          "content": "/flow:project",
+                          "fontFamily": "$font-mono",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "aBcPI",
+                      "name": "Title",
+                      "fill": "$text-light",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Projects that people carry out",
+                      "lineHeight": 1.05,
+                      "fontFamily": "$font-heading",
+                      "fontSize": 34,
+                      "fontWeight": "700",
+                      "letterSpacing": -1
+                    },
+                    {
+                      "type": "text",
+                      "id": "qQt3j",
+                      "name": "Body",
+                      "fill": "$text-light-2",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "For work that takes weeks or months: a renovation, a client engagement, a strategy, a personal plan. It lives in a folder, never in a code repo.",
+                      "lineHeight": 1.6,
+                      "fontFamily": "$font-body",
+                      "fontSize": 17,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "G4PTj",
+                      "name": "Points",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": [
+                        8,
+                        0,
+                        0,
+                        0
+                      ],
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "ekZ0s",
+                          "name": "Point",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "eoPFU",
+                              "name": "Check",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "check",
+                              "library": "lucide",
+                              "fill": "$text-light"
+                            },
+                            {
+                              "type": "text",
+                              "id": "BKda7",
+                              "name": "Point Label",
+                              "fill": "$text-light",
+                              "content": "Plans one slice at a time",
+                              "fontFamily": "$font-body",
+                              "fontSize": 16,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "tdfCa",
+                          "name": "Point",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "wMzuO",
+                              "name": "Check",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "check",
+                              "library": "lucide",
+                              "fill": "$text-light"
+                            },
+                            {
+                              "type": "text",
+                              "id": "C4sR2",
+                              "name": "Point Label",
+                              "fill": "$text-light",
+                              "content": "Hands software slices over to /flow:dev",
+                              "fontFamily": "$font-body",
+                              "fontSize": 16,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "d9I7gm",
+                          "name": "Point",
+                          "gap": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "tCbLH",
+                              "name": "Check",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "check",
+                              "library": "lucide",
+                              "fill": "$text-light"
+                            },
+                            {
+                              "type": "text",
+                              "id": "g4bFF9",
+                              "name": "Point Label",
+                              "fill": "$text-light",
+                              "content": "Archives the project when it closes",
+                              "fontFamily": "$font-body",
+                              "fontSize": 16,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ACA6p",
+          "name": "How a Slice Goes",
+          "width": "fill_container",
+          "fill": "$bg-dark",
+          "layout": "vertical",
+          "gap": 64,
+          "padding": [
+            110,
+            120
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "FDO8T",
+              "name": "Section Header",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "k6FOpt",
+                  "name": "Eyebrow",
+                  "fill": "$accent",
+                  "content": "HOW A SLICE GOES",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 13,
+                  "fontWeight": "600",
+                  "letterSpacing": 1.2
+                },
+                {
+                  "type": "text",
+                  "id": "LmMm8",
+                  "name": "Title",
+                  "fill": "$text-dark",
+                  "textGrowth": "fixed-width",
+                  "width": 820,
+                  "content": "Define it first.\nThen build it, one slice at a time.",
+                  "lineHeight": 1.05,
+                  "textAlign": "center",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 52,
+                  "fontWeight": "700",
+                  "letterSpacing": -1.5
+                },
+                {
+                  "type": "text",
+                  "id": "KexAF",
+                  "name": "Intro",
+                  "fill": "$text-dark-2",
+                  "textGrowth": "fixed-width",
+                  "width": 640,
+                  "content": "Each phase closes before the next opens. The detailed plan of a slice is written right before it starts, so it carries what the previous slices taught.",
+                  "lineHeight": 1.55,
+                  "textAlign": "center",
+                  "fontFamily": "$font-body",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "EUngi",
+              "name": "Phases",
+              "width": "fill_container",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "y3LWlY",
+                  "name": "Phase 01",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": [
+                    0,
+                    28,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "BNRVQ",
+                      "name": "Number",
+                      "fill": "$text-dark-2",
+                      "content": "01",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 44,
+                      "fontWeight": "300",
+                      "letterSpacing": -1
+                    },
+                    {
+                      "type": "text",
+                      "id": "UaqzQ",
+                      "name": "Phase Title",
+                      "fill": "$text-dark",
+                      "content": "Brainstorm",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 24,
+                      "fontWeight": "700",
+                      "letterSpacing": -0.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "uH06K",
+                      "name": "Phase Body",
+                      "fill": "$text-dark-2",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "For an idea that isn't clear. Finds out what you want, and why, before anything is framed.",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "d7XK1",
+                      "name": "Phase Command",
+                      "fill": "$accent",
+                      "content": "/flow:brainstorm",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "M654KH",
+                  "name": "Phase 02",
+                  "width": "fill_container",
+                  "stroke": "$line-dark",
+                  "strokeWidth": {
+                    "left": 1
+                  },
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": [
+                    0,
+                    28
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "EVSVz",
+                      "name": "Number",
+                      "fill": "$text-dark-2",
+                      "content": "02",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 44,
+                      "fontWeight": "300",
+                      "letterSpacing": -1
+                    },
+                    {
+                      "type": "text",
+                      "id": "sZsuC",
+                      "name": "Phase Title",
+                      "fill": "$text-dark",
+                      "content": "Grill",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 24,
+                      "fontWeight": "700",
+                      "letterSpacing": -0.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "VZLBm",
+                      "name": "Phase Body",
+                      "fill": "$text-dark-2",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Stress-tests a plan in rounds of numbered questions, each with a recommended answer.",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "E6goeq",
+                      "name": "Phase Command",
+                      "fill": "$accent",
+                      "content": "/flow:grill",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "p540jh",
+                  "name": "Phase 03",
+                  "width": "fill_container",
+                  "stroke": "$line-dark",
+                  "strokeWidth": {
+                    "left": 1
+                  },
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": [
+                    0,
+                    28
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "pgHHA",
+                      "name": "Number",
+                      "fill": "$text-dark-2",
+                      "content": "03",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 44,
+                      "fontWeight": "300",
+                      "letterSpacing": -1
+                    },
+                    {
+                      "type": "text",
+                      "id": "U37gJx",
+                      "name": "Phase Title",
+                      "fill": "$text-dark",
+                      "content": "Frame",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 24,
+                      "fontWeight": "700",
+                      "letterSpacing": -0.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "d6aBZ",
+                      "name": "Phase Body",
+                      "fill": "$text-dark-2",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Writes down the problem worth solving and why it was chosen over the alternatives.",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "rmbn6",
+                  "name": "Phase 04",
+                  "width": "fill_container",
+                  "stroke": "$line-dark",
+                  "strokeWidth": {
+                    "left": 1
+                  },
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": [
+                    0,
+                    28
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "OkUUO",
+                      "name": "Number",
+                      "fill": "$text-dark-2",
+                      "content": "04",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 44,
+                      "fontWeight": "300",
+                      "letterSpacing": -1
+                    },
+                    {
+                      "type": "text",
+                      "id": "Q0zgD",
+                      "name": "Phase Title",
+                      "fill": "$text-dark",
+                      "content": "Shape",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 24,
+                      "fontWeight": "700",
+                      "letterSpacing": -0.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "Lrstq",
+                      "name": "Phase Body",
+                      "fill": "$text-dark-2",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Optional shaping and breadboarding, handed to the shaping-skills plugin.",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "f6mNeI",
+                  "name": "Phase 05",
+                  "width": "fill_container",
+                  "stroke": "$line-dark",
+                  "strokeWidth": {
+                    "left": 1
+                  },
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": [
+                    0,
+                    28
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "g7bEFn",
+                      "name": "Number",
+                      "fill": "$accent",
+                      "content": "05",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 44,
+                      "fontWeight": "300",
+                      "letterSpacing": -1
+                    },
+                    {
+                      "type": "text",
+                      "id": "rPxuS",
+                      "name": "Phase Title",
+                      "fill": "$text-dark",
+                      "content": "Slice",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 24,
+                      "fontWeight": "700",
+                      "letterSpacing": -0.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "sdpUH",
+                      "name": "Phase Body",
+                      "fill": "$text-dark-2",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Cuts the work into slices and checks the impact with two agents.",
+                      "lineHeight": 1.55,
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rH9Mv",
+              "name": "Per Slice",
+              "width": "fill_container",
+              "fill": "$surface-dark",
+              "cornerRadius": 12,
+              "stroke": "$line-dark",
+              "strokeWidth": 1,
+              "gap": 40,
+              "padding": [
+                28,
+                36
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "lwZOn",
+                  "name": "Per Slice Title",
+                  "fill": "$text-dark",
+                  "content": "Then, slice by slice",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 26,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.5
+                },
+                {
+                  "type": "text",
+                  "id": "TKzes",
+                  "name": "Per Slice Body",
+                  "fill": "$text-dark-2",
+                  "textGrowth": "fixed-width",
+                  "width": 560,
+                  "content": "Plan written right before the slice. Reviewed by a fresh agent. Back to you at two points, before it moves on.",
+                  "lineHeight": 1.55,
+                  "fontFamily": "$font-body",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "lpBlx",
+          "name": "State on Disk",
+          "width": "fill_container",
+          "fill": "$bg-light-2",
+          "gap": 80,
+          "padding": [
+            110,
+            120
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "xI2sq",
+              "name": "Copy",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "UrwKW",
+                  "name": "Eyebrow",
+                  "fill": "$text-light-2",
+                  "content": "STATE ON DISK",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 13,
+                  "fontWeight": "600",
+                  "letterSpacing": 1.2
+                },
+                {
+                  "type": "text",
+                  "id": "EbYZq",
+                  "name": "Title",
+                  "fill": "$text-light",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Close the session. The work stays.",
+                  "lineHeight": 1.05,
+                  "fontFamily": "$font-heading",
+                  "fontSize": 52,
+                  "fontWeight": "700",
+                  "letterSpacing": -1.5
+                },
+                {
+                  "type": "text",
+                  "id": "D79ZkA",
+                  "name": "Body",
+                  "fill": "$text-light-2",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Everything Flow knows about a work is a file in your repo or your project folder. A new session reads it and picks up where the last one stopped, days later.",
+                  "lineHeight": 1.6,
+                  "fontFamily": "$font-body",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "korbh",
+                  "name": "Keeper",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 18,
+                  "padding": [
+                    12,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "A6qRV",
+                      "name": "Changelog and version",
+                      "width": "fill_container",
+                      "stroke": "$text-light",
+                      "strokeWidth": {
+                        "left": 2
+                      },
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        18
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "WjBuN",
+                          "name": "Item Title",
+                          "fill": "$text-light",
+                          "content": "Changelog and version",
+                          "fontFamily": "$font-body",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "wJUft",
+                          "name": "Item Body",
+                          "fill": "$text-light-2",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Each finished work is recorded, and the version is bumped.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-body",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "UoHSM",
+                      "name": "Decisions",
+                      "width": "fill_container",
+                      "stroke": "$text-light",
+                      "strokeWidth": {
+                        "left": 2
+                      },
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        18
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "prpEm",
+                          "name": "Item Title",
+                          "fill": "$text-light",
+                          "content": "Decisions",
+                          "fontFamily": "$font-body",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "fEkk8",
+                          "name": "Item Body",
+                          "fill": "$text-light-2",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Written, updated and checked against the code, one file each.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-body",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "IQuIf",
+                      "name": "Memory search",
+                      "width": "fill_container",
+                      "stroke": "$text-light",
+                      "strokeWidth": {
+                        "left": 2
+                      },
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        0,
+                        0,
+                        0,
+                        18
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "OBbfc",
+                          "name": "Item Title",
+                          "fill": "$text-light",
+                          "content": "Memory search",
+                          "fontFamily": "$font-body",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "FdBQM",
+                          "name": "Item Body",
+                          "fill": "$text-light-2",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Looks through a repo's or a folder of projects' memory.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-body",
+                          "fontSize": 15,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "kDrLQ",
+              "name": "File Window",
+              "clip": true,
+              "width": 560,
+              "fill": "$bg-dark",
+              "cornerRadius": 12,
+              "stroke": "$line-dark",
+              "strokeWidth": 1,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#0F172014",
+                "offset": {
+                  "x": 0,
+                  "y": 16
+                },
+                "blur": 40
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "bdMVo",
+                  "name": "Title Bar",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "padding": [
+                    14,
+                    18
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "fBv72",
+                      "name": "Dot 1",
+                      "fill": "#2B3745",
+                      "width": 10,
+                      "height": 10
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "Hp6oI",
+                      "name": "Dot 2",
+                      "fill": "#2B3745",
+                      "width": 10,
+                      "height": 10
+                    },
+                    {
+                      "type": "ellipse",
+                      "id": "kPuQT",
+                      "name": "Dot 3",
+                      "fill": "#2B3745",
+                      "width": 10,
+                      "height": 10
+                    },
+                    {
+                      "type": "text",
+                      "id": "B4xuKL",
+                      "name": "Window Title",
+                      "fill": "$text-dark-2",
+                      "content": "your-project/docs",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "uy3Ys",
+                  "name": "Tree",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 9,
+                  "padding": [
+                    8,
+                    24,
+                    28,
+                    24
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "f9Vy1",
+                      "name": "work/",
+                      "fill": "$accent",
+                      "content": "work/",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "f7FEb7",
+                      "name": "archive/",
+                      "fill": "$text-dark-2",
+                      "content": "    archive/",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "MTVC4",
+                      "name": "archived.md",
+                      "fill": "$text-dark-2",
+                      "content": "    archived.md",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "f0VIQ",
+                      "name": "decisions-log/",
+                      "fill": "$accent",
+                      "content": "decisions-log/",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "zZiJC",
+                      "name": "2026-10-25-soft-dependencies.md",
+                      "fill": "$text-dark",
+                      "content": "    2026-10-25-soft-dependencies.md",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "K2QH6",
+                      "name": "briefs/",
+                      "fill": "$accent",
+                      "content": "briefs/",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "l5axVG",
+                      "name": "CHANGELOG.md",
+                      "fill": "$text-dark",
+                      "content": "CHANGELOG.md",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "T4O0xC",
+                      "name": "architecture.md",
+                      "fill": "$text-dark",
+                      "content": "architecture.md",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "zyEd0",
+                      "name": "development-guidelines.md",
+                      "fill": "$text-dark",
+                      "content": "development-guidelines.md",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "B945SI",
+          "name": "Install",
+          "width": "fill_container",
+          "fill": "$bg-dark",
+          "layout": "vertical",
+          "gap": 44,
+          "padding": [
+            120,
+            120,
+            80,
+            120
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "b4xQg",
+              "name": "Eyebrow",
+              "fill": "$accent",
+              "content": "INSTALL",
+              "fontFamily": "$font-caption",
+              "fontSize": 13,
+              "fontWeight": "600",
+              "letterSpacing": 1.2
+            },
+            {
+              "type": "text",
+              "id": "QvIKf",
+              "name": "Title",
+              "fill": "$text-dark",
+              "textGrowth": "fixed-width",
+              "width": 820,
+              "content": "Install it once.\nUse it in every project.",
+              "lineHeight": 1.05,
+              "textAlign": "center",
+              "fontFamily": "$font-heading",
+              "fontSize": 60,
+              "fontWeight": "700",
+              "letterSpacing": -1.5
+            },
+            {
+              "type": "frame",
+              "id": "T9B45x",
+              "name": "Commands",
+              "width": 760,
+              "fill": "$surface-dark",
+              "cornerRadius": 12,
+              "stroke": "$line-dark",
+              "strokeWidth": 1,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000066",
+                "offset": {
+                  "x": 0,
+                  "y": 20
+                },
+                "blur": 50
+              },
+              "layout": "vertical",
+              "gap": 12,
+              "padding": [
+                24,
+                28
+              ],
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Rz31f",
+                  "name": "Command Row",
+                  "gap": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "dYEYU",
+                      "name": "Prompt",
+                      "fill": "$accent",
+                      "content": "$",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "pHhMU",
+                      "name": "Command",
+                      "fill": "$text-dark",
+                      "content": "claude plugin marketplace add spleenteo/flow --scope user",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "zgpXm",
+                  "name": "Command Row",
+                  "gap": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "b9lVX",
+                      "name": "Prompt",
+                      "fill": "$accent",
+                      "content": "$",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Mhigy",
+                      "name": "Command",
+                      "fill": "$text-dark",
+                      "content": "claude plugin install flow@flow --scope user",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "FWzmH",
+              "name": "Note",
+              "fill": "$text-dark-2",
+              "textGrowth": "fixed-width",
+              "width": 560,
+              "content": "Then run /flow:dev in the project you'll work in. The start check lists what's missing.",
+              "lineHeight": 1.55,
+              "textAlign": "center",
+              "fontFamily": "$font-body",
+              "fontSize": 17,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "Oj0aV",
+              "name": "Actions",
+              "gap": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "oObea",
+                  "name": "Primary Action",
+                  "fill": "$accent",
+                  "cornerRadius": 9999,
+                  "gap": 10,
+                  "padding": [
+                    16,
+                    28
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "YXFOZ",
+                      "name": "Primary Label",
+                      "fill": "$accent-ink",
+                      "content": "View on GitHub",
+                      "fontFamily": "$font-body",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "KTI2d",
+                      "name": "Arrow",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "arrow-up-right",
+                      "library": "lucide",
+                      "fill": "$accent-ink"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "BtD5Q",
+                  "name": "Secondary Action",
+                  "cornerRadius": 9999,
+                  "stroke": "$line-dark",
+                  "strokeWidth": 1,
+                  "padding": [
+                    16,
+                    26
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "GXLyM",
+                      "name": "Secondary Label",
+                      "fill": "$text-dark",
+                      "content": "Read the architecture",
+                      "fontFamily": "$font-body",
+                      "fontSize": 16,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "eAgK8",
+              "name": "Footer",
+              "width": "fill_container",
+              "stroke": "$line-dark",
+              "strokeWidth": {
+                "top": 1
+              },
+              "padding": [
+                28,
+                0,
+                0,
+                0
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ICP2v",
+                  "name": "Footer Wordmark",
+                  "fill": "$text-dark",
+                  "content": "flow",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 22,
+                  "fontWeight": "700",
+                  "letterSpacing": -0.8
+                },
+                {
+                  "type": "text",
+                  "id": "PSraH",
+                  "name": "Footer Note",
+                  "fill": "$text-dark-2",
+                  "content": "A Claude Code plugin by spleenteo",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variables": {
+    "bg-dark": {
+      "type": "color",
+      "value": "#0B0F14"
+    },
+    "surface-dark": {
+      "type": "color",
+      "value": "#131A22"
+    },
+    "line-dark": {
+      "type": "color",
+      "value": "#243040"
+    },
+    "text-dark": {
+      "type": "color",
+      "value": "#EAF2F8"
+    },
+    "text-dark-2": {
+      "type": "color",
+      "value": "#8A9BAD"
+    },
+    "accent": {
+      "type": "color",
+      "value": "#7CCBF2"
+    },
+    "accent-ink": {
+      "type": "color",
+      "value": "#07131C"
+    },
+    "bg-light": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "bg-light-2": {
+      "type": "color",
+      "value": "#F2F6F9"
+    },
+    "text-light": {
+      "type": "color",
+      "value": "#0F1720"
+    },
+    "text-light-2": {
+      "type": "color",
+      "value": "#566475"
+    },
+    "line-light": {
+      "type": "color",
+      "value": "#DCE4EB"
+    },
+    "font-heading": {
+      "type": "string",
+      "value": "Bricolage Grotesque"
+    },
+    "font-body": {
+      "type": "string",
+      "value": "DM Sans"
+    },
+    "font-caption": {
+      "type": "string",
+      "value": "Instrument Sans"
+    },
+    "font-mono": {
+      "type": "string",
+      "value": "Geist Mono"
+    }
+  },
+  "fileToken": "204f1641-23e3-4e1d-b1e0-2e59b36deaac"
+}

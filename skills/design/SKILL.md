@@ -7,7 +7,15 @@ description: "Flow's design step, run by Flow's conductors, or by hand with /flo
 
 Running a `/flow:` skill is the user's explicit choice of process: inside it no other process skill applies (brainstorming, grilling, planning, plan execution, test-driven development or worktree skills, from any plugin or personal). The design adapter is named by its qualified name.
 
-This skill holds the project's design files in one place, keeps an index of them, and proposes the medium that fits what the user needs to see: a Claude artifact or a design file. This version runs by hand only. It writes, never commits, and says so.
+This skill holds the project's design files in one place, keeps an index of them, and proposes the medium that fits what the user needs to see: a Claude artifact or a design file. It has two modes, called by `/flow:dev`'s design phase or by hand; it writes and never commits in either, and says so.
+
+## Called
+
+Called mode is told apart by its args: the Skill tool `flow:design` with args holding the `## The criterion` block verbatim (when the work has one), then `Shaping: <absolute path of shaping.md>` and `Screens: <the screens to draw, comma-separated>`. A `Shaping:` line means called; none means by hand.
+
+Called, the skill runs Place, Adapter, First use, Medium, Compose, Promote and Safety unchanged, every consent step still asked of the user (it runs in the conductor's session). It reads `shaping.md` and never writes it; it writes only under `docs/design/` and never commits.
+
+A requirement correction is anything the design shows wrong, missing or unneeded in `shaping.md`, collected as one line: `<requirement id, or new> — <the correction> — <what in the design showed it>`. When a criterion was passed, each also names the criterion line it serves, and one that serves none is reported as such; with no criterion, no anchor. They are returned as **Requirement corrections**, beside **Files touched** (see § Exit).
 
 ## Place
 
@@ -97,9 +105,11 @@ Promotion is never atomic: the tool works on one file at a time. If the second s
 ## Safety
 
 - **No deletion unasked.** No file, frame or component is deleted or replaced unless the user asks. The removal of the local copy in a promotion is part of the move the user approved; moves at first use are not deletions.
-- **Direction.** This skill draws and never edits code. Building a screen in code, or redrawing what the code does, is proposed in one line with what would change, and done only on an ok. By hand with code to write, propose `/flow:dev`. Every change of direction needs the user's consent.
+- **Direction.** This skill draws and never edits code. Building a screen in code, or redrawing what the code does, is proposed in one line with what would change, and done only on an ok. By hand with code to write, propose `/flow:dev`; called, say the code belongs to the work's later slices. Every change of direction needs the user's consent.
 - **Exports only on request.** Through the adapter's Export, to a folder the user names (asked when not given). Check each path it returns with `test -f`; a missing file is reported as failed.
 
 ## Exit
 
-This skill writes and never commits. Say so, and list the files written or moved, so the user can review and commit them.
+Called, return two lists and say the caller commits: **Files touched** (every path written or moved under `docs/design/`, the index included; design files or the artifact's HTML source) and **Requirement corrections** (lines as in § Called, or `none`). Code to write is the work's later slices: say so in one line, never propose it as `/flow:dev`.
+
+By hand, this skill writes and never commits. Say so, and list the files written or moved, so the user can review and commit them.

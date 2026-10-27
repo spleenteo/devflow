@@ -134,6 +134,7 @@ Every slice is demonstrated in a throwaway repo outside this one (session scratc
   - `site/index.html`: the phases strip shows the optional design phase if it shows breadboard; the grid's column count follows.
   - `docs/development-guidelines.md` Naming: `flow:design-<tool>` among the non-invocable examples.
 - `skills/brainstorm/SKILL.md`: one line that its visuals stay sketches for the dialogue, and real artifacts go through `/flow:design`.
+- Found at V3's close: `/flow:design` § Place stops outside a repo and § Adapter reads `design:` only from `.flow.yml`. V4 extends both for a project home (a folder whose `STATUS.md` has `project:`): files under `<home>/docs/design/`, `design:` from that `STATUS.md`.
 
 **Out**
 - Changelog and version (the work's close, through `flow:docs`).
@@ -142,6 +143,13 @@ Every slice is demonstrated in a throwaway repo outside this one (session scratc
 - In a throwaway project folder, a slice whose action is a deck gets `/flow:design` proposed with a medium and a reason; a slice of phone calls does not.
 - With `design: pen` in the project's `STATUS.md`, the deck action proposes a design file, written under `<home>/docs/design/`.
 - The gate from `docs/development-guidelines.md` is green: validate, old-names check, links check.
+
+**Deviations found while planning V4** (rulings by the conductor, user away; open to overrule at the close)
+- `/flow:design` takes `Home: "<absolute path>"` by hand (quoted, vault paths hold spaces), else the cwd when its `STATUS.md` has `project:`, else the repo root; `/flow:project` gives the user that line to type.
+- `design:` and `presets: [design=…]` live in the top home's `STATUS.md` (`parent: null`); a sub-project's design files live in that home too. Adapter chain in a project home: those `presets:` → `stack_presets` → the shipped list (R4.2 holds per project).
+- The README gains a `/flow:design` row in Usage and a paragraph on `/flow:project`'s design rows; `docs/architecture.md` a sentence in its `/flow:project` paragraph. In a project home the design files ride the slice's close commit, only when the home is under version control.
+- The site has no Breadboard item: the design phase gets its own item (05), Slice becomes 06, six columns.
+- `skills/design-pen/SKILL.md` says "the base" instead of "the repo root"; the site grid's column count lives in `site/styles.css`.
 
 ## Rulings taken at impact (user away, authorized)
 

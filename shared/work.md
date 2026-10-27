@@ -86,6 +86,8 @@ step: null
 project: <name>
 parent: null
 appetite: "<time>, <money>"
+design: <tool, only when set: pen>
+presets: <[design=<skill>], only when set>
 updated: YYYY-MM-DD
 tags: [project, <name>]
 description: "<what the user wants to achieve>"
@@ -106,7 +108,7 @@ description: "<what the user wants to achieve>"
 <!-- date — slice — what happened — spent (time, money) — remaining — blockers -->
 ```
 
-**Both.** `work:` (repo) or `project:` (project) is the bare name; the date lives in the folder name. `phase:` says where the work is; when it's `slice`, `slice:` and `step:` say which slice and where in it (`plan`, `review`, `execute`, `close`). `phase:` moves when a definition phase closes, together with `updated:` and a Log line. Without these three fields an interrupted work shows up the next morning as finished, or as never started. (repo) `tests:` is present only when the level was raised for this work, and overrides the project's level for it. After a verification, the Log line states the outcome: *"09-02 — impact — 2 problems, fixed in V2 and V4 — 14 min — $2.10"*.
+**Both.** `work:` (repo) or `project:` (project) is the bare name; the date lives in the folder name. `phase:` says where the work is; when it's `slice`, `slice:` and `step:` say which slice and where in it (`plan`, `review`, `execute`, `close`). `phase:` moves when a definition phase closes, together with `updated:` and a Log line. Without these three fields an interrupted work shows up the next morning as finished, or as never started. (repo) `tests:` is present only when the level was raised for this work, and overrides the project's level for it. (project) `design:` and `presets:` name the tool `/flow:design` uses and its adapter; they live only in the top home (`parent: null`, sub-projects don't carry them), are present only when set (on the user's word, never guessed), and without `design:` only Claude artifacts are offered. After a verification, the Log line states the outcome: *"09-02 — impact — 2 problems, fixed in V2 and V4 — 14 min — $2.10"*.
 
 ## `slices.md` and `lessons.md`
 

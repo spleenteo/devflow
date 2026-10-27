@@ -38,7 +38,7 @@ Once a skill resolves, read its `## Requires` before anything else.
 - `## Files`: the file extensions, how a file's role (library or area) is told, how files import each other, the note a file carries about itself, and how to read a file for the index.
 - `## Operations`: eight subsections, cited below as "the adapter's <Name>":
   - `### Session`: the rules for working on a file (one file and one change per call, what to do after a failure, how aliases are read);
-  - `### Open`: open a file and read its frames and its imports;
+  - `### Open`: open a file and read its frames and its imports, or create a new one;
   - `### List`: list a library's components and tokens;
   - `### Import`: add a library import to an area file;
   - `### Compose`: compose a screen from the listed components and tokens;
@@ -77,18 +77,18 @@ Artifacts only in the four cases of § Adapter.
 ## Compose
 
 1. Read `docs/design/README.md`. Missing: § First use's offer runs first.
-2. Pick the file from the index's area rows. Name the file and why, and let the user confirm. No area fits: propose a new area file (name agreed), created through the adapter with the library import and a note, plus its index row.
-3. Run the adapter's Open on it, then the adapter's List on the library. When the library is not imported, run the adapter's Import.
+2. Pick the file from the index's area rows. Name the file and why, and let the user confirm. No area fits: propose a new area file (name agreed), created through the adapter's Open, with the library import and a note, plus its index row.
+3. Run the adapter's Open on the file. When a library is not imported, run the adapter's Import. Then run the adapter's List on the libraries the area file imports.
 4. Compose through the adapter's Compose, from the listed components and tokens only.
 5. For each element no component fits, propose a new one (name, what it is, why none fits). Build it locally only on an ok.
 6. Ask whether the screen is approved.
 7. After each change, update the file's note through the adapter's Note and its index row (contents, imports), both in the folder's language.
 
-One logical change per call. After a failed call, re-read the nodes before anything else; never resend the same snippet.
+Every call follows the adapter's Session.
 
 ## Promote
 
-After the screen is approved, ask per new local component whether to promote it into the design system, naming the target library: the one library row if there is one, otherwise ask which.
+After the screen is approved, ask per new local component whether to promote it into the design system, naming the target library: one library row: that one; several: ask which; none: say so and stop.
 
 On an ok, run the adapter's Promote. Then update the library's row (contents gains the component), the area's row (imports names the library) and both notes through the adapter's Note, in the folder's language.
 
@@ -96,7 +96,7 @@ Promotion is never atomic: the tool works on one file at a time. If the second s
 
 ## Safety
 
-- **No deletion unasked.** No file, frame or component is deleted unless the user asks. The removal of the local copy in a promotion is part of the move the user approved; moves at first use are not deletions.
+- **No deletion unasked.** No file, frame or component is deleted or replaced unless the user asks. The removal of the local copy in a promotion is part of the move the user approved; moves at first use are not deletions.
 - **Direction.** This skill draws and never edits code. Building a screen in code, or redrawing what the code does, is proposed in one line with what would change, and done only on an ok. By hand with code to write, propose `/flow:dev`. Every change of direction needs the user's consent.
 - **Exports only on request.** Through the adapter's Export, to a folder the user names (asked when not given). Check each path it returns with `test -f`; a missing file is reported as failed.
 

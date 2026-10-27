@@ -50,6 +50,7 @@ Eight operations, in the order a design step uses them. `/flow:design` cites the
 ### Open
 
 - `get_app_state` for the file's state.
+- A new file: with the CLI, `pen interactive -o <new file>` with no `-i` starts an empty canvas and `save()` writes it. With the MCP tools, ask the user to create the file in the app.
 - Top-level frames: `Get((n,c)=>{c.skipChildren();Print(n.id,n.name)})`.
 - The file's imports and their aliases: from `get_app_state`, or `list_libraries()` in the CLI.
 
@@ -67,7 +68,7 @@ Eight operations, in the order a design step uses them. `/flow:design` cites the
 ### Compose
 
 - `Insert` frames into the area file.
-- A library component is `{type:"ref", ref:"<alias>:<id>"}`, the alias read in Open; overrides go through `U(<instance>+"/<childId>", {...})`.
+- A library component is `{type:"ref", ref:"<alias>:<id>"}`, the alias read in Open; overrides go through `Update(<instance>+"/<childId>", {...})`.
 - Token values are `"$<alias>:<token>"`.
 - A local `reusable: true` component only for a new one the user approved.
 - Never `Replace` or `Delete` an existing node unasked.

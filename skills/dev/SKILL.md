@@ -5,7 +5,7 @@ description: Use when opening a development work in a repo, resuming an interrup
 
 # Flow: dev
 
-Running `/flow:dev` is the user's explicit choice of process: inside it no other process skill applies (brainstorming, grilling, planning, plan execution, test-driven development or worktree skills, from any plugin or personal). Name `flow:brainstorm` and `flow:grill` by their qualified names.
+Running `/flow:dev` is the user's explicit choice of process: inside it no other process skill applies (brainstorming, grilling, planning, plan execution, test-driven development or worktree skills, from any plugin or personal). Name `flow:brainstorm`, `flow:grill` and `flow:design` by their qualified names.
 
 Runs a development work from idea to code, one slice at a time.
 
@@ -46,7 +46,7 @@ This skill keeps the thread: it opens the work's home, picks the path, invokes e
 | Impact lenses | Common lenses in `${CLAUDE_SKILL_DIR}/common-lenses.md`, always; plus each resolved preset's `## Lenses` (Profile, § Presets); the stacks without a preset in the same file | The common lenses and the preset lenses of each of the project's stacks |
 | Project lenses | `docs/impact-lenses.md` | Read if present by impact and every plan review, on top of the common and stack lenses. Template in `${CLAUDE_SKILL_DIR}/impact-lenses.template.md` |
 
-Configuration lives in `.flow.yml` at the project root. A project can override the defaults with `.flow.yml`: keys `root`, `stacks` (a flow list: `stacks: [astro, node]`; an older `stack: <name>` is converted by the upgrade, the work reference § Upgrade), `changelog`, `version_file`, `merge` (`local` | `pr`, default `local`), `areas` (the area words a decision may carry, as a flow list: `areas: [engine, ui]`), `presets` (per stack, a flow list of `stack=skill` pairs: `presets: [astro=my-stacks:astro]`; see Profile, § Presets). Read if present. The skill writes it only through the profile (below), on the work's branch, or through the upgrade (the work reference, § Upgrade). Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
+Configuration lives in `.flow.yml` at the project root. A project can override the defaults with `.flow.yml`: keys `root`, `stacks` (a flow list: `stacks: [astro, node]`; an older `stack: <name>` is converted by the upgrade, the work reference § Upgrade), `changelog`, `version_file`, `merge` (`local` | `pr`, default `local`), `areas` (the area words a decision may carry, as a flow list: `areas: [engine, ui]`), `presets` (per stack or `design`, a flow list of `stack=skill` pairs: `presets: [astro=my-stacks:astro, design=my-tools:design-x]`; see Profile, § Presets), `design` (the design tool `/flow:design` uses: `design: pen`). Read if present. The skill writes it only through the profile (below), on the work's branch, or through the upgrade (the work reference, § Upgrade). Paths in this document assume the default root. `.version` stays at the repo root: one line, read by tools.
 
 ## Project memory
 
@@ -166,7 +166,7 @@ Resuming reloads the **standing documents**, and nothing else:
 
 | Always reloaded | Never reloaded |
 |---|---|
-| `STATUS.md`; the `## The criterion` block of `frame.md` when the work has one; the sections of `docs/development-guidelines.md` that apply; `lessons.md`; the `description:` line of the `docs/decisions-log/` files that match the work (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords` from the `description:` in `STATUS.md`); the current slice's plan; at `step: execute`, the slice's ledger (tasks marked complete are never dispatched again) | `brainstorm.md`; `shaping.md`; `breadboard.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
+| `STATUS.md`; the `## The criterion` block of `frame.md` when the work has one; the sections of `docs/development-guidelines.md` that apply; `lessons.md`; the `description:` line of the `docs/decisions-log/` files that match the work (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords` from the `description:` in `STATUS.md`); the current slice's plan; at `phase: design`, `shaping.md` and `docs/design/README.md`; at `step: execute`, the slice's ledger (tasks marked complete are never dispatched again) | `brainstorm.md`; `shaping.md` (except at `phase: design`); `breadboard.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
 
 A standing document is one that is still true. A closed phase is a debate that ended. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a work that resumes without it resumes on whatever was written last.
 
@@ -203,6 +203,7 @@ For each phase: invoke the tool telling it where to save, commit, update `phase:
 | `frame` | The problem isn't defined yet | `flow:brainstorm` → `flow:grill`, then `framing-doc` with source material, else this skill writes the frame from `brainstorm.md` | `brainstorm.md`, `frame.md` |
 | `shaping` | Several solutions with different outcomes | `shaping` | `shaping.md` |
 | `breadboard` | The work introduces places or affordances that don't exist yet. On existing code, skip by default and say so | `breadboarding` | `breadboard.md` |
+| `design` | The work touches a UI, or an artifact fits; needs `shaping.md` | `/flow:design` (called) | Design files or the artifact's HTML source under `docs/design/`; corrections in `shaping.md` |
 | `slicing` | Always, even with one slice | `shaping` (slicing section) or `breadboarding` | `slices.md` |
 | `impact` | Always, after slicing | Two `flow:impact` agents (below) | Corrections in `slices.md` |
 
@@ -229,11 +230,13 @@ A technical work that skipped the frame has no criterion, and nothing here appli
 
 **`slices.md` is the high-level plan.** Per slice: what's in, what's out, how it's demonstrated (the "Done"), known gotchas. It's the mandate every detailed plan must honor, and where closed slices leave their narrative. Every slice ends in something you can see or run; a slice with no visible outcome is a horizontal layer, not a slice.
 
+**The design phase.** Offered at Step 5's stop of shaping (or breadboard) when the work touches a UI, read from `shaping.md` (requirements or parts naming a screen, page, form or component the user sees) and from `breadboard.md`'s places when present, or when an interactive flow is worth clicking through. Skipped, with the reason in the stop message, when nothing is seen or no `shaping.md` exists (`/flow:design` by hand stays available). The offer names the screens to pass and the medium `/flow:design` will propose by the rule of its § Medium (a Claude artifact for an interactive or exploratory need, or when `.flow.yml` has no `design:`; a design file through the tool for static screens with `design:` set), with the reason naming which case held; `/flow:design` still settles the medium with the user. When `docs/design/` holds files, the offer carries the reminder: ask the user to save and close them in the design tool first: a tool holding a file open can write its copy back over the switched branch. On the user's yes, `phase: design`, `updated:` and a Log line go into `STATUS.md`, committed alone (`Open the design phase`), before the call: an interrupted session resumes there, reloading `shaping.md` and `docs/design/README.md` and invoking `/flow:design` again. Invoke the Skill tool `flow:design` with args holding the `## The criterion` block verbatim (when the work has one), then `Shaping: <absolute path of shaping.md>` and `Screens: <the screens to draw, comma-separated>`. It returns **Files touched** and **Requirement corrections** and commits nothing. Write each correction into `shaping.md` in place (the requirement's row amended in the requirements table, and in the fit-check table when it has one; a new row for `new`), in the document's language; then close by Step 5: the corrected `shaping.md` goes through the fidelity check, and one commit (`Close the design phase`) holds `shaping.md`, the files touched and `STATUS.md` with `phase: slicing`, so the branch never keeps `phase: design` once the phase is closed; stop.
+
 **The path instruction is mandatory on every invocation.** Without it, the tool uses its own default:
 
 > Save to `docs/work/2026-09-02-mobile-menu/shaping.md`. Don't use default paths.
 
-**The criterion travels with every invocation.** `shaping`, `framing-doc` and `breadboarding` don't know the work: put the `## The criterion` block verbatim at the top of the prompt, above the path instruction, with the guideline sections that bear on it. Without it a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
+**The criterion travels with every invocation.** `shaping`, `framing-doc`, `breadboarding` and `/flow:design` don't know the work: put the `## The criterion` block verbatim at the top of the prompt, above the path instruction, with the guideline sections that bear on it. Without it a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
 
 **If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `flow:grill` with the point and the document it belongs to as target (and the `frame.md` path, so the criterion anchor applies), passing the decision fields as in Step 1 with the current slice where one exists, and committing the target afterwards per the work reference, before moving on: it closes the point in rounds or the user parks it. It's tightening, not a phase.
 
@@ -306,7 +309,7 @@ A closed slice isn't reopened (rule in the same section).
 
 ## Step 5 — Closing a definition phase
 
-Applies to frame, shaping, breadboard, slicing and impact. Five moves, in order:
+Applies to frame, shaping, breadboard, design, slicing and impact. Five moves, in order:
 
 1. **Fidelity check**, before the commit. For each requirement, shape or slice just produced: which line of the criterion does it serve? Whatever traces back to nothing is named in the report, with what it would take to keep it. On `shaping.md` and `slices.md` — the documents the rest of the work inherits — a `flow:plan-reviewer` runs it, with a packet of the criterion, the applicable guidelines and the document alone, plus this lens table:
 
@@ -314,8 +317,8 @@ Applies to frame, shaping, breadboard, slicing and impact. Five moves, in order:
    |---|---|
    | **Criterion fidelity** | Each requirement, shape or slice names the criterion line it serves; whatever traces to none is reported with what keeping it would take |
 
-   On the others, in session. Skipped entirely on a work with no frame, and said so.
-2. **Commit** the document just produced. Explicit `git add` on the touched files, never `-A` or `.`: the working tree may hold unrelated work. Imperative messages, in the language the repo already uses.
+   On the others, in session. Skipped entirely on a work with no frame, and said so. At `design` the document checked is the corrected `shaping.md`, skipped when there were no corrections.
+2. **Commit** the document just produced. Explicit `git add` on the touched files, never `-A` or `.`: the working tree may hold unrelated work. Imperative messages, in the language the repo already uses. The design phase commits `shaping.md` with the files `/flow:design` returned and `STATUS.md` already at `phase: slicing`, in one commit.
 3. **Update `STATUS.md`**: `phase:`, `updated:`, Log line with wall-clock and cost. After a verification the line states the outcome: *"09-02 — impact — 2 problems, fixed in V2 and V4 — 14 min — $2.10"*.
 4. **Decision candidate** in the same report, when the work reference, § Decisions, says so: a real alternative discarded, a known problem deferred on purpose, a behaviour that will surprise whoever reads the code. Propose it; never write it unasked, and on a yes send the `decision-write` request that section shows.
 5. **Stop and ask** before the next phase.
@@ -336,9 +339,9 @@ Code, changelog, version and archived work land on the target in one changeset. 
 
 ## The short path
 
-**A bugfix is a one-slice work.** Same skill: the visible-outcome test sends it straight to slicing (`slices.md` with V1 and its Done), impact if it touches more than one file, then the loop once. No frame, shaping, breadboard.
+**A bugfix is a one-slice work.** Same skill: the visible-outcome test sends it straight to slicing (`slices.md` with V1 and its Done), impact if it touches more than one file, then the loop once. No frame, shaping, breadboard or design.
 
-**A small project doesn't need every phase.** State the path in the opening message: *"I read this as technical work in three slices: skipping frame, shaping and breadboard, doing slicing and impact, then the loop."*
+**A small project doesn't need every phase.** State the path in the opening message: *"I read this as technical work in three slices: skipping frame, shaping, breadboard and design (`/flow:design`), doing slicing and impact, then the loop."*
 
 ## The full lifecycle
 
@@ -350,6 +353,6 @@ Code, changelog, version and archived work land on the target in one changeset. 
 | Changelog and version | `flow:docs` (by hand: `/flow:changelog`) | the `flow` plugin |
 | Archiving | `/flow:archive` | the `flow` plugin |
 
-`shaping`, `breadboarding`, `framing-doc`, `flow:brainstorm`, `flow:grill` aren't in the table because they aren't moments: they're tools this skill picks up when needed.
+`shaping`, `breadboarding`, `framing-doc`, `flow:brainstorm`, `flow:grill`, `/flow:design` aren't in the table because they aren't moments: they're tools this skill picks up when needed.
 
 A work run with this skill can be one action of a `/flow:project` plan: the project's row says *"flow:dev work `<slug>` merged"*, this skill runs the work in its repo, and the row closes at the merge. The two skills share their skeleton and are kept in sync by hand.

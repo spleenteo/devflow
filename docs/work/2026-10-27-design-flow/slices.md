@@ -151,6 +151,12 @@ Every slice is demonstrated in a throwaway repo outside this one (session scratc
 - The site has no Breadboard item: the design phase gets its own item (05), Slice becomes 06, six columns.
 - `skills/design-pen/SKILL.md` says "the base" instead of "the repo root"; the site grid's column count lives in `site/styles.css`.
 
+**V4 — done on 2026-10-27**
+- Eight tasks; the reviews found no high, the conductor fixed every medium and most lows by hand.
+- `/flow:design` now works in a project home: `Home: "<path>"`, else the working directory with a project `STATUS.md`, else the repo root; `design:` and `presets:` from the top home's `STATUS.md`. `/flow:project` plans write a `/flow:design:` row with medium, reason and the line to type, and never for actions done in the world.
+- Shown in four beds, one in a vault path with a space and no git. A headless Claude Code shell check stopped the repo session's Pen commands (a brace next to a quote): the adapter now writes command strings in backticks.
+- Not demoed: the app's MCP path; a sub-project walking up to its top home.
+
 ## Rulings taken at impact (user away, authorized)
 
 - `docs/design/` does not follow `root` — the user settled "always `docs/design/`, never split" — cost if wrong: a project with `root: flow` gets design files outside its Flow root; one line to change.

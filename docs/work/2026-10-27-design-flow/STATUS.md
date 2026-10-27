@@ -2,7 +2,7 @@
 status: open
 phase: slice
 slice: V4
-step: execute
+step: close
 work: design-flow
 stacks: [generic]
 base: main
@@ -22,7 +22,7 @@ description: "Understand whether and how Flow should support design with design 
 - [x] V1 — The skill by hand: place, index, medium
 - [x] V2 — Compose and promote, by hand
 - [x] V3 — The /flow:dev phase
-- [ ] V4 — /flow:project, and the plugin's own docs
+- [x] V4 — /flow:project, and the plugin's own docs
 
 ## Log
 
@@ -38,3 +38,4 @@ description: "Understand whether and how Flow should support design with design 
 10-27 — V3 plan+review — 3 tasks; review 3 medium, 5 low, all fixed in place (close commit carries STATUS, medium by need, resume demo in two turns, 4th switch reminder) — execute — 20 min — n/a
 10-27 — V3 close — 3 tasks + 1 close fix (Pen adapter override path); reviews: T2 2 medium, T3 2 low, all fixed; gate green; 4 beds, all demos pass — V4 plan — ~1 h 30 min — n/a
 10-27 — V4 plan+review — 8 tasks; review 4 medium, 5 low; planner sent back once, all fixed; probe: pen writes and imports in a non-git folder with spaces — execute — 25 min — n/a
+10-27 — V4 close — 8 tasks, conductor fixes on T1, T3, T5/T6, T7; 1 close fix (backticks in the adapter); gate green; 4 beds, all demos pass — close sequence next, each step asked — ~2 h — n/a

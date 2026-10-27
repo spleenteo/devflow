@@ -1,0 +1,33 @@
+# Ledger — V4
+CLAUDE_CODE_SUBAGENT_MODEL_FORCE, CLAUDE_CODE_SUBAGENT_MODEL: unset
+- Probe (conductor): pen writes, imports a library into a new file, in a folder with no git and a space in the path
+- T1 · flow:executor · definition: sonnet · DONE · 947a30c
+  - Checks: all Verified passed; read-through of dev's design phase and design-pen line 9: no change needed in dev. Servers: none. Concerns: none.
+- T2 · flow:executor · definition: sonnet · DONE · 6707443
+  - Checks: all Verified passed. Servers: none. Concerns: none.
+- T4, T7, T8 · flow:executor (one agent) · definition: sonnet · DONE · 87290bb, c03f4f7, 77013f7
+  - Checks: all Verified passed; gate checks not in the tasks' Verified lines, left to the close. Concerns: a failed sed redone in Python.
+- T2 review · flow:task-reviewer · definition: sonnet · pass/pass · low: trailer model (session attribution is Opus 5.5: fine)
+- T2: complete
+- T1 review · opus/high (critical) · dispatched; T3 executor dispatched in parallel; T4/T7/T8 review · sonnet · dispatched
+- T4/T7/T8 review · flow:task-reviewer · definition: sonnet · pass/pass ×3 · medium (T7): six columns cramped between 1001 and 1240px
+- T7 fix · conductor · 9596ecf · three columns (two rows) below 1240px
+- T4, T7, T8: complete
+- T1 review · flow:task-reviewer · opus/high (critical) · pass/pass · medium: the adapter's "(the repo root or the project home)" broke T1's own check; lows: no stop when the folder above isn't a home, the Exit commit sentence, frontmatter vs grep wording
+- T1 fix · conductor · all four fixed; T1's checks re-run, validate passes
+- T1: complete
+- T3 · flow:executor · definition: sonnet · DONE · f5021be
+  - Checks: all Verified passed (wording bent to pass `Shaping:` absence and the count of 2). Servers: none. Concerns: noted.
+- T5 · flow:executor · definition: sonnet · DONE · 04fd442
+  - Checks: all Verified passed; old-names and links green. Concerns: one extra sentence on `design=` replacing the shipped adapter.
+- T3 review · flow:task-reviewer · opus/high (critical) · pass/pass · mediums: "which marks the called mode" reads backwards; where the line to type lives; lows: medium confirmed at run, "top home" gloss
+- T3 fix · conductor · all four fixed (Needs cell + repeated at the stop); checks re-run
+- T3: complete
+- T6 · flow:executor · definition: sonnet · DONE · 0086fad · all Verified passed; extra: a sentence in the Definition bullet, `design` in the skill directory node
+- T5/T6 review · sonnet · dispatched
+- T5/T6 review · flow:task-reviewer · definition: sonnet · pass/pass ×2 · lows: "project home" vs top home; only the UI trigger named
+- T5/T6 fix · conductor · both fixed in the text (diagram edge labels kept short)
+- T5, T6: complete
+- Close fix · conductor · d1078d0 · the adapter writes Pen command strings in backticks: the v4-repo session stopped on Claude Code's brace-next-to-quote shell check and correctly refused to work around it
+- Demos (conductor), beds v4-deck, v4-calls, v4-pen ("My vault/Corner bakery", no git), v4-repo: deck → S1-plan.md row "/flow:design: six-slide deck", Claude artifact because the top home has no `design:`, line with `Home:`; plan-reviewer dispatched; only files under the home changed; no commit. Calls → no /flow:design in plan or message. Pen → design file through pen (static deck, `design: pen`), line with the spaced path quoted; that line typed in a new session from the vault (no .flow.yml) loaded flow:design-pen, drew bank-deck.pen from ds.lib.pen, English index row, nothing outside the home, "nothing committed, the folder is the record"; a session from inside the home read its docs/design/README.md. Repo → flow:design-pen, writes only under docs/design/, no commit. Errors in streams: headless shell checks only, each retried
+- Gate: green

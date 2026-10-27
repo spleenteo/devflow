@@ -96,3 +96,18 @@ The user handed these over; they are to be proposed and settled in the grill:
 - **Where tool-specific knowledge lives** (Pen today), so it can be swapped.
 - **Folder conventions** under `docs/design/` (repo) and in a project's home.
 - **The exact hook points** in `/flow:dev` and `/flow:project`, and the per-slice check. The builder's guess: a light check at slice close ("did this slice touch the UI?") that proposes realignment only when it did, and a full alignment step at the work's close.
+
+## Settled
+
+- Form inside Flow — a tool-agnostic `/flow:design` skill owns the loop (discovery, reuse, promotion, choice of medium, consent), plus a replaceable tool adapter (Pen today) resolved like stack presets; the file guideline is a document in the project, not a skill.
+- Hook in `/flow:dev` — an optional `design` phase after shaping (or breadboard) and before slicing, offered only when the work touches a UI; corrected requirements flow back into `shaping.md`.
+- Hook in `/flow:project` — no fixed rule: the conductor reads the slice's context and proposes `/flow:design` only when an artifact fits that case; files go to `<home>/design/` when used.
+- First-release cut — no per-slice check and no work-close alignment step; promotion on approval is the only design-system write.
+- Choice of medium — Flow reads the context and proposes one, with the reason: a Claude artifact for interactive or exploratory work, a design file for static artifacts (landing pages, UI, web); the user confirms or changes it.
+- Names — skill `/flow:design`; shipped adapter `flow:design-pen`; a project switching tools maps its own `<plugin>:design-<tool>`.
+- Tool configuration — `design: <tool>` in `.flow.yml` (absent means no tool, artifacts only); the adapter resolves through the presets chain with `design` as its key.
+- Design folder — always `docs/design/`, never split across paths; when setup or an update finds design files elsewhere (a `design/` folder, stray `.pen` files), it proposes moving them into `docs/design/`.
+- Design folder in a project — `docs/design/` relative to the root in both layouts: the repo root, or the project's home (`<home>/docs/design/`).
+- File index — two places, kept current by `/flow:design` and read first: `docs/design/README.md` with a table (file, role, contents, imported libraries), tool-agnostic and the primary index; plus a note inside each design file describing it (Pen: a `note`/`context` node), written through the adapter.
+- Promotion — on approval, the component moves into the design-system library; the feature file keeps a linked instance, not a copy; the index is updated; nothing is deleted unasked; the tool mechanics live in the adapter.
+- Moving stray files — on its first run in a repo or project, `/flow:design` looks for design files outside `docs/design/` and proposes moving them, in one message with the list, only on an ok, warning to close files open in the app first; not part of Flow's upgrade.

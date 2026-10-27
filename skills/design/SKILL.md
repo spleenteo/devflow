@@ -41,13 +41,13 @@ Once a skill resolves, read its `## Requires` before anything else.
 
 ## First use
 
-When an adapter resolves and its requirement is met, search the repo for files with the adapter's extensions (its `## Files`), outside `docs/design/`, `.git/` and `node_modules/`. Also check whether `docs/design/README.md` exists. Without an adapter, only the index check applies.
+When an adapter resolves, read its `## Cautions` and search the repo for files with the adapter's extensions (its `## Files`), outside `docs/design/`, `.git/` and `node_modules/`. Also check whether `docs/design/README.md` exists. Without an adapter, only the index check applies.
 
 Send one message with:
 
 - the moves, each from → to, if any file was found;
-- the caution to save and close those files in the design tool first;
-- the offer to create the index from `${CLAUDE_SKILL_DIR}/design-index.template.md` (a missing `README.md`), with a row per file: role from the adapter's naming rule; contents and imports read as the adapter's `## Files` says when its requirement is met, else asked in the same message.
+- the caution to save and close those files in the design tool first, and the adapter's `## Cautions` that apply to the listed moves;
+- the offer to create the index from `${CLAUDE_SKILL_DIR}/design-index.template.md` when `README.md` is missing, or, when it exists, the rows proposed for the moved files; a row per file: role from the adapter's naming rule; contents and imports read as the adapter's `## Files` says when its requirement is met, else asked in the same message.
 
 Nothing moves and nothing is written before an ok. A declined index is not created. Move with `git mv` when the file is tracked, `mv` otherwise. File names in the index are code spans, never Markdown links.
 

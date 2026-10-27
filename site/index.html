@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flow · From idea to done, one slice at a time</title>
+  <meta name="description" content="Flow is a Claude Code plugin that runs a piece of work one slice at a time and keeps its state on disk, so a new session picks it up days later.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Flow · From idea to done, one slice at a time">
+  <meta property="og:description" content="A Claude Code plugin that runs a piece of work one slice at a time and keeps its state on disk.">
+  <meta property="og:image" content="https://spleenteo.github.io/flow/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0B0F14">
+  <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,700;12..96,800&family=DM+Sans:wght@400;500;600&family=Geist+Mono&family=Instrument+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-github" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  </svg>
+
+  <header class="hero">
+    <div class="glow" aria-hidden="true"></div>
+    <nav class="nav" aria-label="Main">
+      <a class="nav-logo" href="./" aria-label="Flow home"><img src="assets/brand/flow-logo-on-dark.svg" alt="flow" width="106" height="27"></a>
+      <ul class="nav-links">
+        <li><a href="#kinds">Two kinds of work</a></li>
+        <li><a href="#slices">How a slice goes</a></li>
+        <li><a href="#state">State on disk</a></li>
+        <li><a href="#install">Install</a></li>
+      </ul>
+      <a class="pill-link" href="https://github.com/spleenteo/flow"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg>spleenteo/flow</a>
+    </nav>
+
+    <div class="statement">
+      <p class="eyebrow">A plugin for Claude Code</p>
+      <h1>From idea to done,<br><span class="nowrap">one <em>slice</em> at a time.</span></h1>
+      <p class="subhead">Flow runs a piece of work and keeps its state on disk, so it picks up days later in a new session. It comes back to you at two points in every slice.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#install">Install the plugin<svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+        <a class="btn btn-secondary" href="#slices">How it works</a>
+      </div>
+    </div>
+
+    <div class="windows" aria-hidden="true">
+      <div class="window window-grill">
+        <div class="titlebar"><i></i><i></i><i></i><span>/flow:grill</span></div>
+        <pre class="body"><span class="a">❯ /flow:grill</span>
+1. Who resumes this work, and when?
+<span class="m">   Recommended: any session, days later.</span>
+2. What must the first slice prove?
+<span class="m">   Recommended: one outcome you can check.</span>
+3. Where does the state live?
+<span class="m">   Recommended: on disk, in the repo.</span></pre>
+      </div>
+      <div class="window window-decisions">
+        <div class="titlebar"><i></i><i></i><i></i><span>docs/decisions-log</span></div>
+        <pre class="body">2026-10-25-soft-dependencies.md
+<span class="m">Flow checks for its dependencies
+and never installs them.</span>
+2026-10-26-stack-presets-are-
+replaceable-skills.md
+<span class="m">A project maps a stack to its own skill.</span></pre>
+      </div>
+      <div class="window window-dev">
+        <div class="titlebar"><i></i><i></i><i></i><span>/flow:dev</span></div>
+        <pre class="body"><span class="a">❯ /flow:dev</span>
+✓ Dependencies checked
+✓ Resuming home-page at slice 2
+✓ Plan written, reviewed by a fresh agent
+<span class="a">● Back to you: approve the plan to start the build</span>
+<span class="m">  Slices</span>
+  ✓ 1  Hero and navigation
+<span class="a">  ● 2  Sections and copy</span>
+<span class="m">  ○ 3  Install and footer</span></pre>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="kinds" class="section light">
+      <div class="container">
+        <header class="section-header">
+          <p class="eyebrow-plain">Two kinds of work</p>
+          <h2>One flow, whether you write code or run a project.</h2>
+        </header>
+        <div class="kinds">
+          <article class="kind">
+            <code class="command">/flow:dev</code>
+            <h3>Software work, in a repository</h3>
+            <p>Takes the work from idea to a branch merged after your ok, locally or by pull request when you set it up. Ships presets for Astro, DatoCMS and Rails, works with any stack, and never edits your <code>CLAUDE.md</code>.</p>
+            <ul class="points">
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Resumes an interrupted work in a new session</span></li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Plans, builds and reviews with its own agents</span></li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Records the changelog and the version</span></li>
+            </ul>
+          </article>
+          <article class="kind">
+            <code class="command">/flow:project</code>
+            <h3>Projects that people carry out</h3>
+            <p>For work that takes weeks or months: a renovation, a client engagement, a strategy, a personal plan. It lives in a folder, never in a code repo.</p>
+            <ul class="points">
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Plans one slice at a time</span></li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Hands software slices over to <code>/flow:dev</code></span></li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Archives the project when it closes</span></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="slices" class="section dark">
+      <div class="container">
+        <header class="section-header">
+          <p class="eyebrow-plain accent">How a slice goes</p>
+          <h2>Define it first.<br>Then build it, one slice at a time.</h2>
+          <p class="intro">Each phase closes before the next opens. The detailed plan of a slice is written right before it starts, so it carries what the previous slices taught.</p>
+        </header>
+        <ol class="phases">
+          <li>
+            <span class="num">01</span>
+            <h3>Brainstorm</h3>
+            <p>For an idea that isn't clear yet. Finds out what you want, and why, before anything is framed.</p>
+            <code>/flow:brainstorm</code>
+          </li>
+          <li>
+            <span class="num">02</span>
+            <h3>Grill</h3>
+            <p>Settles the points still vague, in rounds of numbered questions, each with a recommended answer.</p>
+            <code>/flow:grill</code>
+          </li>
+          <li>
+            <span class="num">03</span>
+            <h3>Frame</h3>
+            <p>Writes down the problem worth solving and why it was chosen over the alternatives.</p>
+          </li>
+          <li>
+            <span class="num">04</span>
+            <h3>Shape</h3>
+            <p>When there's more than one way to build it: shaping and breadboarding, through the shaping-skills plugin.</p>
+          </li>
+          <li>
+            <span class="num current">05</span>
+            <h3>Slice</h3>
+            <p>Cuts the work into slices you can see working, and checks their impact on the code with two agents.</p>
+          </li>
+        </ol>
+        <div class="per-slice">
+          <h3>Then, slice by slice</h3>
+          <p>Planned right before it starts and reviewed by a fresh agent. Built task by task by Flow's agents, each task reviewed. Back to you after the plan and at the close.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="state" class="section light-2">
+      <div class="container state">
+        <div class="state-copy">
+          <p class="eyebrow-plain">State on disk</p>
+          <h2>Close the session. The work stays.</h2>
+          <p class="lead">Everything Flow knows about a work is a file in your repo or your project folder. A new session reads it and picks up where the last one stopped, days later.</p>
+          <dl class="keeper">
+            <div><dt>Changelog and version</dt><dd>Each finished work is recorded, and the version is bumped.</dd></div>
+            <div><dt>Decisions</dt><dd>Written, updated and checked against the code, one file each.</dd></div>
+            <div><dt>Memory search</dt><dd>Looks through a repo's, or a folder of projects', memory before anything new is written.</dd></div>
+          </dl>
+        </div>
+        <div class="window window-files" aria-label="Example of what Flow writes in a project">
+          <div class="titlebar"><i></i><i></i><i></i><span>your-project/docs</span></div>
+          <pre class="body tree"><span class="a">work/</span>
+    2026-10-26-home-page/
+<span class="t">        STATUS.md
+        slices.md
+        V2-plan.md</span>
+    archive/
+    archived.md
+<span class="a">decisions-log/</span>
+<span class="t">    2026-10-25-soft-dependencies.md</span>
+<span class="t">CHANGELOG.md
+development-guidelines.md</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="install" class="section dark install">
+      <div class="container narrow">
+        <p class="eyebrow-plain accent">Install</p>
+        <h2>Install it once.<br>Use it in every project.</h2>
+        <div class="commands">
+          <div class="command-row"><span class="prompt">$</span><code>claude plugin marketplace add spleenteo/flow --scope user</code><button class="copy" type="button" aria-label="Copy command"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg></button></div>
+          <div class="command-row"><span class="prompt">$</span><code>claude plugin install flow@flow --scope user</code><button class="copy" type="button" aria-label="Copy command"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg></button></div>
+          <div class="command-row"><span class="prompt">$</span><code>claude plugin install shaping-skills@flow --scope user</code><button class="copy" type="button" aria-label="Copy command"><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg></button></div>
+        </div>
+        <p class="note">Then run <code>/flow:dev</code> in the project you'll work in. The start check lists what's missing, with the commands to run. Coming from an older Flow? The <a href="https://github.com/spleenteo/flow#upgrading-from-an-older-flow">README</a> has the upgrade steps.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://github.com/spleenteo/flow">View on GitHub<svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+          <a class="btn btn-secondary" href="https://github.com/spleenteo/flow/blob/main/docs/architecture.md">Read the architecture</a>
+        </div>
+      </div>
+      <footer class="footer container">
+        <img src="assets/brand/flow-logo-on-dark.svg" alt="flow" width="86" height="22">
+        <p>A Claude Code plugin by spleenteo · <a href="https://github.com/spleenteo/flow/blob/main/LICENSE">MIT licence</a> · <a href="https://github.com/spleenteo/flow/blob/main/CREDITS.md">Credits</a></p>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    document.querySelectorAll('.copy').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var text = b.parentNode.querySelector('code').textContent;
+        if (!navigator.clipboard) return;
+        navigator.clipboard.writeText(text).then(function () {
+          b.classList.add('done');
+          setTimeout(function () { b.classList.remove('done'); }, 1500);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

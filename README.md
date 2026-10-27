@@ -1,10 +1,15 @@
-# flow
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="site/assets/brand/flow-logo-on-dark.svg">
+    <img src="site/assets/brand/flow-logo-on-light.svg" alt="flow" height="48">
+  </picture>
+</h1>
 
 A Claude Code plugin that runs a piece of work from idea to done, one slice at a time, and keeps its state on disk so a work resumes days later in a new session. `/flow:dev` takes software work in a repository to a branch merged after your ok; `/flow:project` runs a project that people carry out over weeks or months, in a folder outside any repo.
 
 Flow brings its own dialogue for an idea that isn't clear (`/flow:brainstorm`, `/flow:grill`), its own agents for planning, review, impact and execution, and its own memory keeper for the changelog and the decisions. Shaping, breadboarding and framing come from the `shaping-skills` plugin. The detailed plan of each slice is written right before it starts, so it carries what the previous slices taught. Plans are reviewed by a fresh agent, and the flow returns to you at two points per slice. `/flow:dev` works with any stack and adds nothing to your project's `CLAUDE.md`.
 
-How it fits together: [`docs/architecture.md`](docs/architecture.md).
+How it fits together: [`docs/architecture.md`](docs/architecture.md). The website: [spleenteo.github.io/flow](https://spleenteo.github.io/flow/), built from [`site/`](site/).
 
 ## Install
 

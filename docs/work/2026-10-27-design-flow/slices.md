@@ -51,9 +51,16 @@ Every slice is demonstrated in a throwaway repo outside this one (session scratc
 - The index's Role column also accepts `artifact`, next to library and area: each artifact's HTML lands in `docs/design/`, and a file there without an index row would break R1.1.
 - "No Pen-specific word" in `skills/design/SKILL.md` reads as "no Pen mechanics": the one line naming the shipped adapter (`pen` → `flow:design-pen`) stays, as the resolution bullet requires.
 
+**V1 — done on 2026-10-27**
+- Five tasks, eleven commits' worth of review: T3's first draft gated the file search on the design tool being present (moving needs only `mv`), and didn't read the adapter's `## Cautions` before a move; fixed in one round.
+- Demos run with `claude -p --plugin-dir <this repo>` in scratchpad repos, `--continue` for the second turn: first use moved two files and wrote the index; `design: pen`, no `design:` and `design: figma` each proposed the right medium with its reason; a general "draw a landing page" loaded neither skill; nothing committed anywhere.
+- Observed: the index rows were written in the conversation's language (Italian), not the folder's. V2 adds the rule, as `flow:brainstorm` has it: write in the language of the folder's other documents.
+- Ruling: fix commit 4bb38e6 keeps a non-standard subject (the conductor dictated it).
+
 ## V2 — Compose and promote, by hand
 
 **In**
+- Index rows and in-file notes are written in the language of the folder's other documents, whatever the conversation's (V1 observation).
 - `/flow:design` by hand: reads the index, picks the file, asks the adapter to compose the screen from the library's components and tokens; proposes a new component when one is missing (A1.5, R2).
 - Promotion on the user's approval (A1.6, R3): the adapter's two calls, then the index row and the in-file note updated.
 - Safety rules written into the skill (A1.7, R7.1–R7.3): no delete unasked (the promotion's removal of the local component is part of the approved move), consent on every change of direction, exports only on request, checked by the file's existence.

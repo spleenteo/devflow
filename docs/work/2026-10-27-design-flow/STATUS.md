@@ -1,8 +1,8 @@
 ---
 status: open
 phase: slice
-slice: V1
-step: execute
+slice: V2
+step: plan
 work: design-flow
 stacks: [generic]
 base: main
@@ -19,7 +19,7 @@ description: "Understand whether and how Flow should support design with design 
 
 ## Slices
 
-- [ ] V1 — The skill by hand: place, index, medium
+- [x] V1 — The skill by hand: place, index, medium
 - [ ] V2 — Compose and promote, by hand
 - [ ] V3 — The /flow:dev phase
 - [ ] V4 — /flow:project, and the plugin's own docs
@@ -32,3 +32,4 @@ description: "Understand whether and how Flow should support design with design 
 10-27 — slicing — 4 slices; fidelity review: 5 findings, all fixed; user project names removed from work docs — impact next; user authorized running the slices without stops except major issues — 20 min — n/a
 10-27 — impact — 2 agents, 0 high, 13 medium, 10 low; all recommended fixes applied to slices.md, 4 rulings recorded there — V1 plan next — 15 min — n/a
 10-27 — V1 plan+review — 5 tasks; review 4 medium, 2 low, all fixed in place — execute — 12 min — n/a
+10-27 — V1 close — 5 tasks, 1 fix round (T3: high + medium), gate green, 5 demos pass — V2 plan — ~1 h — n/a

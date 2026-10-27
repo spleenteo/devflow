@@ -7,7 +7,7 @@ description: "Flow's design step, run by Flow's conductors, or by hand with /flo
 
 Running a `/flow:` skill is the user's explicit choice of process: inside it no other process skill applies (brainstorming, grilling, planning, plan execution, test-driven development or worktree skills, from any plugin or personal). The design adapter is named by its qualified name.
 
-This skill holds the project's design files in one place, keeps an index of them, and proposes the medium that fits what the user needs to see: a Claude artifact or a design file. It has two modes, called by `/flow:dev`'s design phase or by hand; it writes and never commits in either, and says so.
+This skill holds the project's design files in one place, keeps an index of them, and proposes the medium that fits what the user needs to see: a Claude artifact or a design file. It has two modes, called by `/flow:dev`'s design phase or by hand (typed, or from a `/flow:project` plan row); it writes and never commits in either, and says so.
 
 ## Called
 
@@ -19,13 +19,21 @@ A requirement correction is anything the design shows wrong, missing or unneeded
 
 ## Place
 
-Design files live in `docs/design/` at the repo root (`git rev-parse --show-toplevel`). `root` in `.flow.yml` does not move it: `root` governs Flow's own folders, not the project's design files. Outside a repo, say that this skill works in repos only and stop.
+Design files live in `<base>/docs/design/`. The base, first hit wins:
+
+1. By hand, `Home: "<absolute path>"` in the args (quoted: vault paths hold spaces).
+2. By hand, the working directory, when its `STATUS.md` frontmatter has `project:`.
+3. The repo root, `git rev-parse --show-toplevel`.
+
+Called mode (`Shaping:`) skips 1 and 2 and uses the repo root: `/flow:dev` runs in a repo. A folder from 1 or 2 is a project home only when `grep -m1 '^project:' <dir>/STATUS.md` finds the line; a named folder without it: say so and stop. From a project home, walk up while its `parent:` isn't `null` (a sub-project sits inside its parent's folder, so up is the folder above, checked again the same way) and use that top home as the base: one design system per project. None found: ask for a project home or a repo; still none: say that this skill works in a repo or a project home, and stop.
+
+`root` in `.flow.yml` does not move the base: `root` governs Flow's own folders, not the project's design files. Every `docs/design/` path below is relative to the base.
 
 ## Adapter
 
-The design tool is `design: <tool>` in `.flow.yml`. Its adapter is a skill, resolved first hit wins:
+The design tool is `design: <tool>`, read from `.flow.yml` in a repo, or from the top home's `STATUS.md` in a project home (sub-projects don't carry it). Its adapter is a skill, resolved first hit wins:
 
-1. `presets:` in `.flow.yml`, the pair `design=<skill>`;
+1. `presets:` (in `.flow.yml` in a repo; in the top home's `STATUS.md` in a project home), the pair `design=<skill>`;
 2. `${user_config.stack_presets}`, the pair `design=<skill>` (same comma-separated pairs; empty, or still beginning with `${`, means unset);
 3. the shipped adapter, from a list fixed here, never looked up in the skill listing: `pen` → `flow:design-pen`.
 
@@ -33,7 +41,7 @@ Only the resolved skill is invoked, with the Skill tool by its qualified name, n
 
 Artifacts only (see § Medium), and the message says which case holds, when:
 
-- `.flow.yml` has no `design:`: no adapter;
+- no `design:` where the base keeps it (`.flow.yml` in a repo, the top home's `STATUS.md`): no adapter;
 - the tool has no mapping and no shipped adapter: say so, and never fall back to the shipped one;
 - the mapped skill is not in the session: say so, and never fall back to the shipped one;
 - the adapter's `## Requires` is not met in the session.
@@ -57,7 +65,7 @@ Once a skill resolves, read its `## Requires` before anything else.
 
 ## First use
 
-When an adapter resolves, read its `## Cautions` and search the repo for files with the adapter's extensions (its `## Files`), outside `docs/design/`, `.git/` and `node_modules/`. Also check whether `docs/design/README.md` exists. Without an adapter, only the index check applies.
+When an adapter resolves, read its `## Cautions` and search the base for files with the adapter's extensions (its `## Files`), outside `docs/design/`, `.git/` and `node_modules/`. Also check whether `docs/design/README.md` exists. Without an adapter, only the index check applies.
 
 Send one message with:
 
@@ -65,7 +73,7 @@ Send one message with:
 - the caution to save and close those files in the design tool first, and the adapter's `## Cautions` that apply to the listed moves;
 - the offer to create the index from `${CLAUDE_SKILL_DIR}/design-index.template.md` when `README.md` is missing, or, when it exists, the rows proposed for the moved files; a row per file: role from the adapter's naming rule; contents and imports read as the adapter's `## Files` says when its requirement is met, else asked in the same message.
 
-The index (its text and its rows) is written in the language of the repo's `docs/` documents, whatever language the conversation is in; the template is English, so translate its text when the folder is not. The same goes for in-file notes.
+The index (its text and its rows) is written in the language of the repo's `docs/` documents, or the home's documents, whatever language the conversation is in; the template is English, so translate its text when the folder is not. The same goes for in-file notes.
 
 Nothing moves and nothing is written before an ok. A declined index is not created. Move with `git mv` when the file is tracked, `mv` otherwise. File names in the index are code spans, never Markdown links.
 
@@ -112,4 +120,4 @@ Promotion is never atomic: the tool works on one file at a time. If the second s
 
 Called, return two lists and say the caller commits: **Files touched** (every path written or moved under `docs/design/`, the index included; design files or the artifact's HTML source) and **Requirement corrections** (lines as in § Called, or `none`). Code to write is the work's later slices: say so in one line, never propose it as `/flow:dev`.
 
-By hand, this skill writes and never commits. Say so, and list the files written or moved, so the user can review and commit them.
+By hand, this skill writes and never commits. Say so, and list the files written or moved, so the user can review and commit them. In a project home, they are committed with the slice's close when the home is under version control; in a plain folder the files are the record.

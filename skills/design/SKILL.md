@@ -22,10 +22,10 @@ A requirement correction is anything the design shows wrong, missing or unneeded
 Design files live in `<base>/docs/design/`. The base, first hit wins:
 
 1. By hand, `Home: "<absolute path>"` in the args (quoted: vault paths hold spaces).
-2. By hand, the working directory, when its `STATUS.md` frontmatter has `project:`.
+2. By hand, the working directory, when its `STATUS.md` has a `project:` line.
 3. The repo root, `git rev-parse --show-toplevel`.
 
-Called mode (`Shaping:`) skips 1 and 2 and uses the repo root: `/flow:dev` runs in a repo. A folder from 1 or 2 is a project home only when `grep -m1 '^project:' <dir>/STATUS.md` finds the line; a named folder without it: say so and stop. From a project home, walk up while its `parent:` isn't `null` (a sub-project sits inside its parent's folder, so up is the folder above, checked again the same way) and use that top home as the base: one design system per project. None found: ask for a project home or a repo; still none: say that this skill works in a repo or a project home, and stop.
+Called mode (`Shaping:`) skips 1 and 2 and uses the repo root: `/flow:dev` runs in a repo. A folder from 1 or 2 is a project home only when `grep -m1 '^project:' <dir>/STATUS.md` finds the line; a named folder without it: say so and stop. From a project home, walk up while its `parent:` isn't `null` (a sub-project sits inside its parent's folder, so up is the folder above, checked again the same way; a folder above without it: say so and stop) and use that top home as the base: one design system per project. None found: ask for a project home or a repo; still none: say that this skill works in a repo or a project home, and stop.
 
 `root` in `.flow.yml` does not move the base: `root` governs Flow's own folders, not the project's design files. Every `docs/design/` path below is relative to the base.
 
@@ -120,4 +120,4 @@ Promotion is never atomic: the tool works on one file at a time. If the second s
 
 Called, return two lists and say the caller commits: **Files touched** (every path written or moved under `docs/design/`, the index included; design files or the artifact's HTML source) and **Requirement corrections** (lines as in § Called, or `none`). Code to write is the work's later slices: say so in one line, never propose it as `/flow:dev`.
 
-By hand, this skill writes and never commits. Say so, and list the files written or moved, so the user can review and commit them. In a project home, they are committed with the slice's close when the home is under version control; in a plain folder the files are the record.
+By hand, this skill writes and never commits. Say so, and list the files written or moved. In a repo, the user reviews and commits them. In a project home, they ride the slice's close commit when the home is under version control and a slice is open; in a plain folder the files are the record.

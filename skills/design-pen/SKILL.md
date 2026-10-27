@@ -33,7 +33,7 @@ Eight operations, in the order a design step uses them. `/flow:design` cites the
 ### Session
 
 - With the MCP tools: pass `filePath` on every call; the app is open.
-- With the CLI only: one session per file, run from the base `/flow:design` names (the repo root or the project home), commands fed by a heredoc, ended by `save()` and `exit()`:
+- With the CLI only: one session per file, run from the base `/flow:design` names (the top of the repo, or the project home), commands fed by a heredoc, ended by `save()` and `exit()`:
 
   ```bash
   pen interactive -i <file> -o <file> <<'EOF'

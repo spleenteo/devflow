@@ -117,6 +117,12 @@ Every slice is demonstrated in a throwaway repo outside this one (session scratc
 - The offer names the medium early, by `/flow:design`'s § Medium rule (interactive or no `design:` → artifact; static with `design:` → design file); the skill keeps the final say.
 - The root is not passed to `/flow:design`: `docs/design/` is fixed (ruling at impact) and the absolute `shaping.md` path places the work.
 
+**V3 — done on 2026-10-27**
+- Three tasks, two fix rounds by the conductor (T2: the close commit must carry `STATUS.md` at `phase: slicing` with its Log line; T3: lead-ins around the reminder), and one close fix in V2's adapter.
+- Shown in four scratchpad beds: a static screen with `design: pen` gets a design file and the save-and-close reminder; no `design:` gets a Claude artifact; a CLI flag skips the phase with its reason. The phase opens with its own commit, an interrupted session resumes at `phase: design` and reloads `shaping.md` and `docs/design/README.md`, and a requirement found by looking at the screen lands in `shaping.md` in English, checked again for fidelity, in one close commit.
+- The demo also ran V2's compose on new ground and found the adapter's override path inside a library instance wrong (it needs the alias): fixed in the adapter.
+- Not demoed: the app's MCP path; a work with a `breadboard.md`.
+
 ## V4 — `/flow:project`, and the plugin's own docs
 
 **In**

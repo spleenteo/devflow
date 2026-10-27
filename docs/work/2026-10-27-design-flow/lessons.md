@@ -13,3 +13,6 @@ description: "Rules learned while running the design-flow slices, read by every 
 - Run a skill's Done demos in real sessions before closing: reviews read the text, demos found the defects (a non-existent API call, a temp file left in the repo, a path base).
 - A tool's generated identifiers (library aliases) are read back, never assumed in a skill or a test bed.
 
+- Demo sessions of a conductor need `--add-dir <plugin repo>` as well as `--plugin-dir`: without it the conductor can't read the plugin's own references (`shared/work.md`, `dependencies.md`) and silently runs on less.
+- `--allowedTools` prefix rules don't match commands holding `$(...)`: in headless demos such calls are denied and retried; widen the list or accept the noise, and note it.
+- A demo of a later slice exercises the earlier slices' skills on new ground: read its tool errors, not only its final message (V3 found the adapter's override path for imported instances wrong).

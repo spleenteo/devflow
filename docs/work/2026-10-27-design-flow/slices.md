@@ -52,7 +52,7 @@ Every slice is demonstrated in a throwaway repo outside this one (session scratc
 - "No Pen-specific word" in `skills/design/SKILL.md` reads as "no Pen mechanics": the one line naming the shipped adapter (`pen` → `flow:design-pen`) stays, as the resolution bullet requires.
 
 **V1 — done on 2026-10-27**
-- Five tasks, eleven commits' worth of review: T3's first draft gated the file search on the design tool being present (moving needs only `mv`), and didn't read the adapter's `## Cautions` before a move; fixed in one round.
+- Five tasks, one fix round: T3's first draft gated the file search on the design tool being present (moving needs only `mv`), and didn't read the adapter's `## Cautions` before a move; fixed in one round.
 - Demos run with `claude -p --plugin-dir <this repo>` in scratchpad repos, `--continue` for the second turn: first use moved two files and wrote the index; `design: pen`, no `design:` and `design: figma` each proposed the right medium with its reason; a general "draw a landing page" loaded neither skill; nothing committed anywhere.
 - Observed: the index rows were written in the conversation's language (Italian), not the folder's. V2 adds the rule, as `flow:brainstorm` has it: write in the language of the folder's other documents.
 - Ruling: fix commit 4bb38e6 keeps a non-standard subject (the conductor dictated it).

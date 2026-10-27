@@ -2,6 +2,18 @@
 
 What shipped, by version, newest first. Each entry names the work it came from; the version lives in `.version`.
 
+## v0.2.1 — 2026-10-27 — A simpler DatoCMS preset
+
+The DatoCMS preset now holds only the essentials, grouped by theme, and adds naming conventions for models and fields.
+
+- **CLI**: work goes through the `datocms` CLI linked to the repo; the live schema is read with `schema:inspect` before planning; API details come from the DatoCMS skills or `cma:docs`, never memory.
+- **Environments**: schema changes run in a sandbox fork and are promoted after review; in place on the primary only for additive changes; tokens stay server-side.
+- **Schema**: every change is a committed migration; query types are generated and checked in CI; optional and localized fields are nullable.
+- **Naming**: `… Page` models and `… Block` blocks with snake_case API keys matching the components; standard field names; appearance only through `layout` and `style`.
+- **Lenses**: four, one per theme plus tokens; the rendering, image, SEO and cache rules are left to the DatoCMS skills.
+
+---
+
 ## v0.2.0 — 2026-10-26 — Flow runs on its own engine
 
 Flow no longer borrows its planning, review and dialogue steps from other plugins: it writes, reviews and runs its own work, keeps its own memory, and knows each project's profile. Existing projects move over with a guided upgrade.

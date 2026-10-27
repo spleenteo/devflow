@@ -36,3 +36,9 @@ Learn the concrete steps the adapter's `## Operations` take for compose and prom
 ### Acceptance
 
 Met: the adapter's compose step is "read the index → open the area file → check the import exists (else ask the user to add it) → insert `ref`s to `<alias>:<id>` and use `$<alias>:<token>`". Its promote step is the two calls of X1-Q3. Only adding an import may need the user's hands in the app.
+
+### Follow-up probe (V2 planning, 2026-10-27)
+
+- `import_library({ path })` exists in the `pen interactive` shell (0.3.10, with `list_libraries()` and `remove_library({ id })`). `path` is resolved **against the shell's working directory**, not the edited file; the stored `imports` value is relative to the importing file (`"9": "ds.lib.pen"`).
+- The alias is **generated** (here `"9"`), not chosen: read it from `get_app_state` (`9:f8ZHSL`) or `list_libraries()` (`id`). Never assume `ds`.
+- A component promoted into a library that itself holds library instances: its nested `ref: "<alias>:<id>"` is rewritten to `ref: "<id>"` inside the library, like tokens (`$<alias>:x` → `$x`). Verified: the area file instance resolves the nested Button (`9:EiDUJ/9:l76wsb`) and its token (`$9:accent`).

@@ -79,6 +79,11 @@ Every slice is demonstrated in a throwaway repo outside this one (session scratc
 - One file per `execute` call: promotion is never atomic. If the second call fails, the library has the component and the area file still has its local copy; the skill says so and offers to finish, never retries blindly.
 - A failing operation rolls back the whole `execute` call, `try` included.
 
+**Deviations found while planning V2**
+- With only the `pen` CLI present, the adapter adds a missing import itself with `import_library` on the user's ok (listed in `pen interactive --help`, 0.3.10), instead of asking in the app; the test bed's setup exercises it first.
+- When no area file fits the screen, `/flow:design` proposes a new one.
+- The description of `/flow:design` also says it composes from the design system and promotes approved components; the trigger-word check still holds.
+
 ## V3 — The `/flow:dev` phase
 
 **In**

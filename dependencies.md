@@ -13,6 +13,8 @@ A dependency counts as present when a skill listed in the session has its name, 
 
 Per-stack rows (Need `optional (<stack>)`) are reported only in a project of that stack.
 
+The design tool (the Pencil app or its `pen` CLI for `design: pen`) is not a skill and is not listed here: `/flow:design` checks it through its adapter's `## Requires`, and `install.sh` does not.
+
 Project scope is shared with the team through the project's settings: it writes the plugin's entry to `.claude/settings.json`, which you commit. Committing it enables the plugin for collaborators but does not download it, so each one runs the project-scope command once. See [Choose an install scope](https://code.claude.com/docs/en/plugins/install#choose-an-install-scope). Flags: `claude plugin install <plugin> --scope user|project|local` and `claude plugin marketplace add <source> --scope user|project|local`.
 
 ### shaping-skills

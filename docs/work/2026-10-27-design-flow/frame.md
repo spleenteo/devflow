@@ -31,7 +31,7 @@ The user already runs the loop by hand: on a product feature, shaping described 
 
 ## Test bed
 
-Quadra, a small project of the user's. Slacky later, as a richer case. Flow's own `docs/design/flow_home-page.pen` is left as it is.
+A small project of the user's, where anything can be tried; a richer product of theirs later. Flow's own `docs/design/flow_home-page.pen` is left as it is.
 
 ## Left for later works
 

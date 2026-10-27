@@ -51,7 +51,7 @@ The user is unsure, and says so: design and code can drift through changes that 
 
 ## Test bed
 
-Flow's own repo has only a landing page, too little to exercise a design system. **Quadra**, a small project of the user's where anything can be tried, is the first test bed. Slacky, a richer one, may come later. Flow's `docs/design/flow_home-page.pen` is not restructured by this work.
+Flow's own repo has only a landing page, too little to exercise a design system. A small project of the user's, where anything can be tried, is the first test bed; a richer product of theirs may come later. Flow's `docs/design/flow_home-page.pen` is not restructured by this work.
 
 ## Calls made by the builder
 

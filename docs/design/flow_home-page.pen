@@ -264,7 +264,7 @@
                   "fill": "$text-dark-2",
                   "textGrowth": "fixed-width",
                   "width": 640,
-                  "content": "Flow runs a piece of work and keeps its state on disk, so it picks up days later in a new session. It returns to you at two points per slice.",
+                  "content": "Flow runs a piece of work and keeps its state on disk, so it picks up days later in a new session. It comes back to you at two points in every slice.",
                   "lineHeight": 1.5,
                   "textAlign": "center",
                   "fontFamily": "$font-body",
@@ -648,7 +648,7 @@
                       "fill": "$text-dark",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "2026-10-25-projects-declare-marketplace-without-ref.md",
+                      "content": "2026-10-26-stack-presets-are-replaceable-skills.md",
                       "lineHeight": 1.55,
                       "fontFamily": "$font-mono",
                       "fontSize": 14,
@@ -661,7 +661,7 @@
                       "fill": "$text-dark-2",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Main holds released states only.",
+                      "content": "A project maps a stack to its own skill.",
                       "lineHeight": 1.55,
                       "fontFamily": "$font-mono",
                       "fontSize": 14,
@@ -764,7 +764,7 @@
                       "fill": "$accent",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "❯ /flow:dev resume home-page",
+                      "content": "❯ /flow:dev",
                       "lineHeight": 1.55,
                       "fontFamily": "$font-mono",
                       "fontSize": 14,
@@ -790,8 +790,20 @@
                       "fill": "$text-dark",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "✓ Plan for the next slice written, reviewed by a fresh agent",
+                      "content": "✓ Resuming home-page at slice 2",
                       "lineHeight": 1.55,
+                      "fontFamily": "$font-mono",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "zOTVk",
+                      "name": "Line",
+                      "fill": "$text-dark",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "✓ Plan written, reviewed by a fresh agent",
                       "fontFamily": "$font-mono",
                       "fontSize": 14,
                       "fontWeight": "normal"
@@ -987,7 +999,7 @@
                       "fill": "$text-light-2",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Takes the work from idea to a branch merged after your ok, locally or by pull request when you set it up. Works with any stack and adds nothing to your project's CLAUDE.md.",
+                      "content": "Takes the work from idea to a branch merged after your ok, locally or by pull request when you set it up. Ships presets for Astro, DatoCMS and Rails, works with any stack, and never edits your CLAUDE.md.",
                       "lineHeight": 1.6,
                       "fontFamily": "$font-body",
                       "fontSize": 17,
@@ -1058,7 +1070,7 @@
                               "id": "y63E97",
                               "name": "Point Label",
                               "fill": "$text-light",
-                              "content": "Moves to the next slice when you say so",
+                              "content": "Plans, builds and reviews with its own agents",
                               "fontFamily": "$font-body",
                               "fontSize": 16,
                               "fontWeight": "normal"
@@ -1386,7 +1398,7 @@
                       "fill": "$text-dark-2",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "For an idea that isn't clear. Finds out what you want, and why, before anything is framed.",
+                      "content": "For an idea that isn't clear yet. Finds out what you want, and why, before anything is framed.",
                       "lineHeight": 1.55,
                       "fontFamily": "$font-body",
                       "fontSize": 15,
@@ -1449,7 +1461,7 @@
                       "fill": "$text-dark-2",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Stress-tests a plan in rounds of numbered questions, each with a recommended answer.",
+                      "content": "Settles the points still vague, in rounds of numbered questions, each with a recommended answer.",
                       "lineHeight": 1.55,
                       "fontFamily": "$font-body",
                       "fontSize": 15,
@@ -1565,7 +1577,7 @@
                       "fill": "$text-dark-2",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Optional shaping and breadboarding, handed to the shaping-skills plugin.",
+                      "content": "When there's more than one way to build it: shaping and breadboarding, through the shaping-skills plugin.",
                       "lineHeight": 1.55,
                       "fontFamily": "$font-body",
                       "fontSize": 15,
@@ -1618,7 +1630,7 @@
                       "fill": "$text-dark-2",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Cuts the work into slices and checks the impact with two agents.",
+                      "content": "Cuts the work into slices you can see working, and checks their impact on the code with two agents.",
                       "lineHeight": 1.55,
                       "fontFamily": "$font-body",
                       "fontSize": 15,
@@ -1663,7 +1675,7 @@
                   "fill": "$text-dark-2",
                   "textGrowth": "fixed-width",
                   "width": 560,
-                  "content": "Plan written right before the slice. Reviewed by a fresh agent. Back to you at two points, before it moves on.",
+                  "content": "Planned right before it starts and reviewed by a fresh agent. Built task by task by Flow's agents, each task reviewed. Back to you after the plan and at the close.",
                   "lineHeight": 1.55,
                   "fontFamily": "$font-body",
                   "fontSize": 16,
@@ -1867,7 +1879,7 @@
                           "fill": "$text-light-2",
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
-                          "content": "Looks through a repo's or a folder of projects' memory.",
+                          "content": "Looks through a repo's, or a folder of projects', memory before anything new is written.",
                           "lineHeight": 1.5,
                           "fontFamily": "$font-body",
                           "fontSize": 15,
@@ -1978,7 +1990,7 @@
                       "id": "f7FEb7",
                       "name": "archive/",
                       "fill": "$text-dark-2",
-                      "content": "    archive/",
+                      "content": "    2026-10-26-home-page/",
                       "fontFamily": "$font-mono",
                       "fontSize": 15,
                       "fontWeight": "normal"
@@ -1988,7 +2000,17 @@
                       "id": "MTVC4",
                       "name": "archived.md",
                       "fill": "$text-dark-2",
-                      "content": "    archived.md",
+                      "content": "        STATUS.md · slices.md · V2-plan.md",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "K2QH6",
+                      "name": "briefs/",
+                      "fill": "$accent",
+                      "content": "    archive/   archived.md",
                       "fontFamily": "$font-mono",
                       "fontSize": 15,
                       "fontWeight": "normal"
@@ -2009,16 +2031,6 @@
                       "name": "2026-10-25-soft-dependencies.md",
                       "fill": "$text-dark",
                       "content": "    2026-10-25-soft-dependencies.md",
-                      "fontFamily": "$font-mono",
-                      "fontSize": 15,
-                      "fontWeight": "normal"
-                    },
-                    {
-                      "type": "text",
-                      "id": "K2QH6",
-                      "name": "briefs/",
-                      "fill": "$accent",
-                      "content": "briefs/",
                       "fontFamily": "$font-mono",
                       "fontSize": 15,
                       "fontWeight": "normal"
@@ -2184,6 +2196,35 @@
                       "fontWeight": "normal"
                     }
                   ]
+                },
+                {
+                  "type": "frame",
+                  "id": "n7WeYa",
+                  "name": "Command Row",
+                  "gap": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "AoKeA",
+                      "name": "Prompt",
+                      "fill": "$accent",
+                      "content": "$",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "BmIKN",
+                      "name": "Command",
+                      "fill": "$text-dark",
+                      "content": "claude plugin install shaping-skills@flow --scope user",
+                      "fontFamily": "$font-mono",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
                 }
               ]
             },
@@ -2194,7 +2235,7 @@
               "fill": "$text-dark-2",
               "textGrowth": "fixed-width",
               "width": 560,
-              "content": "Then run /flow:dev in the project you'll work in. The start check lists what's missing.",
+              "content": "Then run /flow:dev in the project you'll work in. The start check lists what's missing, with the commands to run.",
               "lineHeight": 1.55,
               "textAlign": "center",
               "fontFamily": "$font-body",
@@ -2304,7 +2345,7 @@
                   "id": "PSraH",
                   "name": "Footer Note",
                   "fill": "$text-dark-2",
-                  "content": "A Claude Code plugin by spleenteo",
+                  "content": "A Claude Code plugin by spleenteo · MIT licence · Credits",
                   "fontFamily": "$font-caption",
                   "fontSize": 13,
                   "fontWeight": "normal"
@@ -2312,6 +2353,100 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Iy7h4",
+      "x": 1560,
+      "y": 0,
+      "name": "Avatar · dark",
+      "clip": true,
+      "width": 512,
+      "height": 512,
+      "fill": "#0B0F14",
+      "layout": "none",
+      "children": [
+        {
+          "type": "rectangle",
+          "cornerRadius": 17.5,
+          "id": "WM4Er",
+          "x": 116,
+          "y": 124.75,
+          "name": "Slice done",
+          "fill": "#EAF2F8",
+          "width": 192.5,
+          "height": 70
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": 17.5,
+          "id": "qGGzc",
+          "x": 159.75,
+          "y": 221,
+          "name": "Slice current",
+          "fill": "#7CCBF2",
+          "width": 192.5,
+          "height": 70
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": 17.5,
+          "id": "uAvVg",
+          "x": 203.5,
+          "y": 317.25,
+          "name": "Slice next",
+          "fill": "#EAF2F859",
+          "width": 192.5,
+          "height": 70
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "QLpNg",
+      "x": 2232,
+      "y": 0,
+      "name": "Avatar · light",
+      "clip": true,
+      "width": 512,
+      "height": 512,
+      "fill": "#FFFFFF",
+      "layout": "none",
+      "children": [
+        {
+          "type": "rectangle",
+          "cornerRadius": 17.5,
+          "id": "r4Rcm",
+          "x": 116,
+          "y": 124.75,
+          "name": "Slice done",
+          "fill": "#0F1720",
+          "width": 192.5,
+          "height": 70
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": 17.5,
+          "id": "caGu5",
+          "x": 159.75,
+          "y": 221,
+          "name": "Slice current",
+          "fill": "#1A7FBF",
+          "width": 192.5,
+          "height": 70
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": 17.5,
+          "id": "xWC8m",
+          "x": 203.5,
+          "y": 317.25,
+          "name": "Slice next",
+          "fill": "#0F172059",
+          "width": 192.5,
+          "height": 70
         }
       ]
     }
@@ -2382,5 +2517,5 @@
       "value": "Geist Mono"
     }
   },
-  "fileToken": "204f1641-23e3-4e1d-b1e0-2e59b36deaac"
+  "fileToken": "b30396cb-c2d4-4a50-ba1c-ef28dd5ef9fb"
 }

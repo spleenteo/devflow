@@ -112,6 +112,11 @@ Every slice is demonstrated in a throwaway repo outside this one (session scratc
 - A work with no UI: the phase is skipped, and the message says why.
 - A repo with no `design:` key and a work with a UI: the phase is offered with a Claude artifact as the medium, and the reason is given.
 
+**Deviations found while planning V3**
+- On accepting the design phase, the conductor commits `STATUS.md` alone with `phase: design` before calling `/flow:design`, so an interrupted session resumes there (Step 5 moves `phase:` only at a close).
+- The offer names the medium early, by `/flow:design`'s § Medium rule (interactive or no `design:` → artifact; static with `design:` → design file); the skill keeps the final say.
+- The root is not passed to `/flow:design`: `docs/design/` is fixed (ruling at impact) and the absolute `shaping.md` path places the work.
+
 ## V4 — `/flow:project`, and the plugin's own docs
 
 **In**

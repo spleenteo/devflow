@@ -1,6 +1,6 @@
 ---
 status: open
-phase: frame
+phase: shaping
 slice: null
 step: null
 work: design-flow
@@ -24,3 +24,4 @@ description: "Understand whether and how Flow should support design with design 
 ## Log
 
 <!-- date — step — done — remaining — wall-clock — cost -->
+10-27 — frame — brainstorm, grill (14 settled, 1 decision), frame written — shaping next — ~1 h — n/a

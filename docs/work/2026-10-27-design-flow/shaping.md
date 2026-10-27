@@ -12,11 +12,11 @@ Inputs: [frame.md](frame.md) (the criterion), [brainstorm.md](brainstorm.md) (it
 
 | ID | Requirement | Status |
 |----|-------------|--------|
-| **R0** | **When a work touches a UI or needs a static artifact, Flow offers a design step built on the project's design system** | Core goal |
+| **R0** | **When a work touches a UI or needs an artifact, or on demand, Flow proposes the medium that fits: a design step built on the project's design system for static artifacts, a Claude artifact for interactive or exploratory ones** | Core goal |
 | **R1** | **Discovery** | Must-have |
 | R1.1 | The design step finds which design file fits the task (design system, brand, an area) without opening every file | Must-have |
 | R1.2 | The file index is readable by people outside Flow and lives next to the files | Must-have |
-| R1.3 | Each design file also describes itself from inside, for whoever opens it in the tool | Must-have |
+| R1.3 | Each design file also describes itself from inside, for whoever opens it in the tool (serves the Problem's "how they relate"; settled in the grill: index in two places) | Must-have |
 | **R2** | **Reuse**: a feature's design is composed from the design system's existing components and tokens; a missing one is proposed as new | Must-have |
 | **R3** | **Promotion**: an approved new component ends up in the design system, the feature's file keeps a linked use of it, and the index reflects the change | Must-have |
 | **R4** | **Tool independence** | Must-have |
@@ -26,11 +26,11 @@ Inputs: [frame.md](frame.md) (the criterion), [brainstorm.md](brainstorm.md) (it
 | **R5** | **Entry points** | Must-have |
 | R5.1 | In `/flow:dev`: an optional step after shaping (or breadboard) and before slicing, offered only when the work touches a UI | Must-have |
 | R5.2 | The `/flow:dev` design step survives an interrupted session like any other phase | Must-have |
-| R5.3 | Requirements corrected while looking at the design go back into `shaping.md` | Must-have |
+| R5.3 | Requirements corrected while looking at the design go back into `shaping.md` (serves the Problem's "Flow doesn't know design is a step": a `/flow:dev` phase feeds the work's documents like every other phase) | Must-have |
 | R5.4 | In `/flow:project`: proposed for a slice only when that slice's context calls for an artifact | Must-have |
 | R5.5 | Usable on its own, with no work open | Must-have |
 | **R6** | **Medium**: the step proposes a Claude artifact (interactive, exploratory) or a design file (static: landing, UI, web), with its reason; the user confirms or changes it | Must-have |
-| **R7** | **Safety** | Must-have |
+| **R7** | **Safety**: a guard that follows from the Outcome: once Flow writes into `docs/design/` (promotion, removal of the promoted local component), it must not destroy the user's design work (settled in the brainstorm and grill) | Must-have |
 | R7.1 | No design file, frame or component is deleted unless the user asks | Must-have |
 | R7.2 | Every change of direction (design to code, code to design) is proposed and approved | Must-have |
 | R7.3 | Exports happen only on request and are checked by the output file's existence | Must-have |
@@ -75,7 +75,7 @@ In both shapes `/flow:design` is a standalone skill, usable by hand with no work
 | **A2** | **Adapter `flow:design-pen`**, `user-invocable: false`, a fixed set of sections every adapter fills | |
 | A2.1 | `## Files`: extensions, library vs area file (`.lib.pen` vs `.pen`), how a file imports a library, how to write the in-file note | |
 | A2.2 | `## Operations`: open; list a library's components and tokens (`get_app_state`, `GetVariables`); compose with `ref: "<alias>:<id>"` and `$<alias>:<token>`, asking the user to add a missing import in the app; promote in two calls (insert into the library, then repoint the area file's instances and remove the local component); write the note; export with the existence check. See [the spike](spike-pen-libraries.md) | |
-| A2.3 | `## Cautions`: encrypted files, conflicts resolved in the tool, save and close before a branch switch | |
+| A2.3 | `## Cautions`: save and close before a branch switch (→ R7.4) | |
 | A2.4 | Resolution: `design: <tool>` in `.flow.yml`; adapter by `presets: [design=…]` → `stack_presets` → `flow:design-<tool>` | |
 | **A3** | **`/flow:dev` changes** | |
 | A3.1 | New row in the Step 3 table, `phase: design`, between `breadboard` and `slicing`; offered when the work touches a UI and `design:` is set or an artifact fits; skipped with a reason otherwise | |
@@ -103,10 +103,10 @@ In both shapes `/flow:design` is a standalone skill, usable by hand with no work
 
 | Req | Requirement | Status | A | B |
 |-----|-------------|--------|---|---|
-| R0 | When a work touches a UI or needs a static artifact, Flow offers a design step built on the project's design system | Core goal | ✅ | ✅ |
+| R0 | When a work touches a UI or needs an artifact, or on demand, Flow proposes the medium that fits: a design step built on the project's design system for static artifacts, a Claude artifact for interactive or exploratory ones | Core goal | ✅ | ✅ |
 | R1.1 | The design step finds which design file fits the task without opening every file | Must-have | ✅ | ✅ |
 | R1.2 | The file index is readable by people outside Flow and lives next to the files | Must-have | ✅ | ✅ |
-| R1.3 | Each design file also describes itself from inside, for whoever opens it in the tool | Must-have | ✅ | ✅ |
+| R1.3 | Each design file also describes itself from inside, for whoever opens it in the tool (serves the Problem's "how they relate"; settled in the grill: index in two places) | Must-have | ✅ | ✅ |
 | R2 | A feature's design is composed from the design system's existing components and tokens; a missing one is proposed as new | Must-have | ✅ | ✅ |
 | R3 | An approved new component ends up in the design system, the feature's file keeps a linked use of it, and the index reflects the change | Must-have | ✅ | ✅ |
 | R4.1 | The loop's instructions name no tool-specific mechanics | Must-have | ✅ | ✅ |
@@ -114,7 +114,7 @@ In both shapes `/flow:design` is a standalone skill, usable by hand with no work
 | R4.3 | A project states which tool it uses; with none, only Claude artifacts are offered | Must-have | ✅ | ✅ |
 | R5.1 | In `/flow:dev`: an optional step after shaping (or breadboard) and before slicing, offered only when the work touches a UI | Must-have | ✅ | ✅ |
 | R5.2 | The `/flow:dev` design step survives an interrupted session like any other phase | Must-have | ✅ | ❌ |
-| R5.3 | Requirements corrected while looking at the design go back into `shaping.md` | Must-have | ✅ | ❌ |
+| R5.3 | Requirements corrected while looking at the design go back into `shaping.md` (serves the Problem's "Flow doesn't know design is a step": a `/flow:dev` phase feeds the work's documents like every other phase) | Must-have | ✅ | ❌ |
 | R5.4 | In `/flow:project`: proposed for a slice only when that slice's context calls for an artifact | Must-have | ✅ | ✅ |
 | R5.5 | Usable on its own, with no work open | Must-have | ✅ | ✅ |
 | R6 | The step proposes a Claude artifact or a design file, with its reason; the user confirms or changes it | Must-have | ✅ | ✅ |
@@ -132,9 +132,9 @@ In both shapes `/flow:design` is a standalone skill, usable by hand with no work
 - B fails R5.3: `/flow:design` writing into a work's `shaping.md` crosses ownership: the conductor commits and keeps the documents in step, and B leaves it out of the loop.
 - B fails R7.4: the branch switch is the conductor's; B's one-line proposal sits outside it.
 
-## Recommendation
+## Selected shape
 
-**A**. The spike cleared A2.2. It reuses two patterns Flow already has (called/by hand from CUR2, presets resolution from CUR3) and keeps the conductor as the only writer of the work's documents.
+**A**, confirmed by the user on 2026-10-27. The spike cleared A2.2. It reuses two patterns Flow already has (called/by hand from CUR2, presets resolution from CUR3) and keeps the conductor as the only writer of the work's documents.
 
 ## Spike needed before selecting
 
@@ -149,3 +149,7 @@ In both shapes `/flow:design` is a standalone skill, usable by hand with no work
 | X1-Q5 | Can one `execute` session touch two files, or does each file need its own call (`filePath`)? |
 
 Acceptance: we can describe the concrete steps the adapter's `## Operations` takes for compose and promote, and which of them need the user's hands in the app.
+
+## Adapter implementation notes
+
+Outside R, for whoever writes `flow:design-pen`: the tool's files may be encrypted (read and write them only through its MCP tools), and conflicts are resolved in the tool by keeping both versions, never by editing the file by hand.

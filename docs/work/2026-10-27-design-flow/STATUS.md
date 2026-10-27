@@ -1,6 +1,6 @@
 ---
 status: open
-phase: shaping
+phase: slicing
 slice: null
 step: null
 work: design-flow
@@ -25,3 +25,4 @@ description: "Understand whether and how Flow should support design with design 
 
 <!-- date — step — done — remaining — wall-clock — cost -->
 10-27 — frame — brainstorm, grill (14 settled, 1 decision), frame written — shaping next — ~1 h — n/a
+10-27 — shaping — shape A selected; spike on Pen libraries cleared compose and promote; two fidelity reviews, 9 traceability fixes applied (criterion Outcome widened); breadboard skipped: Markdown plugin, no UI affordances — slicing next — ~1 h — n/a

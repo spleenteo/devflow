@@ -6,7 +6,7 @@ description: "Frame of the design-flow work: give Flow a design loop that lives 
 ## The criterion
 
 - **Problem**: Flow doesn't know design is a step: the user slips it in by hand, with no convention for where design files live or how they relate.
-- **Outcome**: when a work touches a UI or needs a static artifact, Flow offers a design step that finds the project's design system in `docs/design/`, draws from its components and promotes approved new ones into it.
+- **Outcome**: when a work touches a UI or needs an artifact, or on demand with no work open, Flow proposes the medium that fits: for static artifacts, a design step that finds the project's design system in `docs/design/`, draws from its components and promotes approved new ones into it; for interactive or exploratory ones, a Claude artifact.
 - **Less about**: keeping design and code aligned automatically, bootstrapping a design system from code, mandatory exports, or anything tied to Pen beyond its adapter.
 - **Measure**: on a second feature in the test bed, the design step reuses components promoted by the first, without starting over.
 

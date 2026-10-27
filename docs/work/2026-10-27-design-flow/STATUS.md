@@ -1,8 +1,6 @@
 ---
-status: open
-phase: slice
-slice: V4
-step: close
+status: closed
+phase: done
 work: design-flow
 stacks: [generic]
 base: main
@@ -39,3 +37,4 @@ description: "Understand whether and how Flow should support design with design 
 10-27 — V3 close — 3 tasks + 1 close fix (Pen adapter override path); reviews: T2 2 medium, T3 2 low, all fixed; gate green; 4 beds, all demos pass — V4 plan — ~1 h 30 min — n/a
 10-27 — V4 plan+review — 8 tasks; review 4 medium, 5 low; planner sent back once, all fixed; probe: pen writes and imports in a non-git folder with spaces — execute — 25 min — n/a
 10-27 — V4 close — 8 tasks, conductor fixes on T1, T3, T5/T6, T7; 1 close fix (backticks in the adapter); gate green; 4 beds, all demos pass — close sequence next, each step asked — ~2 h — n/a
+10-27 — close — work complete; user confirmed all rulings (repo and V4) as they stand; open item: the Pencil app (MCP) path, sub-project walk-up and a work with breadboard.md were not demoed — changelog next — 5 min — n/a

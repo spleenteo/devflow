@@ -170,6 +170,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 
 /* Smaller screens */
 @media (max-width: 1240px) {
+  .phases { grid-template-columns: repeat(3, 1fr); row-gap: 40px; }
+  .phases li:nth-child(3n+1) { padding-left: 0; border-left: 0; }
   .window-grill, .window-decisions { display: none; }
   .state { grid-template-columns: 1fr; gap: 56px; }
 }

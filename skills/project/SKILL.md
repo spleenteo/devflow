@@ -35,7 +35,7 @@ Same skeleton as `/flow:dev`: the high-level plan is the slice list produced by 
 |---|---|
 | Home | The folder the user names at opening, never a code repo's `docs/` |
 | Work reference | Home, `STATUS.md`, slice bookkeeping, close and archive for the **project** layout: `${CLAUDE_PLUGIN_ROOT}/shared/work.md` (in the repo: [shared/work.md](../../shared/work.md)), called "the work reference" below |
-| Files | `STATUS.md`, `brainstorm.md`, `frame.md`, `shaping.md`, `kickoff.md`, `slices.md`, `lessons.md`, `S<n>-plan.md`, `constraints.md`, `decisions/`, `report.md` |
+| Files | `STATUS.md`, `brainstorm.md`, `frame.md`, `shaping.md`, `kickoff.md`, `slices.md`, `lessons.md`, `S<n>-plan.md`, `constraints.md`, `decisions/`, `report.md`, `docs/design/` (design files and their index, in the top home, written by `/flow:design`) |
 | Constraints | `constraints.md`: appetite, non-negotiables, people and roles, calendar. Template in `${CLAUDE_SKILL_DIR}/constraints.template.md` |
 | Decisions | `decisions/YYYY-MM-DD-<slug>.md`. Proposed here, written by `flow:docs` on a yes. Criterion and requests: the work reference, § Decisions |
 | Sub-projects | A slice too big for one plan becomes a sub-project: the work reference, § Home |
@@ -214,6 +214,8 @@ Written in session with the user: the plan needs what only they know (who, when,
 
 An action that is software is written as *"flow:dev work `<slug>` in `<repo>` merged"*, and that work is opened in its repo with `/flow:dev` when its turn comes. A slice that needs its own plan of several slices becomes a sub-project (the work reference, § Home); the parent slice's Done becomes "sub-project done".
 
+**Design actions.** An action is written *"/flow:design: <artifact>"* only when the slice's section of `slices.md` or the action's Done calls for something people will look at (a deck, a page, a poster, a flyer, a flow to click through); never for actions done in the world (calls, meetings, payments, permits). Who: the user. Done when: the user approves the artifact. While writing the plan, read `design:` from the top home's `STATUS.md` (a sub-project walks up `parent:` until it is `null`) and name the medium by `/flow:design`'s § Medium: a Claude artifact for an interactive or exploratory need, or when the top home has no `design:`; a design file through the tool for a static artifact with `design:` set. Give the reason, naming which case held, and the line to type, carrying the top home's path: `/flow:design Home: "<absolute top home path>" <the artifact, in a few words>`. The line has no shaping argument, which marks the called mode: the user runs it by hand, in this session or another, like a `/flow:dev` row.
+
 Writing the plan surfaces deviations from the mandate: an action that belongs to another slice, a Done that can't be observed, a cost the appetite doesn't cover. Record them in `slices.md` under **"Deviations found while planning S<n>"** and carry on to the review without stopping.
 
 ### `step: review`
@@ -241,6 +243,8 @@ People act; the skill records. The user reports as things happen: *"actions 1 to
 - flags when the slice's budget or the appetite is about to be exceeded, before it happens.
 
 If an action is a `/flow:dev` work, it's run in its repo in its own session; here it's a row that closes when that work is merged.
+
+A *"/flow:design: <artifact>"* row closes when the user reports the artifact approved. Its files are under the top home's `docs/design/`, and ride the slice's close commit when the home is under version control (the work reference § Commits); in a plain folder the files are the record.
 
 ### `step: close`
 

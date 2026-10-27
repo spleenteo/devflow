@@ -35,7 +35,7 @@ for b in $(git for-each-ref --format='%(refname:short)' 'refs/heads/work/*'); do
 done
 ```
 
-A work whose `phase:` isn't `done` and whose branch isn't the current one: say so, and offer `git switch work/<slug>` before reloading anything. With uncommitted changes in the checkout, ask first.
+A work whose `phase:` isn't `done` and whose branch isn't the current one: say so, and offer `git switch work/<slug>` before reloading anything. With uncommitted changes in the checkout, ask first. When `docs/design/` holds files, ask the user to save and close them in the design tool first: a tool holding a file open can write its copy back over the switched branch.
 
 **project.** `rg "^phase:" <home>/STATUS.md <home>/*/STATUS.md 2>/dev/null`.
 
@@ -48,7 +48,7 @@ The work's state. Update it at the end of every session, and set `updated:` on e
 ```markdown
 ---
 status: open
-phase: <frame | shaping | breadboard | slicing | impact | slice | done>
+phase: <frame | shaping | breadboard | design | slicing | impact | slice | done>
 slice: null
 step: null
 work: <slug>
@@ -230,7 +230,7 @@ Two environment variables beat all of this, and Flow can't see past them: `CLAUD
    3. else `init.defaultBranch`, only if `git rev-parse --verify <name>` finds it;
    4. else ask.
 
-   With `merge: local` (the default), propose the merge and run it after an ok:
+   With `merge: local` (the default), propose the merge and run it after an ok. When `docs/design/` holds files, ask the user to save and close them in the design tool first: a tool holding a file open can write its copy back over the switched branch.
 
    ```bash
    git switch <target>
@@ -358,11 +358,11 @@ Pointed at and never edited, each as `<file>:<line> — <new name>`, or as the c
 
 **Asking.** One message: each change as `file — what changes`, then the pointed-at lines, then one question. With uncommitted changes in the checkout, say so and ask to commit or stash first (never stash it yourself). This check comes before any branch switch, the pending-merge proposal included. Nothing is written before the ok.
 
-**Writing, repo.** On the ok: cut `flow-upgrade` from the default branch (outside `work/`, so no scan takes it for a work), write the changes, commit with explicit paths as `Upgrade to Flow's current conventions` (one commit), and switch back to the starting branch. Then propose merging it into the default branch locally, with its own ok, by the commands of Closing a work, step 4; the target is the default branch the detection found, never a work's `base:`. Push stays the user's. An existing `flow-upgrade` branch means the upgrade is pending: say so, propose the merge, never cut it again. **Writing, project.** Rewritten in place; committed only when the home is under version control, with explicit paths.
+**Writing, repo.** On the ok. When `docs/design/` holds files, ask the user to save and close them in the design tool first: a tool holding a file open can write its copy back over the switched branch. Then cut `flow-upgrade` from the default branch (outside `work/`, so no scan takes it for a work), write the changes, commit with explicit paths as `Upgrade to Flow's current conventions` (one commit), and switch back to the starting branch. Then propose merging it into the default branch locally, with its own ok, by the commands of Closing a work, step 4; the target is the default branch the detection found, never a work's `base:`. Push stays the user's. An existing `flow-upgrade` branch means the upgrade is pending: say so, propose the merge, never cut it again. **Writing, project.** Rewritten in place; committed only when the home is under version control, with explicit paths.
 
 **Declined.** The run stops there: nothing is opened or resumed, and nothing is written. Say that the old configuration (repo) or the old rows (project) are no longer read and that the upgrade will be offered again next time.
 
 **Resume on an old file.** **repo**, on a resume in `/flow:dev` (project homes have no branches), before any write. Read the work's branch, not the current checkout, since the user may still be on the default branch: `git show work/<slug>:.devflow.yml`, and likewise the other old files of the first table. When the branch still holds one, nothing runs on it:
 
-- **(a)** The default branch has no traces left: propose merging the default branch into the work's branch (`git merge <default>`), with its own ok, and stop until it is done. The clean-tree check comes before the merge's switch.
+- **(a)** The default branch has no traces left: propose merging the default branch into the work's branch (`git merge <default>`), with its own ok, and stop until it is done. The clean-tree check comes before the merge's switch. When `docs/design/` holds files, ask the user to save and close them in the design tool first: a tool holding a file open can write its copy back over the switched branch.
 - **(b)** The old file exists only on this branch, because the default branch never had it: stop, say so, and point to the same rewrite as the first table, for the user to make on that branch: the rename (`git mv .devflow.yml .flow.yml`) when `.flow.yml` is absent, else the key merge into the existing `.flow.yml` and removal of the old file; and `stack:` to `stacks:`.

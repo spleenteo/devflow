@@ -47,6 +47,10 @@ Every slice is demonstrated in a throwaway repo outside this one (session scratc
 **Gotchas**
 - Moving a `.pen` file breaks relative `imports` and image paths in files that point at it: the adapter's `## Cautions` says to move a library together with its importers, or to rewrite the import in the app.
 
+**Deviations found while planning V1**
+- The index's Role column also accepts `artifact`, next to library and area: each artifact's HTML lands in `docs/design/`, and a file there without an index row would break R1.1.
+- "No Pen-specific word" in `skills/design/SKILL.md` reads as "no Pen mechanics": the one line naming the shipped adapter (`pen` → `flow:design-pen`) stays, as the resolution bullet requires.
+
 ## V2 — Compose and promote, by hand
 
 **In**

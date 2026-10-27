@@ -68,7 +68,7 @@ Eight operations, in the order a design step uses them. `/flow:design` cites the
 ### Compose
 
 - `Insert` frames into the area file.
-- A library component is `{type:"ref", ref:"<alias>:<id>"}`, the alias read in Open; overrides go through `Update(<instance>+"/<childId>", {...})`.
+- A library component is `{type:"ref", ref:"<alias>:<id>"}`, the alias read in Open; overrides go through `Update(<instance>+"/<alias>:<childId>", {...})`: inside an instance of a library component the child ids carry the alias too (without it the call fails with "not found" and rolls back).
 - Token values are `"$<alias>:<token>"`.
 - A local `reusable: true` component only for a new one the user approved.
 - Never `Replace` or `Delete` an existing node unasked.

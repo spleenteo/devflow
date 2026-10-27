@@ -236,7 +236,7 @@ A technical work that skipped the frame has no criterion, and nothing here appli
 
 > Save to `docs/work/2026-09-02-mobile-menu/shaping.md`. Don't use default paths.
 
-**The criterion travels with every invocation.** `shaping`, `framing-doc`, `breadboarding` and `/flow:design` don't know the work: put the `## The criterion` block verbatim at the top of the prompt, above the path instruction, with the guideline sections that bear on it; for `/flow:design` the args are those of § The design phase, with no path instruction and the `Shaping:` line in its place. Without it a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
+**The criterion travels with every invocation.** `shaping`, `framing-doc`, `breadboarding` and `/flow:design` don't know the work: put the `## The criterion` block verbatim at the top of the prompt, above the path instruction, with the guideline sections that bear on it; for `/flow:design` the args are those of **The design phase** above, with no path instruction and the `Shaping:` line in its place. Without it a shape can contradict the frame, and the contradiction surfaces only when a human reads the finished document.
 
 **If a point stays vague** (a requirement nobody can decide, an alternative that won't close), invoke `flow:grill` with the point and the document it belongs to as target (and the `frame.md` path, so the criterion anchor applies), passing the decision fields as in Step 1 with the current slice where one exists, and committing the target afterwards per the work reference, before moving on: it closes the point in rounds or the user parks it. It's tightening, not a phase.
 

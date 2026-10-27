@@ -1,9 +1,9 @@
 # Architecture
 
-`flow` is a Claude Code plugin that runs work one slice at a time and keeps its state on disk. `/flow:dev` takes software work in a repository from idea to a branch merged after an ok (locally, or by pull request when configured), and `/flow:project` runs a project that people carry out over weeks or months; `/flow:brainstorm` and `/flow:grill` are the dialogue for an idea that isn't clear, and `/flow:changelog` and `/flow:archive` close a software work. The conductors run planning, review, impact and execution on Flow's own agents, and hand shaping, breadboarding and framing to the `shaping-skills` plugin, which they check for at start but never install.
+`flow` is a Claude Code plugin that runs work one slice at a time and keeps its state on disk. `/flow:dev` takes software work in a repository from idea to a branch merged after an ok (locally, or by pull request when configured), and `/flow:project` runs a project that people carry out over weeks or months; `/flow:brainstorm` and `/flow:grill` are the dialogue for an idea that isn't clear, `/flow:design` draws a work's screens or artifacts (from the project's design system, or as a Claude artifact), and `/flow:changelog` and `/flow:archive` close a software work. The conductors run planning, review, impact and execution on Flow's own agents, and hand shaping, breadboarding and framing to the `shaping-skills` plugin, which they check for at start but never install.
 The repository, the marketplace and the plugin are all named `flow`.
 
-The skills are the source of truth. This page describes them and links to them; where the two disagree, the skill wins. Plugin skills are invoked as `/plugin-name:skill-name`, hence `/flow:dev` ([skills](https://code.claude.com/docs/en/skills)). Skills that aren't user-invocable (`flow:docs`, the stack presets) and Flow's agents are named `flow:<name>`, without a slash.
+The skills are the source of truth. This page describes them and links to them; where the two disagree, the skill wins. Plugin skills are invoked as `/plugin-name:skill-name`, hence `/flow:dev` ([skills](https://code.claude.com/docs/en/skills)). Skills that aren't user-invocable (`flow:docs`, the stack presets, the design adapters such as `flow:design-pen`) and Flow's agents are named `flow:<name>`, without a slash.
 
 ## Distribution
 
@@ -71,6 +71,7 @@ flowchart TD
     frame["frame: framing-doc, or written from brainstorm.md"]
     shaping["shaping, optional"]
     bread["breadboard, optional"]
+    design["design: /flow:design, optional"]
     slicing["slicing"]
     impact["impact: two flow:impact agents, presets"]
   end
@@ -83,6 +84,9 @@ flowchart TD
   shaping -->|"STOP"| bread
   shaping -->|"STOP, no breadboard"| slicing
   frame -->|"STOP, shaping skipped"| slicing
+  shaping -->|"STOP, touches a UI"| design
+  bread -->|"STOP, touches a UI"| design
+  design -->|"STOP"| slicing
   bread -->|"STOP"| slicing
   slicing -->|"STOP"| impact
   impact -.->|"a fix splits or reorders slices"| slicing
@@ -123,14 +127,14 @@ Taken from [`skills/dev/SKILL.md`](../skills/dev/SKILL.md) and [`shared/work.md`
 
 - **Dependency and upgrade checks.** The dependency check runs first on every invocation, before any file is written. It reports what's missing in one message and doesn't block the start; each phase checks again and stops if its tool is absent ([Where the plugin ends](#where-the-plugin-ends)). The upgrade check looks on the default branch for traces of the older names; when it finds some, the run offers the upgrade and ends there ([Upgrade](../shared/work.md#upgrade)).
 - **Profile.** The stacks, the `merge` style and the test level, read from the checkout, the default branch and the open `work/*` branches. Only a missing piece is asked, in one message with the opening's questions, and nothing is written before the answers. On a first run in a repo the same message settles where the flow writes and offers the guidelines and project lenses templates. Writes go on the work's branch, never on the default branch.
-- **Presets.** A stack's preset is a skill (`flow:stack-astro`, `flow:stack-datocms`, `flow:stack-rails`, or the one the project maps) with rules, lenses, a test level, gate commands and references. It is invoked at the profile's proposal, at impact, and once per slice when the packet is built; its rules travel in every packet. A mapped skill replaces the shipped one entirely: [stack presets are replaceable skills](decisions-log/2026-10-26-stack-presets-are-replaceable-skills.md).
-- **Open or resume.** A work whose `phase:` isn't `done` is offered for resume, on its branch. Resuming reloads the standing documents only: `STATUS.md`, the frame's criterion, the guidelines that apply, `lessons.md`, the description line of the matching decisions, the current plan and, at execute, its ledger.
-- **Definition phases.** The opening's visible-outcome test picks the entry: technical work goes straight to slicing; product work with a clear problem starts at shaping; otherwise it runs the definition path, `/flow:brainstorm` then `/flow:grill` on `brainstorm.md`, then the frame. Shaping and breadboard are optional, and a skipped phase is named with its reason. Slicing always runs; impact is always proposed, and on a one-slice work the user may skip it. Every definition phase after the dialogue (frame, shaping, breadboard, slicing, impact) ends with Step 5: fidelity check against the frame's criterion, commit, `STATUS.md`, decision candidate, stop. Shaping, breadboard and slicing come from `shaping` and `breadboarding` (`shaping-skills`), given the criterion and the path to save to. The frame is `framing-doc` when there is source material; without it, `/flow:dev` writes `frame.md` itself from `brainstorm.md` and the grill's answers. Impact runs two `flow:impact` agents (one on a one-slice work) on `slices.md` against the real code.
+- **Presets.** A stack's preset is a skill (`flow:stack-astro`, `flow:stack-datocms`, `flow:stack-rails`, or the one the project maps) with rules, lenses, a test level, gate commands and references. It is invoked at the profile's proposal, at impact, and once per slice when the packet is built; its rules travel in every packet. `design=<skill>` maps the design adapter the same way. A mapped skill replaces the shipped one entirely: [stack presets are replaceable skills](decisions-log/2026-10-26-stack-presets-are-replaceable-skills.md).
+- **Open or resume.** A work whose `phase:` isn't `done` is offered for resume, on its branch. Resuming reloads the standing documents only: `STATUS.md`, the frame's criterion, the guidelines that apply, `lessons.md`, the description line of the matching decisions, the current plan, at `phase: design` `shaping.md` and `docs/design/README.md`, and, at execute, its ledger.
+- **Definition phases.** The opening's visible-outcome test picks the entry: technical work goes straight to slicing; product work with a clear problem starts at shaping; otherwise it runs the definition path, `/flow:brainstorm` then `/flow:grill` on `brainstorm.md`, then the frame. Shaping and breadboard are optional, and a skipped phase is named with its reason. Design is optional too: offered after shaping (or breadboard) when the work touches a UI or an interactive flow is worth trying, it calls `/flow:design` with the criterion and `shaping.md`, and the corrections it returns are written into `shaping.md`. Slicing always runs; impact is always proposed, and on a one-slice work the user may skip it. Every definition phase after the dialogue (frame, shaping, breadboard, design, slicing, impact) ends with Step 5: fidelity check against the frame's criterion, commit, `STATUS.md`, decision candidate, stop. Shaping, breadboard and slicing come from `shaping` and `breadboarding` (`shaping-skills`), given the criterion and the path to save to. The frame is `framing-doc` when there is source material; without it, `/flow:dev` writes `frame.md` itself from `brainstorm.md` and the grill's answers. Impact runs two `flow:impact` agents (one on a one-slice work) on `slices.md` against the real code.
 - **Slice loop.** Per slice, a packet is built once and put at the top of every prompt: the criterion, the slice's section, `lessons.md`, the test level and guidelines, the matching decisions, the project lenses and the presets' rules. `flow:planner` writes the plan and `flow:plan-reviewer` reviews it, then the **first stop**. `flow:executor` carries out the tasks (independent ones in parallel), each checked by `flow:task-reviewer`, with fix rounds and rulings recorded in the ledger. The close verifies the Done and the gate, writes lessons and commits, then the **second stop**. Tiers: planner, plan reviewer and impact on the top tier; executors and task reviews on the mid tier, with a `critical` task's review, the final review and a third fix round on the top tier. Model and effort per dispatch: [`shared/work.md`](../shared/work.md#agents).
 - **Closing sequence.** Close the work, the changelog and version through `flow:docs` (`/flow:changelog` runs the same step by hand), `/flow:archive`, then the merge. Each step asks first. With `merge: local` (the default) the merge into the target branch is proposed and run after an ok; with `merge: pr` a pull request is proposed and nothing is merged. Push and tag each need their own ok. All of it is committed on the work's branch, so code, changelog, version and archived work land on the target in one changeset.
 - **Decisions.** When a step discards a real alternative, defers a problem on purpose or will surprise a later reader, the conductor proposes a decision and `flow:docs` writes it only after a yes. The format: [`skills/docs/decisions.md`](../skills/docs/decisions.md).
 
-`/flow:project` ([`skills/project/SKILL.md`](../skills/project/SKILL.md)) has the same skeleton with people as the executor: a home folder outside any repo, a reality check in place of impact, plans of actions. When an action is software, its plan row reads *"flow:dev work `SLUG` in `REPO` merged"*. That work is opened with `/flow:dev` in its repo, in its own session, and the row closes when it is merged.
+`/flow:project` ([`skills/project/SKILL.md`](../skills/project/SKILL.md)) has the same skeleton with people as the executor: a home folder outside any repo, a reality check in place of impact, plans of actions. When an action is software, its plan row reads *"flow:dev work `SLUG` in `REPO` merged"*. That work is opened with `/flow:dev` in its repo, in its own session, and the row closes when it is merged. When a slice calls for something people will look at, a plan row can read *"/flow:design: <artifact>"* instead, with the medium and the reason; the user runs it by hand, the row closes when the artifact is approved, and its files go under the top home's `docs/design/`.
 
 ## What a project holds
 
@@ -139,10 +143,12 @@ flowchart LR
   dev["/flow:dev"]
   docs["flow:docs"]
   chg["/flow:changelog"]
+  ds["/flow:design"]
   arc["/flow:archive"]
   usr["user"]
   work["docs/work/DATE-SLUG/"]
   dec["docs/decisions-log/"]
+  dsg["docs/design/"]
   gl["docs/development-guidelines.md"]
   lens["docs/impact-lenses.md"]
   log["docs/CHANGELOG.md"]
@@ -156,6 +162,8 @@ flowchart LR
   dev -->|"profile, on a yes"| gl
   dev -->|"decision request"| docs
   chg --> docs
+  ds --> dsg
+  cfg -.-> ds
   docs --> dec
   docs --> log
   docs --> ver
@@ -172,11 +180,12 @@ flowchart LR
   docs -.-> dev
 ```
 
-Solid arrows write, dotted arrows read. Everything lives under `docs/` by default. With a `root` in `.flow.yml` the same layout moves under that folder; `.version` stays at the repo root. `flow:docs` is the memory keeper: a forked skill that runs alone, never asks anything, and is called with a self-contained request. It proposes and writes the changelog and the version, writes, updates and checks decisions, and searches the project's memory.
+Solid arrows write, dotted arrows read. Everything lives under `docs/` by default. With a `root` in `.flow.yml` the same layout moves under that folder, except `docs/design/`, which stays where it is; `.version` stays at the repo root. `flow:docs` is the memory keeper: a forked skill that runs alone, never asks anything, and is called with a self-contained request. It proposes and writes the changelog and the version, writes, updates and checks decisions, and searches the project's memory.
 
 | Path | Holds | Written by | Read by |
 |---|---|---|---|
 | `docs/work/DATE-SLUG/` | `STATUS.md` (phase, slice, step, Log), `brainstorm.md`, the definition documents (`frame.md`, `shaping.md`, `breadboard.md`, `slices.md`), one plan and one ledger per slice (`V1-plan.md`, `V1-ledger.md`), `lessons.md`, `spike-*.md` | `/flow:dev` and its agents (the planner writes the plan); `/flow:brainstorm` and `/flow:grill` write their file; `/flow:archive` adds `archived:` to `STATUS.md` before the move | `/flow:dev` on resume (standing documents only); `flow:docs` reads `STATUS.md` and `slices.md` for the changelog |
+| `docs/design/` | Design files, the HTML sources of Claude artifacts, `README.md` (the index) | `/flow:design`, committed by `/flow:dev`'s design phase | `/flow:design`; `/flow:dev` at `phase: design` |
 | `docs/decisions-log/` | One file per decision: context, decision, alternatives discarded, `area` | `flow:docs`, only when the user accepts a decision candidate | `/flow:dev` at opening, impact and every plan review, through `flow:docs` searches; the changelog links them; `/flow:archive` checks they exist |
 | `docs/development-guidelines.md` | `## Tests` (level and sensitive areas), `## Gate`, naming, placement | The user; `/flow:dev` offers a draft from the presets, or the template, with the profile | `/flow:dev` in every plan, review, execution and close |
 | `docs/impact-lenses.md` | The project's own impact lenses | The user; `/flow:dev` offers the template | `/flow:dev` at impact and every plan review, on top of the common and preset lenses |
@@ -184,7 +193,7 @@ Solid arrows write, dotted arrows read. Everything lives under `docs/` by defaul
 | `docs/work/archived.md` | One row per archived work and where its outcome is | `/flow:archive` | `/flow:dev` at opening |
 | `docs/work/archive/` | Finished works | `/flow:archive`, with `git mv` | Nobody: `/flow:archive` proposes `deny` rules for `Read` and `Grep` on it in `.claude/settings.json` |
 | `.version` | The application version, one line | `flow:docs` | `flow:docs`, and tools |
-| `.flow.yml` | `root`, `stacks`, `merge`, `changelog`, `version_file`, `areas`, `presets` | `/flow:dev`: the profile's answers, on the work's branch, and the upgrade | `/flow:dev`, `/flow:changelog`, `/flow:archive`, `flow:docs` |
+| `.flow.yml` | `root`, `stacks`, `merge`, `changelog`, `version_file`, `areas`, `presets`, `design` | `/flow:dev`: the profile's answers, on the work's branch, and the upgrade | `/flow:dev`, `/flow:changelog`, `/flow:archive`, `flow:docs` |
 
 An older configuration file isn't read, and `/flow:dev` no longer reads `stack:` (it reads `stacks:`). `/flow:dev` finds both on the default branch and offers the [upgrade](../shared/work.md#upgrade); `/flow:changelog`, `/flow:archive` and `flow:docs` stop on an older file and point to `/flow:dev`. `install.sh` still reads `stack:`, to detect the stacks.
 
@@ -194,7 +203,7 @@ A decision file has a frontmatter (`kind`: `decision` or `deferral`, `status`, `
 
 `docs/` is the project's memory, and `/flow:dev` reads it before writing anything new: the changelog and the archived index at opening, the decisions at opening, at impact and in every plan review, the guidelines in every plan, review, execution and close. It searches through `flow:docs` rather than reading every file: a `search` request with key words returns at most ten `path — excerpt` lines, and `descriptions` returns the description line of each matching decision, from which it reads only the files that matter. `docs/work/archive/` is walled on purpose: `flow:docs` never reads it. The details are in the skill's [Project memory](../skills/dev/SKILL.md#project-memory) section.
 
-`/flow:project` writes nothing in a repo: its home is a folder the user names, with its own `STATUS.md`, `constraints.md`, `decisions/` and slice plans.
+`/flow:project` writes nothing in a repo: its home is a folder the user names, with its own `STATUS.md`, `constraints.md`, `decisions/` and slice plans. The top home's `STATUS.md` carries `design:` and `presets:` when set, and the home holds `docs/design/`.
 
 ## Where the plugin ends
 
@@ -203,7 +212,7 @@ flowchart LR
   subgraph plugin["plugin copy, CLAUDE_PLUGIN_ROOT"]
     deplist["dependencies.md"]
     agentdir["agents: planner, plan-reviewer, impact, executor, task-reviewer"]
-    skilldir["skills: dev, project, brainstorm, grill, changelog, archive, docs, stack presets"]
+    skilldir["skills: dev, project, brainstorm, grill, changelog, archive, docs, design, design adapters, stack presets"]
     shared["shared/work.md"]
   end
   subgraph session["the session"]
@@ -235,5 +244,5 @@ flowchart LR
 
 - `${CLAUDE_PLUGIN_ROOT}` is the plugin's installation directory, substituted in plugin skills ([string substitutions](https://code.claude.com/docs/en/skills#available-string-substitutions)). The conductors read `${CLAUDE_PLUGIN_ROOT}/dependencies.md` and `${CLAUDE_PLUGIN_ROOT}/shared/work.md` with it. It changes when the plugin updates, so nothing is written there ([environment variables](https://code.claude.com/docs/en/plugins/manifest-reference#environment-variables)).
 - `${CLAUDE_SKILL_DIR}` is the directory of the skill's own `SKILL.md`, inside the plugin ([string substitutions](https://code.claude.com/docs/en/skills#available-string-substitutions)). `/flow:dev` uses it for `common-lenses.md` and its templates; `/flow:project` for its constraints template.
-- `${user_config.model_top}`, `${user_config.model_mid}` and `${user_config.stack_presets}` carry the plugin's options ([user configuration](https://code.claude.com/docs/en/plugins/manifest-reference#user-configuration)); a value that is empty, or still begins with `${`, is unset. Environment variables can override the models and effort: see the README's [Configuration](../README.md#configuration).
+- `${user_config.model_top}`, `${user_config.model_mid}` and `${user_config.stack_presets}` (which also takes `design=<skill>`) carry the plugin's options ([user configuration](https://code.claude.com/docs/en/plugins/manifest-reference#user-configuration)); a value that is empty, or still begins with `${`, is unset. Environment variables can override the models and effort: see the README's [Configuration](../README.md#configuration).
 - Claude Code substitutes the variables in the skill's own text ([string substitutions](https://code.claude.com/docs/en/skills#available-string-substitutions)), and the plugin variables aren't in the environment of Bash commands, in the session or in a subagent ([environment variables](https://code.claude.com/docs/en/plugins/manifest-reference#environment-variables)). A subagent's prompt is not skill text, so a packet carries expanded absolute paths, never the variables.

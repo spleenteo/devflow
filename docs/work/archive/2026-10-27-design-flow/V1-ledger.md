@@ -1,0 +1,25 @@
+# Ledger — V1
+CLAUDE_CODE_SUBAGENT_MODEL_FORCE, CLAUDE_CODE_SUBAGENT_MODEL: unset
+- T1 · flow:executor · definition: sonnet · DONE · 222868c
+  - Checks: no Markdown links; one header row. Servers: none. Concerns: none.
+- T5 · flow:executor · definition: sonnet · DONE · 81b023c
+  - Checks: table untouched (6 rows); note at line 16; insertions only. Servers: none. Concerns: none.
+- T2 · flow:executor · definition: sonnet · DONE · d4f6e87
+  - Checks: validate passes (warnings only); sections Requires, Files, Operations, Cautions. Servers: none. Concerns: none.
+- T4 · flow:executor · definition: sonnet · DONE · a77b9c2
+  - Checks: jq prints new text; validate passes; 1 line changed. Servers: none. Concerns: none.
+- T5 review · flow:task-reviewer · definition: sonnet · pass/pass · no findings
+- T5: complete
+- T1 review · flow:task-reviewer · definition: sonnet · pass/pass · low: report lacked the short sha; commit trailer names the session's model, not the executor's (attribution line given by the conductor)
+- T1: complete
+- T4 review · flow:task-reviewer · opus (critical) · pass/pass · low: README.md:173 and skills/dev/SKILL.md:49 still describe stack_presets/presets as per stack only — already in V3/V4's In lists
+- T4: complete
+- T2 review · flow:task-reviewer · opus (critical) · pass/pass · low: "relative to the importer" not stated by the spike (the CLI normalized `./ds.lib.pen` to `ds.lib.pen`, consistent); "named after its area" is an unasked convention. Cannot-verify items settled by the conductor: the MCP tools need the app open (observed in this session: "failed to connect to running Pencil app" with the app closed); `note` is a top-level child type in the .pen schema (read_skill pen-schema.md, Document.children)
+- T2: complete
+- T3 · flow:executor · definition: sonnet · DONE · 83e2965
+  - Checks: validate passes; only the shipped-list line names pen; description clean; no Markdown links. Servers: none. Concerns: none.
+- T3 review · flow:task-reviewer · opus (critical) · spec fail / quality pass · high: first-use search gated on the tool requirement; medium: adapter's Cautions not read at the move; lows: README rows on an existing index, "this version runs by hand only", "never fall back" on the nothing-shipped bullet
+- T3 fix round 1 · same executor (SendMessage) · high + medium + the README-rows low
+- T3 fix review · flow:task-reviewer · opus · pass/pass · process medium: fix commit subject not in the `Fix review findings on T<n>: …` form (the conductor's message dictated it); validate not re-run (run at the gate); lows: no Servers line, line 50 run-on
+- Ruling: keep 4bb38e6's subject — rewriting history is out of bounds and the subject was the conductor's — cost if wrong: one non-standard subject in the log
+- T3: complete

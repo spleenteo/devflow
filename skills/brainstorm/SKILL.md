@@ -36,7 +36,7 @@ Two things, in this order, and nothing else:
 
 ## Visuals
 
-When something they will look at (a layout, a flow, side-by-side options, a diagram) would be clearer seen than read, offer it, once, in a message of its own: "This might be easier if I show you. Want me to draw it?" If they decline, stay in text and don't offer again unless they raise it. If a play-back chunk describes something they'll look at and they haven't seen the offer, hold the chunk and send the offer first. On a yes, write an HTML or SVG file and tell them its path: called, next to the passed path, and the caller commits it with the document; by hand, ask for the path when the first visual is accepted. Never a server, never a published page. Requirements, scope and tradeoffs stay in text.
+When something they will look at (a layout, a flow, side-by-side options, a diagram) would be clearer seen than read, offer it, once, in a message of its own: "This might be easier if I show you. Want me to draw it?" If they decline, stay in text and don't offer again unless they raise it. If a play-back chunk describes something they'll look at and they haven't seen the offer, hold the chunk and send the offer first. On a yes, write an HTML or SVG file and tell them its path: called, next to the passed path, and the caller commits it with the document; by hand, ask for the path when the first visual is accepted. Never a server, never a published page. Requirements, scope and tradeoffs stay in text. These visuals are sketches for the dialogue; an artifact to keep (a screen, a page, a deck) goes through `/flow:design`.
 
 ## Size the work
 

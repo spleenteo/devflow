@@ -21,7 +21,7 @@
     "stack_presets": {
       "type": "string",
       "title": "Stack presets",
-      "description": "Skill to use per stack, as comma-separated pairs in the form stack=skill, stack=skill. Example: astro=my-stacks:astro, rails=my-stacks:rails"
+      "description": "Skill to use per stack, and for the design tool, as comma-separated pairs stack=skill or design=skill. Example: astro=my-stacks:astro, design=my-design:design-sketchpad"
     }
   }
 }

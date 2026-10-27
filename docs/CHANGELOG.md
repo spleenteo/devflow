@@ -2,6 +2,22 @@
 
 What shipped, by version, newest first. Each entry names the work it came from; the version lives in `.version`.
 
+## v0.3.0 — 2026-10-27 — A design phase for Flow, with /flow:design
+
+Flow can now carry design work alongside the code: design files live in the repo, and a new `/flow:design` skill composes screens from a shared library and promotes new components back to it. Pen is the first supported tool.
+
+- **/flow:design**: a skill that works by hand or when called by a work; it sets up the place and index for design files, composes screens from the library, and promotes reusable components.
+- **Tool adapter**: the skill is agnostic of the design tool; `flow:design-pen` is the adapter for Pen, and `stack_presets` can map another adapter in its place.
+- **Dev phase**: `/flow:dev` gains a design phase inside a work, with a reminder to close design files before a branch switch.
+- **Projects**: `/flow:project` can propose design actions in its plans and works in a project home; the project `STATUS.md` template records design and presets.
+- **Brainstorm**: real artifacts produced in a brainstorm can be handed on to `/flow:design`.
+- **Docs and site**: the README, the architecture, the guidelines and the site's phase overview describe the design phase and its adapters.
+- **Work**: `design-flow`
+- **Decision**: [Design is an agnostic skill plus a tool adapter](decisions-log/2026-10-27-design-is-agnostic-skill-plus-tool-adapter.md)
+- **Decision**: [Design runs as a dev phase](decisions-log/2026-10-27-design-runs-as-a-dev-phase.md)
+
+---
+
 ## v0.2.1 — 2026-10-27 — A simpler DatoCMS preset
 
 The DatoCMS preset now holds only the essentials, grouped by theme, and adds naming conventions for models and fields.

@@ -1,1 +1,3 @@
 areas: [engine, workflow, presets, release]
+stacks: [generic]
+merge: pr

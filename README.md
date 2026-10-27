@@ -62,10 +62,11 @@ Plugin skills are invoked as `/plugin-name:skill-name` ([skills](https://code.cl
 
 | Skill | What it does |
 |---|---|
-| [`/flow:dev`](skills/dev/SKILL.md) | Software work in a repo: profile, opening, definition phases (brainstorm, grill, frame, shaping, breadboard, slicing, impact), then a plan, review, execute and close loop per slice, then the closing sequence |
+| [`/flow:dev`](skills/dev/SKILL.md) | Software work in a repo: profile, opening, definition phases (brainstorm, grill, frame, shaping, breadboard, design, slicing, impact), then a plan, review, execute and close loop per slice, then the closing sequence |
 | [`/flow:project`](skills/project/SKILL.md) | A project that people carry out: appetite, a reality check in place of impact, plans of actions, a report at the end |
 | [`/flow:brainstorm`](skills/brainstorm/SKILL.md) | A dialogue that finds out what you want and why, then writes a description a builder could plan from. Run by `/flow:dev` and `/flow:project` for an idea that isn't clear; also by hand |
 | [`/flow:grill`](skills/grill/SKILL.md) | Rounds of numbered questions, each with a recommended answer, on a plan, a draft or one doubt. Settled answers land in a file you name. Run by the conductors, also by hand |
+| [`/flow:design`](skills/design/SKILL.md) | Draws a screen or an artifact from the project's design system in `docs/design/`, or builds it as a Claude artifact. Run by the design phase of `/flow:dev`, from a `/flow:project` plan row, or by hand |
 | [`/flow:changelog`](skills/changelog/SKILL.md) | The changelog entry and the `.version` bump for a finished work, on its branch |
 | [`/flow:archive`](skills/archive/SKILL.md) | Moves a finished work or project home out of the way and repairs the links |
 
@@ -73,17 +74,19 @@ Open Claude Code inside the project and type `/flow:dev`, or say "resume mobile-
 
 **From `/flow:project` to `/flow:dev`.** When an action of a project is software, its plan row reads "flow:dev work `<slug>` in `<repo>` merged". You open that work with `/flow:dev` in its repo, in its own session, and the row closes when it is merged.
 
-Running `/flow:dev`, `/flow:project`, `/flow:brainstorm` or `/flow:grill` is your choice of process: inside it, the process skills of other plugins (brainstorming, planning, plan execution, test-driven development, worktrees) don't apply.
+**From `/flow:project` to `/flow:design`.** When a slice calls for something people will look at (a deck, a page, a flyer), the plan proposes a row "/flow:design: `<artifact>`" with a medium, the reason for it and the line to type, which names the project home. You run it by hand, in this session or another, and the row closes when you approve the artifact. Its files go under the top home's `docs/design/`. Which tool draws static artifacts is `design:` in the `STATUS.md` of the top home; without it the medium is a Claude artifact. Actions done in the world (calls, meetings, payments) get no row.
+
+Running `/flow:dev`, `/flow:project`, `/flow:brainstorm`, `/flow:grill` or `/flow:design` is your choice of process: inside it, the process skills of other plugins (brainstorming, planning, plan execution, test-driven development, worktrees) don't apply.
 
 ## How a work runs
 
 - **Profile.** On every run `/flow:dev` reads the profile of the repo: the stacks, the `merge` style and the test level. It asks only for what is missing, in one message, and writes the answers on the work's branch.
 - **Opening.** One message with five questions and the answers it proposes: what to build, a code name, source material, whether the outcome is already clear in one sentence (technical work skips to slicing; product work starts from the frame), whether the problem is clear. It searches the project's memory first and says what already touches the same area. The work gets its own branch, `work/<slug>`, in the current checkout, and a dated folder in `docs/work/`.
-- **Definition.** A product work whose problem isn't clear goes brainstorm → grill → frame: `/flow:brainstorm` writes `brainstorm.md`, `/flow:grill` settles what is open in it, then the frame is written with a short criterion on top that every later document is measured against. Then, as needed: shaping, breadboard, slicing (always), impact. Each phase writes one document, commits and stops. Impact has two agents read the slices against the real code and report in one ranked message.
+- **Definition.** A product work whose problem isn't clear goes brainstorm → grill → frame: `/flow:brainstorm` writes `brainstorm.md`, `/flow:grill` settles what is open in it, then the frame is written with a short criterion on top that every later document is measured against. Then, as needed: shaping, breadboard, design, slicing (always), impact. Design sits between breadboard and slicing and is offered when the work touches a UI or an interactive flow is worth trying: `/flow:design` draws the screens from the project's design system, and what the drawing shows wrong or missing goes back into `shaping.md`. Each phase writes one document, commits and stops. Impact has two agents read the slices against the real code and report in one ranked message.
 - **Slice loop.** Per slice: Flow's planner writes the plan, a plan reviewer checks it, **first stop**; executors carry out the tasks, a task reviewer checks each one, then the close: the Done and the gate verified, lessons written, **second stop**: "V3 closed. Plan V4, or stop here?"
 - **Tiers.** Planner, plan reviewer and impact run on the top tier; executors and task reviews on the mid tier. A `critical` task's review, the final review and a third fix round go to the top tier. Plans mark which tasks depend on which and which are `critical`; independent tasks run in parallel.
 - **The ledger.** During execution `docs/work/<dir>/V<n>-ledger.md` records every dispatch (task, agent, model, outcome, commits) and which tasks are complete. A resumed work doesn't dispatch a complete task again.
-- **Resume.** It reloads the standing documents (`STATUS.md`, the frame's criterion, the guidelines that apply, `lessons.md`, the matching decisions, the current plan and its ledger), says what it reloaded, and continues.
+- **Resume.** It reloads the standing documents (`STATUS.md`, the frame's criterion, the guidelines that apply, `lessons.md`, the matching decisions, the current plan and its ledger; at the design phase, `shaping.md` and `docs/design/README.md`), says what it reloaded, and continues.
 - **Close and merge.** After the last slice it asks before each step: close the work, the changelog and version (`/flow:changelog`), `/flow:archive`, then the merge. With `merge: local`, the default, it proposes the local merge into the target branch and runs it after your ok; with `merge: pr` it proposes a pull request and merges nothing. Push and tag each wait for their own ok. Code, changelog, version and archived work land together.
 
 The decisions are the memory of why: when a choice discards a real alternative, `/flow:dev` proposes recording it and writes it only after your yes.
@@ -100,6 +103,8 @@ A preset never merges with your own. To use another skill for a stack, map it, i
 
 The mapped skill replaces the shipped one entirely. If it isn't available in the session, Flow says so and does not fall back to the shipped preset. Why: [stack presets are replaceable skills](docs/decisions-log/2026-10-26-stack-presets-are-replaceable-skills.md).
 
+The same chain maps the design tool's adapter: `design=<skill>` is a pair like the others, but names a tool, not a stack. `design: pen` in `.flow.yml` selects the shipped adapter, `flow:design-pen`; a `design=` pair replaces it entirely.
+
 ## What lands in a project
 
 Markdown only, versioned with the code, under `docs/` by default:
@@ -111,6 +116,10 @@ docs/
   CHANGELOG.md
   development-guidelines.md
   impact-lenses.md
+  design/
+    README.md
+    ui.lib.pen
+    checkout.pen
   decisions-log/
     2026-09-03-server-side-locale-detection.md
   work/
@@ -125,6 +134,8 @@ docs/
       V1-ledger.md
     archive/
 ```
+
+`docs/design/` holds the files of `/flow:design` and their index, written only when a work draws something; it stays at the repo root whatever `root` says.
 
 `docs/` is the project's memory: what shipped, why, and how code is written here. `/flow:dev` searches it at the opening of every work, through `flow:docs`. The plugin's own files (skills, agents, templates, lenses, `dependencies.md`) stay in the plugin copy; a template reaches the project only when you accept it. Who writes and reads each path: [What a project holds](docs/architecture.md#what-a-project-holds).
 
@@ -156,10 +167,11 @@ Optional `.flow.yml` at the project root:
 root: docs                  # where work/, decisions-log/ and development-guidelines.md live
 stacks: [astro, datocms]    # rails | astro | datocms | react | node | generic
 merge: local                # local | pr
+design: pen                 # the design tool /flow:design uses; only pen ships an adapter
 changelog: docs/CHANGELOG.md
 version_file: .version
 areas: [engine, ui]         # the area words a decision may carry
-presets: [astro=my-stacks:astro]   # stack=skill pairs, replacing the shipped preset
+presets: [astro=my-stacks:astro]   # stack=skill or design=skill pairs, replacing the shipped one
 ```
 
 `/flow:dev` writes `.flow.yml` only to record what you answered in the profile, on the work's branch, and in the upgrade (below).
@@ -170,7 +182,7 @@ presets: [astro=my-stacks:astro]   # stack=skill pairs, replacing the shipped pr
 |---|---|
 | `model_top` | Model for the top tier: an alias such as `opus` or a model ID. Empty: Flow's default |
 | `model_mid` | Model for the mid tier. Empty: Flow's default |
-| `stack_presets` | Skill per stack, as `stack=skill` pairs, comma-separated: `astro=my-stacks:astro, rails=my-stacks:rails` |
+| `stack_presets` | Skill per stack, as `stack=skill` pairs, comma-separated: `astro=my-stacks:astro, rails=my-stacks:rails, design=my-tools:design-x` |
 
 **Environment variables beat both.** `CLAUDE_CODE_SUBAGENT_MODEL_FORCE`, with `CLAUDE_CODE_SUBAGENT_MODEL`, forces the model of every subagent ([run every subagent on one model](https://code.claude.com/docs/en/sub-agents#run-every-subagent-on-one-model)), and `CLAUDE_CODE_EFFORT_LEVEL` overrides the effort of every agent ([effort level](https://code.claude.com/docs/en/model-config#set-the-effort-level)). The first pair overrides the models of Flow's agents and the options above; `CLAUDE_CODE_EFFORT_LEVEL` overrides their effort. The ledger records the value of the first two.
 
@@ -187,7 +199,7 @@ Older versions were installed as skills named `devflow`, `devflow-docs`, `devflo
 
 Until the upgrade runs, the old configuration file is not read.
 
-**Superpowers may stay installed.** Inside `/flow:dev`, `/flow:project`, `/flow:brainstorm` and `/flow:grill`, its process skills don't apply; outside them they behave as before. Personal copies of `shaping`, `breadboarding` or `framing-doc` still count as present, but each shows twice in the listing (`shaping` and `shaping-skills:shaping`); remove a personal copy from `~/.claude/skills/` to drop it.
+**Superpowers may stay installed.** Inside `/flow:dev`, `/flow:project`, `/flow:brainstorm`, `/flow:grill` and `/flow:design`, its process skills don't apply; outside them they behave as before. Personal copies of `shaping`, `breadboarding` or `framing-doc` still count as present, but each shows twice in the listing (`shaping` and `shaping-skills:shaping`); remove a personal copy from `~/.claude/skills/` to drop it.
 
 Existing projects keep their `docs/` as it is.
 

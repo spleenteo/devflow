@@ -4,6 +4,9 @@ Rules the plans and the changes in this repo must follow. The repo is a Claude C
 
 ## Tests
 
+Level: none
+Sensitive areas:
+
 No test framework. A slice is verified by running what it changed:
 
 - `claude plugin validate .` for anything under `.claude-plugin/` or `skills/`;

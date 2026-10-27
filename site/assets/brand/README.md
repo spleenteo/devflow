@@ -10,6 +10,7 @@ The mark is three slices: one done, the current one in the accent, the next one 
 | `flow-mark-on-light.svg`, `.png` | The mark alone, on a light background |
 | `favicon.svg` | Browser icon, the mark on a dark rounded square |
 | `apple-touch-icon.png` | Home-screen icon, 180 × 180 |
+| `flow-avatar-dark.png`, `flow-avatar-light.png` | Profile avatar, 1024 × 1024, safe for a circular crop |
 
 Colours: ink `#EAF2F8` on dark and `#0F1720` on light; accent `#7CCBF2` on dark and `#1A7FBF` on light; dark background `#0B0F14`.
 

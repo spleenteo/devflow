@@ -1,6 +1,6 @@
 ---
 name: design
-description: "Flow's design step, run by Flow's conductors, or by hand with /flow:design. Sets up the project's docs/design/ folder and its index, and proposes the medium for a work's design step."
+description: "Flow's design step, run by Flow's conductors, or by hand with /flow:design. Sets up the project's docs/design/ folder and its index, proposes the medium for a work's design step, composes from the project's design system and promotes approved components into it."
 ---
 
 # Flow: design
@@ -36,7 +36,15 @@ Once a skill resolves, read its `## Requires` before anything else.
 
 - `## Requires`: the tools the adapter needs, how to detect them, and what to say when they are missing.
 - `## Files`: the file extensions, how a file's role (library or area) is told, how files import each other, the note a file carries about itself, and how to read a file for the index.
-- `## Operations`: how to draw, compose from a library and promote components.
+- `## Operations`: eight subsections, cited below as "the adapter's <Name>":
+  - `### Session`: the rules for working on a file (one file and one change per call, what to do after a failure, how aliases are read);
+  - `### Open`: open a file and read its frames and its imports;
+  - `### List`: list a library's components and tokens;
+  - `### Import`: add a library import to an area file;
+  - `### Compose`: compose a screen from the listed components and tokens;
+  - `### Promote`: promote a local component into a library, in the tool's steps;
+  - `### Note`: write the in-file note;
+  - `### Export`: export nodes to a folder.
 - `## Cautions`: what can go wrong with the tool's files, and how to avoid it.
 
 ## First use
@@ -48,6 +56,8 @@ Send one message with:
 - the moves, each from → to, if any file was found;
 - the caution to save and close those files in the design tool first, and the adapter's `## Cautions` that apply to the listed moves;
 - the offer to create the index from `${CLAUDE_SKILL_DIR}/design-index.template.md` when `README.md` is missing, or, when it exists, the rows proposed for the moved files; a row per file: role from the adapter's naming rule; contents and imports read as the adapter's `## Files` says when its requirement is met, else asked in the same message.
+
+The index (its text and its rows) is written in the language of the repo's `docs/` documents, whatever language the conversation is in; the template is English, so translate its text when the folder is not. The same goes for in-file notes.
 
 Nothing moves and nothing is written before an ok. A declined index is not created. Move with `git mv` when the file is tracked, `mv` otherwise. File names in the index are code spans, never Markdown links.
 
@@ -62,7 +72,33 @@ Artifacts only in the four cases of § Adapter.
 
 **A Claude artifact** is produced with the session's artifact tool when one is available. Its source is always also saved as one self-contained HTML file (inline CSS and script, no external fetch) under `docs/design/`, with a name agreed with the user, and gets an index row with the role `artifact`, so it does not stay closed inside Claude. With no artifact tool, the HTML file alone.
 
-**A design file** follows the adapter's `## Operations`. When that section says drawing is not described, say so and stop after the medium choice.
+**A design file** follows § Compose. When the adapter's `## Operations` says drawing is not described, say so and stop after the medium choice.
+
+## Compose
+
+1. Read `docs/design/README.md`. Missing: § First use's offer runs first.
+2. Pick the file from the index's area rows. Name the file and why, and let the user confirm. No area fits: propose a new area file (name agreed), created through the adapter with the library import and a note, plus its index row.
+3. Run the adapter's Open on it, then the adapter's List on the library. When the library is not imported, run the adapter's Import.
+4. Compose through the adapter's Compose, from the listed components and tokens only.
+5. For each element no component fits, propose a new one (name, what it is, why none fits). Build it locally only on an ok.
+6. Ask whether the screen is approved.
+7. After each change, update the file's note through the adapter's Note and its index row (contents, imports), both in the folder's language.
+
+One logical change per call. After a failed call, re-read the nodes before anything else; never resend the same snippet.
+
+## Promote
+
+After the screen is approved, ask per new local component whether to promote it into the design system, naming the target library: the one library row if there is one, otherwise ask which.
+
+On an ok, run the adapter's Promote. Then update the library's row (contents gains the component), the area's row (imports names the library) and both notes through the adapter's Note, in the folder's language.
+
+Promotion is never atomic: the tool works on one file at a time. If the second step fails, the library holds the component and the area file still has its local copy. Say so, and offer to finish with the second step only, after re-reading both files. Never retry blindly, and never re-run the first step: it would duplicate the component.
+
+## Safety
+
+- **No deletion unasked.** No file, frame or component is deleted unless the user asks. The removal of the local copy in a promotion is part of the move the user approved; moves at first use are not deletions.
+- **Direction.** This skill draws and never edits code. Building a screen in code, or redrawing what the code does, is proposed in one line with what would change, and done only on an ok. By hand with code to write, propose `/flow:dev`. Every change of direction needs the user's consent.
+- **Exports only on request.** Through the adapter's Export, to a folder the user names (asked when not given). Check each path it returns with `test -f`; a missing file is reported as failed.
 
 ## Exit
 

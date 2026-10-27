@@ -67,7 +67,7 @@ Eight operations, in the order a design step uses them. `/flow:design` cites the
 ### Compose
 
 - `Insert` frames into the area file.
-- A library component is `{type:"ref", ref:"<alias>:<id>"}`, the alias read in Open; overrides go through `U(<instance>+"/<child>", {...})`.
+- A library component is `{type:"ref", ref:"<alias>:<id>"}`, the alias read in Open; overrides go through `U(<instance>+"/<childId>", {...})`.
 - Token values are `"$<alias>:<token>"`.
 - A local `reusable: true` component only for a new one the user approved.
 - Never `Replace` or `Delete` an existing node unasked.
@@ -76,10 +76,10 @@ Eight operations, in the order a design step uses them. `/flow:design` cites the
 
 Moves an approved local component into a library, in two calls, one per file. Not atomic.
 
-- Preconditions, checked before the first call so a stop leaves nothing half-done: the area file imports the library; the component's child names are unique (the override remap goes by name); every token it uses exists in the library.
+- Preconditions, checked before the first call so a stop leaves nothing half-done: the area file imports the library; the component's child names are unique (the override remap goes by name); every token it uses exists in the library; every nested `ref` in the component uses the target library's alias (an instance from another library: stop and tell the user, because rewriting it to `ref: "<id>"` would break inside the target library).
 - Call 1, in the library: `Insert` the component's tree at top level as `reusable: true`, with `$<alias>:x` written `$x` and any nested `ref: "<alias>:<id>"` written `ref: "<id>"`. Record the new id and the child ids by name.
 - Between the calls, `get_app_state` on the area file must list `<alias>:<newId>`. If not (the file is open in the app on a stale copy), ask the user to reopen it, then check again.
-- Call 2, in the area file: each instance of the local component is `Replace`d by `{type:"ref", ref:"<alias>:<newId>"}`, its `descendants` override keys remapped from old to new child id by child name (`Update` cannot change `ref`); then `Delete` the local component.
+- Call 2, in the area file: each instance of the local component is `Replace`d by `{type:"ref", ref:"<alias>:<newId>"}` that keeps the instance's own properties (name, position, size) and its `descendants` override keys remapped from old to new child id by child name (`Update` cannot change `ref`); then `Delete` the local component.
 - If call 2 fails, the library holds the component and the area file still has its local copy. Say so and offer to finish with call 2 only, after re-reading both files. Never re-run call 1: it would duplicate the component.
 
 ### Note

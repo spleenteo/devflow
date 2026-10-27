@@ -84,6 +84,12 @@ Every slice is demonstrated in a throwaway repo outside this one (session scratc
 - When no area file fits the screen, `/flow:design` proposes a new one.
 - The description of `/flow:design` also says it composes from the design system and promotes approved components; the trigger-word check still holds.
 
+**V2 — done on 2026-10-27**
+- Two tasks and a close fix. Probing `import_library` and nested promotion before T1 paid off: the alias is generated (`9`, `B`), never `ds`, and the plan would have hardcoded it.
+- The Measure, shown headless in a scratchpad bed: feature 1 promoted Price Row; feature 2, in a new session, reused it six times and made no new component. The user repeats it with the app in their test project.
+- The demos found three defects the reviews missed: an API shorthand `U(...)` that doesn't exist; a commands file left in the repo root; export folders resolving from the `.pen` file. All fixed.
+- Not demoed: the app's MCP path (no app in the demo sessions), nested refs from a promoted component (covered by the probe, not by a session).
+
 ## V3 — The `/flow:dev` phase
 
 **In**

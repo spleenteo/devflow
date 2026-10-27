@@ -1,8 +1,8 @@
 ---
 status: open
 phase: slice
-slice: V2
-step: execute
+slice: V3
+step: plan
 work: design-flow
 stacks: [generic]
 base: main
@@ -20,7 +20,7 @@ description: "Understand whether and how Flow should support design with design 
 ## Slices
 
 - [x] V1 — The skill by hand: place, index, medium
-- [ ] V2 — Compose and promote, by hand
+- [x] V2 — Compose and promote, by hand
 - [ ] V3 — The /flow:dev phase
 - [ ] V4 — /flow:project, and the plugin's own docs
 
@@ -34,3 +34,4 @@ description: "Understand whether and how Flow should support design with design 
 10-27 — V1 plan+review — 5 tasks; review 4 medium, 2 low, all fixed in place — execute — 12 min — n/a
 10-27 — V1 close — 5 tasks, 1 fix round (T3: high + medium), gate green, 5 demos pass — V2 plan — ~1 h — n/a
 10-27 — V2 plan+review — review 5 medium, 3 low; import_library and nested promotion probed first (spike follow-up); all fixed by the planner — execute — 25 min — n/a
+10-27 — V2 close — 2 tasks + 1 close fix, 2 fix rounds; gate green; Measure shown headless (F2 reused the promoted component) — V3 plan — ~1 h 15 min — n/a

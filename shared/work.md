@@ -181,9 +181,12 @@ Flow's own agents live in the plugin's `agents/` folder, one file per role, disp
 | Plan reviewer | `flow:plan-reviewer` | top | Plan reviews, the fidelity check, the action-plan review, the builder check (`flow:brainstorm`) |
 | Impact | `flow:impact` | top | Impact and the reality check, with the lenses in the packet |
 | Executor | `flow:executor` | mid | One task of a plan |
+| Slice runner | `flow:slice-runner` | top | A slice's execution and the close's drafts (/flow:dev) |
 | Task reviewer | `flow:task-reviewer` | mid | A task's commits; top tier for a `critical` task, the final review and a third fix round |
 
-**Tiers.** The conductors speak of the top tier (planner, plan-reviewer, impact, the fidelity check, a `critical` task's review, the final review, a third fix round) and the mid tier (executor, other task reviews). Only the agent definitions name model aliases.
+**Tiers.** The conductors speak of the top tier (planner, plan-reviewer, impact, slice runner, the fidelity check, a `critical` task's review, the final review, a third fix round) and the mid tier (executor, other task reviews). Only the agent definitions name model aliases.
+
+**Nesting.** The slice runner dispatches the executor and the task reviewer, so it relies on nested subagents: they nest three layers by default, and `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1` turns it off ([nested subagents](https://code.claude.com/docs/en/sub-agents#let-subagents-spawn-their-own-subagents), [env vars](https://code.claude.com/docs/en/env-vars)). With fork mode on, the default, the runner runs in the background and Claude can't wait for it ([foreground or background](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background), [fork mode](https://code.claude.com/docs/en/sub-agents#turn-fork-mode-on-or-off)). The permission prompts of background and nested subagents surface in the main session ([background subagents](https://code.claude.com/docs/en/sub-agents#tools-permissions-and-results-of-background-subagents)). A subagent can resume another with `SendMessage` ([resume subagents](https://code.claude.com/docs/en/sub-agents#resume-subagents)), which, when deferred, it loads through `ToolSearch`, and stop one with `TaskStop` ([tools reference](https://code.claude.com/docs/en/tools-reference)). When the runner can't dispatch, it returns `NO_NESTING` and the conductor runs the loop in session.
 
 **Model per dispatch**, first hit wins:
 
@@ -197,13 +200,14 @@ Two environment variables beat all of this, and Flow can't see past them: `CLAUD
 
 **Dispatch contract.** The prompt is the slice packet (or the conductor's own packet) verbatim at the top, then the role's instruction. Paths in a packet or an instruction are expanded absolute paths, never variables: a subagent substitutes nothing.
 
-**Ledger.** `<work dir>/V<n>-ledger.md`, written by the conductor and committed with the close.
+**Ledger.** `<work dir>/V<n>-ledger.md`, written by the slice runner (the conductor in the fallback) and committed with the close.
 
-- First line `# Ledger — V<n>`. At the start of execute the conductor runs `printenv CLAUDE_CODE_SUBAGENT_MODEL_FORCE CLAUDE_CODE_SUBAGENT_MODEL` once and writes the result on the second line.
+- First line `# Ledger — V<n>`. At the start of execute the runner runs `printenv CLAUDE_CODE_SUBAGENT_MODEL_FORCE CLAUDE_CODE_SUBAGENT_MODEL` once and writes the result on the second line.
 - One line per dispatch, written once, when the agent returns: `- <task> · <agent> · <model> · <outcome> · <commits>`. The model is the passed value, or `definition: <alias>` when none was passed, plus `forced` when the variable is set.
 - `- T<n>: complete` when a task's review passes; `Ruling: <what> — <why> — <cost if wrong>` for each ruling.
 - Each agent's report is appended under its line, trimmed to status, commits, tests run, `Servers:`, concerns.
 - On resume at `step: execute` the ledger is reloaded, and tasks marked complete are never dispatched again.
+- At the end, in this order: `Final review: <done | skipped>`; `Gate: <result>`; then `## Close draft` holding `Narrative: <text>`, `Lessons:` (one rule per line) and `Decision candidate: <gist | none>`.
 
 ## Closing a work
 

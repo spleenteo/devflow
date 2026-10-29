@@ -30,6 +30,21 @@ The context grew across the slices without ever dropping: 132k at the start of V
 | Bash on the design tool | 35 | 50k chars | |
 | git | 21 | 25k chars | |
 
+## What the conductor added to the session
+
+Over the whole work, in transcript characters:
+
+| Item | Count | Size |
+|---|---|---|
+| `Agent` inputs (the slice packet pasted into every dispatch) | 24 | 68k |
+| Agent reports, as task notifications | 23 | 79k |
+| Agent reports, returned in line | 24 | 26k |
+| Plans read or edited in session | 26 | 44k |
+
+Bookkeeping during execute: about 18 ledger writes for about 12 tasks, plus 2 to 4 writes on plans, `slices.md` and `STATUS.md` around each stop.
+
+The image estimate above comes from the context jumps between calls, not from `usage` deltas per image; it is checked in V2.
+
 ## Subagents
 
 29 subagents, about 200 calls, about 6.5 M cache reads. Executors ran on the mid tier with 30–40k of context and 3–11 calls each. One plan review took 23 calls and 1 M of cache reads. No problem found here.

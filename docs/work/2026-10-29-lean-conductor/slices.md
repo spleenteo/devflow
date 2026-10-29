@@ -4,59 +4,83 @@ shaping: true
 
 # Lean conductor — Slices
 
-Technical work: no frame, no shaping. The mandate is [STATUS.md](STATUS.md) and the numbers are in [baseline.md](baseline.md): the main session averaged 167k of context over 270 calls, and grew across the slices until auto-compact fired at 296k.
+Technical work: no frame, no shaping. The mandate is [STATUS.md](STATUS.md) and the numbers are in [baseline.md](baseline.md): the main session averaged 167k of context over 270 calls, and grew by about 55k per slice until auto-compact fired at 296k.
 
-Expected weight, from the baseline: V1 is the largest lever (the context stops carrying closed slices), V2 removes about 120k of images that stayed in context for hours, V3 removes about a third of the bookkeeping calls.
+The growth is diffuse. The part the conductor controls: the slice packet pasted into every dispatch (68k chars of `Agent` inputs), the agents' reports (105k chars), plans read and edited in session (44k chars), screenshots (9 reads), bookkeeping calls. The rest is the work itself (reading code, the design tool, git) and stays.
 
-Not in this work: the 48k at the first call (the user's installed plugins; Flow's share is covered by the decision of 2026-10-26 on stack presets); the conductor's reads of `shared/work.md` and `SKILL.md`, which are already targeted `grep` and `sed -n` ranges, the cheapest form a read can take.
+Not in this work:
+- the 48k at the first call (the user's installed plugins; Flow's share is covered by the decision of 2026-10-26 on stack presets);
+- the conductor's reads of `shared/work.md` and `SKILL.md`, already targeted `grep` and `sed -n` ranges;
+- a restart with `/clear` at every slice close: discarded at impact. It asks the user for a command at every slice, loses what lives only in the conversation, and empties the context instead of making it grow less;
+- keeping `measure/` readable after the archive: the scripts are walled with the work folder; whoever runs the next comparison copies them out first.
 
-## V1 — A clean restart at each slice close
+## V1 — The main session grows less
 
 **In.**
-- At the second stop of a slice (`step: close`) and at the stop of a definition phase (Step 5, move 5), the conductor's message ends with the restart offer: the state is on disk, `/clear` then `/flow:dev` resumes at the next step. Said in one line, never pressed.
-- The resume path (`## On start: open or resume`) is checked against what the next step really needs once the conversation is gone: the next slice's plan step reads its section of `slices.md`, `lessons.md`, the decisions and the previous plan; the next definition phase reads the document the last one produced. Whatever is missing from the reload table is added there, and nothing else.
-- What `/clear` and `/compact` do, and that only the user can run them, stated once in `shared/work.md` with a link to the official docs page, or verified in this slice.
+- The slice packet is written once per slice to `<work dir>/V<n>-packet.md`, and every dispatch carries its path with "read it first" instead of the text. Rule 2 of Cost discipline and the dispatch contract in `shared/work.md` § Agents change with it; the prompt prefix stays identical across the slice's dispatches.
+- The planner returns, with the plan's path and its deviation lines, the plan in ten lines the first stop shows. The conductor doesn't read the plan to summarise it.
+- Agent returns hold what the conductor decides on: status, commits, findings, concerns. The full report goes on disk where the next reader needs it (the task reviewer gets the executor's report verbatim today; the plan says how it gets it from disk). Applies to `executor.md`, `task-reviewer.md`, `plan-reviewer.md`, `impact.md`, `planner.md` as each fits.
+- A fresh session at a natural pause: at the second stop, once its question is answered and the answer committed, one line says that a work resumed another day is best resumed in a new session with `/flow:dev`. Never at every slice as a step.
+- Before that line, session-only state goes to disk: a model the user asked for in this session (`shared/work.md` § Agents, rule 1) and a test level held for this session only (`skills/dev/SKILL.md` § Profile) are recorded in `STATUS.md`, or named in the line.
+- The resume reload table (`skills/dev/SKILL.md` § On start), per `phase:` and `step:`, holds what the next step reads: both columns may change, and the explanation under them. Known gaps: `shaping.md` (or `breadboard.md`) at `phase: slicing`, `slices.md` in full at `phase: impact`, `docs/impact-lenses.md` and the decisions matched by `files:` for the packet at `step: plan`.
+- What Claude Code does on `/clear`, `/compact` and auto-compaction (a new transcript or not; how much of an invoked skill is re-attached after compaction; that only the user can run them), linked to the official docs page in `shared/work.md`, or verified in this slice.
+- `/flow:project` gets the same changes where it shares the skeleton (its reload table, its second stop, its packets), or the plan says why not.
+- `README.md` (lines 86, 89) and `docs/architecture.md` (line 131) say what changed.
 
 **Out.**
-- Running `/clear` or `/compact` for the user: the conductor can't.
-- A restart offer at the first stop (after the reviewed plan): execution follows at once and needs the plan, which is the bulk of what the session holds by then.
-- Changing what the standing documents are.
+- Running `/clear` or `/compact` for the user.
+- Moving the execute loop into a subagent: a subagent can't dispatch other subagents, so the loop stays in the main session.
+- Shortening what the user reads at the stops.
 
-**Done.** In a throwaway repo, a small work runs to the close of V1; `/clear`; `/flow:dev` resumes at V2 `step: plan` with the five-line summary right, and the planner gets a full packet. `measure/context.py` on that session shows the context of the first call after the resume within about 15k of the session's first call.
+**Done.** In a throwaway repo, a work with two small slices runs through both closes. In its transcript (`measure/`):
+- no `Agent` input carries the packet text, only its path;
+- no agent return over 2,000 chars, except the impact and plan-review reports the user reads at the stops;
+- the main session doesn't read the plan between the planner's return and the first stop.
+
+Then the session is closed, a new one runs `/flow:dev`, and the resume opens at the next step with the right five-line summary; the planner's packet is complete.
 
 **Gotchas.**
-- The `SKILL.md` of `/flow:dev` reloads in full on every invocation (46k chars, about 11k tokens): that is the floor of a resume, and it is still far below 150k.
-- A resume at `phase: design` already reloads `shaping.md` and `docs/design/README.md`; check it doesn't need more.
+- The packet on disk is a new file per slice: it is committed with the slice, or the plan says why not.
+- Reports kept short must still let the task reviewer distrust the executor's report: the verbatim report has to reach it.
 
 ## V2 — Screenshots checked out of the main session
 
 **In.**
-- In `/flow:design` (and its adapter's cautions when the adapter is the one exporting), a rule for checking a drawn screen: export the image to a scratch folder, then dispatch a subagent with the image path and what to check (layout, overlaps, text that doesn't fit, the screen against the requirement it draws); it returns a verdict in a few lines. The main session never reads the image.
-- The subagent's role: an existing agent if one fits by its tools and stance (`flow:task-reviewer` reads files and reports), else a new definition. Decided in the plan.
-- The user still gets to see the screens in the design tool; the rule is only about the conductor's own check.
+- In `/flow:design`, a rule for the conductor's own check of a drawn screen: export the screen as PNG to a `mktemp -d` folder outside the repo, never committed; dispatch a checker with the image path and what to check (layout, overlaps, text that doesn't fit, the screen against the requirement it draws); it returns a verdict in a few lines. The main session never receives an image, by `Read` or by any tool result.
+- The two rules it contradicts are amended with an exception for this check: "Exports only on request" (`skills/design/SKILL.md:117`) and the adapter's Export and "Nothing temporary is ever written inside the base" (`skills/design-pen/SKILL.md:46`, `:92`). The adapter contract (`skills/design/SKILL.md` § adapter operations) gains the check export.
+- A new agent, `flow:screen-checker`: mid tier, low effort, read-only (`Read`), one screen or a few per dispatch. Added to the agents table and the Tiers paragraph of `shared/work.md` § Agents and to `docs/architecture.md`; `/flow:design` gains a Models paragraph so the tier preference applies to it.
+- The adapter's Cautions name any tool of the design tool that returns an image straight into the session.
+- `/flow:project` runs `/flow:design` by hand, so the rule reaches it through the skill; nothing else changes there.
 
 **Out.**
-- Images the user pastes or asks Claude to look at: those are the user's call.
-- Downscaling images before reading them: a smaller image still stays in context for the rest of the session.
-- Moving the whole drawing work into a subagent: the design phase is a dialogue with the user.
+- Images the user pastes or asks Claude to look at.
+- Downscaling images and reading them in session: a smaller image still stays for the rest of the session.
+- Moving the whole drawing into a subagent: the design phase is a dialogue with the user.
 
-**Done.** In a throwaway repo with the design adapter, drawing one screen and checking it leaves no image block in the main session's transcript (`measure/big_results.py` lists none), and the verdict names a real defect planted on purpose.
+**Done.** In a throwaway repo with the design adapter, one screen is drawn and checked:
+- no tool result in the main session's transcript has an `image` content block;
+- the checker's verdict names a defect planted on purpose;
+- the read of the scratch folder from the subagent raises no prompt that blocks it;
+- one image's real cost is measured from the `usage` deltas, and the baseline's "about 13k tokens each" is corrected in `baseline.md` and above if it differs.
 
 **Gotchas.**
-- In the baseline, the check ran after each edit of a screen (nine reads for four screens). The rule has to make one dispatch per round of edits cheap, or the conductor will skip the check.
+- In the baseline, the check ran after each edit of a screen (nine reads for four screens). One dispatch per round of edits must stay cheap, or the conductor will skip the check.
 
 ## V3 — Bookkeeping in fewer writes
 
 **In.**
-- The ledger: one write per task when its review passes (dispatch, review and `complete` lines together), instead of one write per dispatch and one per review. On resume, a task with no lines is re-dispatched, which is what happens today to a task interrupted mid-flight.
-- The close of a slice and of a phase: `STATUS.md`, `slices.md`, `lessons.md` and the commit in one call, as the baseline already did in its better moments ("Write V1 narrative, lessons, STATUS and commit").
-- Applying review fixes to a plan: in one write, never one `sed` per finding.
+- The ledger: two writes per task, one when the executor returns (dispatch line and its report, with commits), one when the task passes (review lines, rulings, `complete`). Today about one write per dispatch and per review. The resume rule ("commits in the ledger without `complete` → review those commits") keeps working on both the new ledgers and those written one line per dispatch. `shared/work.md:203` changes with it.
+- The `printenv` line and `step: execute` go in the write that opens the ledger, with the plan's review fixes when there are some: one write, never one `sed` per finding.
+- Closing a phase or a slice: `STATUS.md`, `slices.md`, `lessons.md` and the commit in one call. Step 5 updates `STATUS.md` before the commit for every phase, as the design phase already does, in both conductors.
+- `/flow:project` gets the same close order; it has no ledger.
+- `README.md` (line 88) and `docs/architecture.md` (line 133) say what changed.
+- `measure/bash_kinds.py` counts a bookkeeping call as a `Bash`, `Edit` or `Write` call that writes under the work folder, git classified first.
 
 **Out.**
-- Dropping the ledger or its per-dispatch report: it is the memory a resume at `step: execute` needs.
-- A helper script for the bookkeeping: the rule is enough.
+- Dropping the ledger or the per-task report: it is the memory a resume at `step: execute` needs, and it outlives compaction.
+- A helper script for the bookkeeping.
 
-**Done.** In a throwaway repo, a slice with three tasks runs through execute and close; `measure/bash_kinds.py` counts at most one bookkeeping call per task plus one per stop. The baseline averaged about 6.
+**Done.** In a throwaway repo, a slice with three tasks runs through execute and close; the fixed `bash_kinds.py` counts at most two bookkeeping calls per task, one to open the ledger and one per stop. Baseline: about 18 ledger writes for about 12 tasks, plus the writes around the stops (see `baseline.md`). A ledger in the old format, at `step: execute` with a task committed and not complete, still resumes into a review.
 
 **Gotchas.**
-- `shared/work.md` § Agents says ledger lines are "written once, when the agent returns": that sentence changes, and the resume rule must still hold with it.
+- A single call writing several files and committing can trip Claude Code's approval check on a heredoc, or fail between the writes and the commit. Verify in the run; if it does, the rule says two calls.

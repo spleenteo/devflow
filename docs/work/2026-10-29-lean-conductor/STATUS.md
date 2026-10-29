@@ -1,8 +1,8 @@
 ---
 status: open
-phase: impact
-slice: null
-step: null
+phase: slice
+slice: V1
+step: plan
 work: lean-conductor
 stacks: [generic]
 base: main
@@ -19,7 +19,7 @@ description: "Cut the context the main session carries through a work: start eac
 
 ## Slices
 
-- [ ] V1 — A clean restart at each slice close
+- [ ] V1 — The main session grows less
 - [ ] V2 — Screenshots checked out of the main session
 - [ ] V3 — Bookkeeping in fewer writes
 
@@ -28,3 +28,4 @@ description: "Cut the context the main session carries through a work: start eac
 <!-- date — step — done — remaining — wall-clock — cost -->
 - 2026-10-29 — opening — home created, baseline recorded from a real work; skipping frame, shaping, breadboard and design (technical work, problem clear) — slicing, impact — 15 min — n/a
 - 2026-10-29 — slicing — three slices in slices.md; fidelity check skipped (no frame) — impact — 20 min — n/a
+- 2026-10-29 — impact — 2 agents, 15 problems (2 high: ledger resume in V3, export rules in V2); all fixed in slices.md; V1 reshaped from a /clear restart to less growth — V1 plan — 25 min — n/a

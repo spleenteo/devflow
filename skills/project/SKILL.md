@@ -89,7 +89,9 @@ Resuming reloads the **standing documents**, and nothing else:
 
 | Always reloaded | Never reloaded |
 |---|---|
-| `STATUS.md`; `constraints.md`; the `## The criterion` block of `frame.md`; `lessons.md`; the `description:` line of each file in `decisions/`; the current slice's plan | `brainstorm.md`; `shaping.md`; `kickoff.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
+| `STATUS.md`; `constraints.md`; the `## The criterion` block of `frame.md`; `lessons.md`; the `description:` line of each file in `decisions/`; the current slice's plan | `brainstorm.md`; `shaping.md` (except as below); `kickoff.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
+
+At `phase: slicing` it also reloads `shaping.md`; at `phase: reality`, `slices.md` in full and `shaping.md`.
 
 A standing document is one that is still true. A closed phase is a debate that ended. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a project that resumes without it resumes on whatever was written last, which is usually a detail.
 

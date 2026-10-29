@@ -5,7 +5,7 @@ superseded_by: null
 work: lean-conductor
 area: engine
 touches: [skills/dev/SKILL.md, shared/work.md, agents/]
-description: "A slice's execution runs in one foreground subagent, flow:slice-runner; the main session keeps stops, STATUS.md and commits. No /clear, no /compact."
+description: "A slice's execution runs in one background subagent, flow:slice-runner; the main session keeps stops, STATUS.md and commits. No /clear, no /compact."
 ---
 
 # A slice's execution runs in a runner subagent, not in the main session
@@ -14,7 +14,7 @@ description: "A slice's execution runs in one foreground subagent, flow:slice-ru
 
 ## The decision
 
-In /flow:dev, a slice's execution (dispatching executors and task reviewers, fix rounds, rulings, the ledger, the final review, the gate and the drafted lessons of the close) runs inside one foreground subagent, flow:slice-runner, which returns one short summary to the main session; the main session keeps the stops, STATUS.md and the commits. When nested subagents are off (CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1) the loop runs in the main session as before. The user is never asked to run /clear.
+In /flow:dev, a slice's execution (dispatching executors and task reviewers, fix rounds, rulings, the ledger, the final review, the gate and the drafted lessons of the close) runs inside one subagent, flow:slice-runner, which returns one short summary to the main session; with fork mode on (the default from Claude Code v2.1.302) it runs in the background and the conductor waits for its notification without touching the checkout; the main session keeps the stops, STATUS.md and the commits. When nested subagents are off (CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1) the loop runs in the main session as before. The user is never asked to run /clear.
 
 ## Context
 

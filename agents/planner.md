@@ -16,7 +16,7 @@ The slice and its mandate, the project's guidelines and the resolved stack rules
 
 1. Read the mandate, the guidelines, the lessons and the code the slice touches. Check that every file, function and command you name exists, or is created by an earlier task.
 2. Write the plan to the path you were given, under 100 lines, in this shape:
-   - front matter, then a header: **Mandate**, **Guidelines**, **Lessons**, **Execution rules** (links, not copies);
+   - front matter, then a header: **Mandate**, **Guidelines**, **Lessons**, **Execution rules** (links, not copies), **Summary** (at most ten lines: what the plan does, in order) and **Files** (the union of the tasks' Files);
    - **The slice, decided here**: the decisions taken, one bullet each, with the reason when it isn't obvious;
    - **Tasks**: `### T<n> — <title>`, with `critical` when a mistake would be costly or hard to undo, and `depends on: T<m>` when it is. Each task has **What**, **Files**, **Verified**, **Done**. When another task depends on it, add **Interfaces**: what it consumes from earlier tasks, what it produces for later ones;
    - **Order**: which tasks run beside each other (separate files) and which after;
@@ -39,6 +39,9 @@ Exactly:
 
 ```
 Plan: <path>
+Summary:
+<at most ten lines>
+Files: <comma-separated paths>
 Deviations:
 - <one line each, or "none">
 ```

@@ -300,22 +300,44 @@ Approved fixes go into the plan in place, reading only the plan lines the findin
 
 ### `step: execute`
 
-Check the tree first (`git status --short`), then keep the ledger, `docs/work/<dir>/V<n>-ledger.md`, in the format of § Agents: run the `printenv` line now. Tasks marked complete are never dispatched again. Commits in the ledger without `complete` → review those commits. Uncommitted leftovers of a task not complete → a fresh executor gets the file list and either finishes them or restores them; never discard silently, never reset. The loop runs without stopping between tasks:
+The conductor stays thin here: it hands the slice to `flow:slice-runner` and waits. Its moves, in order:
+
+1. Write `step: execute` and `updated:` in `STATUS.md` and commit it with the plan's fixes (`Start executing V<n>`), so a resume in another session finds the step on the branch. No `step: close` is ever written: a ledger holding `## Close draft` sends a resume straight to the close.
+2. Decide `Final review:` without reading the plan: `run` when `rg -c '^### T' <plan>` is above 4, or a path of the plan's `Files:` line appears in another slice's section of `slices.md`; else `skip`.
+3. Write `<work dir>/V<n>-packet.md`, the slice packet verbatim. It is committed at the close with the ledger.
+4. Dispatch `flow:slice-runner` once, on the top tier by § Agents, with one field per line, all paths expanded and absolute: `Packet: <work dir>/V<n>-packet.md` · `Skill: ${CLAUDE_SKILL_DIR}/SKILL.md, § step: execute › The loop and § step: close moves 1–2` · `Work reference: ${CLAUDE_PLUGIN_ROOT}/shared/work.md § Agents` · `Agents: ${CLAUDE_PLUGIN_ROOT}/agents/` · `Plan: <path>` · `Ledger: <path>` · `Work dir: <path>` · `Models: <the request made in session | top=<x>, mid=<y> from the Models paragraph | none>` · `Final review: run | skip` · `User at first stop: <what the user said | none>` · `Answer: <the user's answer to a previous STOP | none>`.
+5. Say one line, end the turn, and touch nothing in the checkout or the work folder until the notification arrives.
+
+The runner returns `Status:`, `Commits:`, `Gate:`, `Final review:`, `Rulings:`, `Decision candidate:`, `Pending:` and `Question:`:
+
+- `DONE` → the close.
+- `STOP` → put its `Question:` to the user, then dispatch again with `Answer:`.
+- `NO_NESTING`, or the dispatch denied or failing → one line to the user, and the conductor runs `#### The loop` itself, in session, then close moves 1–2 as drafts. The ledger already holds whatever the failed attempt left: keep it, and never write its head (the `printenv` line) again.
+- Failed or interrupted → `TaskStop` the nested agents still running (or the user does it from `/tasks`), `git status --short`, dispatch again.
+
+#### The loop
+
+The loop runs in the runner, or in session in the fallback. First, check the tree (`git status --short`) and keep the ledger, `docs/work/<dir>/V<n>-ledger.md`, in the format of § Agents: run the `printenv` line now, unless the ledger already has its head. Tasks marked complete are never dispatched again. Commits in the ledger without `complete` → review those commits. Uncommitted leftovers of a task not complete → a fresh executor gets the file list and either finishes them or restores them; never discard silently, never reset. The loop runs without stopping between tasks:
 
 - **Order.** A task with no pending dependency whose files are disjoint from the others' runs in parallel with them; tasks that share a file, or a build step that would see the other's half-written files, run one after another.
 - **Dispatch `flow:executor`**: packet verbatim on top, the task text, the Interfaces of the tasks it depends on. Model by § Agents (mid tier).
 - **Status.** `DONE` → review. `DONE_WITH_CONCERNS` → read the concerns, then review. `NEEDS_CONTEXT` → answer from the repo and the packet, and continue the same executor with SendMessage (fallback as under Findings). `BLOCKED` → more context; then the top tier; then the conductor splits the task, recording it in the ledger with a `Ruling:` line; else a ruling, or a stop.
 - **Review** with `flow:task-reviewer`: packet on top, the task text, the executor's report verbatim (never the ledger's trimmed copy), the task's own commits (`git show <shas>`, from the report), never a BASE..HEAD range that parallel tasks share, and the expanded absolute path of `executor.md` in the agents folder (the Models paragraph), whose test policy, commit rules and server rule it checks against. Mid tier; top tier when the task is `critical`.
 - **Findings.** Rounds 1 and 2 go back to the same executor with SendMessage (a deferred tool: load it first; when it can't be reached, a fresh executor with the findings and the commits), each followed by a review of the fix commits. Round 3 is a fresh executor on the top tier, then a top-tier review. After that, a ruling and on: `Ruling: <what> — <why> — <cost if wrong>`. A task passes when both verdicts are `pass` and no high or medium finding remains; low findings are logged in the ledger, not fixed. Then `- T<n>: complete`.
-- **Stops** only for an irreversible step, a security matter, a side effect outside the checkout, a plan broken beyond guessing. This skill doesn't interrupt the loop to fix the plan; the rulings are read at the close.
-- **Final review**, `flow:task-reviewer` on the top tier, with the slice packet, the plan as the task text, the slice's shas from the ledger and the `executor.md` path, only when the plan has more than four tasks or touches files shared with other slices. Its findings go to one fresh mid-tier executor, then one review; what remains is ruled.
+- **Stops** only for an irreversible step, a security matter, a side effect outside the checkout, a plan broken beyond guessing: in the runner, it returns `STOP` with the question. The loop doesn't stop to fix the plan; the rulings are read at the close.
+- **Final review**, `flow:task-reviewer` on the top tier, with the slice packet, the plan as the task text, the slice's shas from the ledger and the `executor.md` path, only when the instruction says `Final review: run` (the conductor's rule above; in the fallback, the same rule). Its findings go to one fresh mid-tier executor, then one review; what remains is ruled.
 
 ### `step: close`
 
-1. Verify the slice's Done as written in `slices.md`, plus the gate: the `## Gate` section of the guidelines if present, else tests green, typecheck or lint green, build green. Run the server checks the executors reported (`Servers:`), then stop what you started. The full suite runs here and only here, through the gate. The server rule binds this skill too: start no dev server or watcher unless a check needs one, stop whatever was started before moving on, and `lsof -nP -iTCP -sTCP:LISTEN` when in doubt. If the slice is a refactor, the Done is a regression checklist written before starting and run by hand before committing.
-2. Lessons, in two places. The narrative under the slice in `slices.md`, as **"V<n> — done on <date>"**: what execution revealed, the rulings read from the ledger. The rules, one line each, appended to `lessons.md`: *"before declaring something unused, grep all of `src`, value and setter, and say in the report where you looked."* A ruling that discarded a real alternative is a decision candidate (see the work reference, § Decisions).
+Moves 1–2 are drafts: the runner writes them (the conductor, in the fallback), and they end in the ledger tail of § Agents › Ledger. The runner never touches `slices.md` or `lessons.md`.
+
+1. Verify the slice's Done as written in `slices.md`, plus the gate: the `## Gate` section of the guidelines if present, else tests green, typecheck or lint green, build green. Run the server checks the executors reported (`Servers:`), then stop what you started. The full suite runs here and only here, through the gate. The server rule binds this skill too: start no dev server or watcher unless a check needs one, stop whatever was started before moving on, and `lsof -nP -iTCP -sTCP:LISTEN` when in doubt. If the slice is a refactor, the Done is a regression checklist written before starting and run by hand before committing. A Done item that can't be run goes in the ledger as `pending: <Done item>`. The ledger gets `Final review:` and `Gate:`.
+2. Lessons, drafted in the ledger's `## Close draft`. `Narrative:` is what execution revealed, with the rulings read from the ledger, for the slice's **"V<n> — done on <date>"** entry in `slices.md`. `Lessons:` holds the rules, one line each, for `lessons.md`: *"before declaring something unused, grep all of `src`, value and setter, and say in the report where you looked."* A ruling that discarded a real alternative is the `Decision candidate:` (see the work reference, § Decisions).
+
+Then the conductor, before move 3: runs `lsof -nP -iTCP -sTCP:LISTEN` and stops leftovers; runs each `pending:` item with the user; copies `Narrative:` into `slices.md` under the slice, as **"V<n> — done on <date>"**, and `Lessons:` into `lessons.md`.
+
 3. Update `STATUS.md` as the work reference says (§ `slices.md` and `lessons.md`, closing a slice), with wall-clock and cost in the Log line.
-4. Commit, the ledger with it. **Second stop.** One message: what closed, the gate result, the new rules, the decision candidate if any with the question whether to record it, and: *"V3 closed and committed. Plan V4, or stop here?"*
+4. Commit, the ledger and the packet file with it. **Second stop.** One message: what closed, the gate result, the new rules, the decision candidate if any with the question whether to record it, and: *"V3 closed and committed. Plan V4, or stop here?"*
 
 A closed slice isn't reopened (rule in the same section).
 

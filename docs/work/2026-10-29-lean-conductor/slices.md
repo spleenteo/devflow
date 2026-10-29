@@ -98,3 +98,8 @@ Decision: [2026-10-29-slice-execution-runs-in-a-runner-subagent](../../decisions
 
 **Gotchas.**
 - A single call writing several files and committing can trip Claude Code's approval check on a heredoc, or fail between the writes and the commit. Verify in the run; if it does, the rule says two calls.
+
+**V1 — done.** Ran in the main session (the runner it builds didn't exist yet). 7 tasks, 4 rounds of final-review fixes; gate green. Done run A in a throwaway repo, with auto mode on: one `Agent` call to `flow:slice-runner`; the three executors and three task reviewers ran nested at depth 2; the ledger complete with its close draft, written by the runner only; the slice committed. Context between the stops: 82k → 93k (11k, over the 10k bound). The runner's part was about 2k (1k at dispatch, 1k at return); the rest was the stop's exchange (about 2k), the plan's review fixes (about 4k: a 30-line read and three `sed` calls, V3's subject) and the close (about 3k). The bound measured more than V1 changes; against about 55k per slice in the baseline, the execution's share is gone.
+- pending: Bash approval reaching the user from a nested executor (run A had auto mode on).
+- pending: the fallback with `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1` (run B, not run).
+- pending: an irreversible step returning from the runner as a stop (run C, not run).

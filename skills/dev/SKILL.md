@@ -75,7 +75,7 @@ Token cost comes from fresh contexts rereading the same documents. Wall-clock co
 2. **Same packet, same position.** Within a slice, the packet is one verbatim text placed at the top of every subagent prompt, with the specific instruction after it. Identical prefixes hit the prompt cache.
 3. **Two stops per slice.** After the reviewed plan, and after the close. Plan and review run back to back.
 4. **One message per verification.** Findings ranked by severity, each with a recommended action, one question at the end. Never one finding at a time.
-5. **Model and effort by role.** Top tier for the planner, the plan review, impact and the fidelity check; mid tier for executors and task reviews, except a `critical` task's. Tasks without dependencies dispatched in parallel. Tiers and precedence: the work reference, § Agents.
+5. **Model and effort by role.** Top tier for the planner, the plan review, the slice runner, impact and the fidelity check; mid tier for executors and task reviews, except a `critical` task's. Tasks without dependencies dispatched in parallel. Tiers and precedence: the work reference, § Agents.
 
 And measure: every Log line in `STATUS.md` carries wall-clock and cost (from `/cost`), so the next tuning is a comparison, not an opinion.
 
@@ -278,13 +278,13 @@ From here `phase: slice`. For each slice, in `slices.md` order, four steps and t
 
 Dispatch `flow:planner` with the packet, the effective test level, the previous slice's plan path when there is one (a model for tone; the impact findings are already in `slices.md`), the expanded absolute path of `executor.md` in the agents folder (its test policy is the one the plan points to) and this instruction:
 
-> Save the plan to `docs/work/2026-09-02-mobile-menu/V2-plan.md`. Test level: `<level>`. Mark dependencies between tasks (`depends on: T1`) and mark `critical` the tasks that touch shared or risky code.
+> Save the plan to `docs/work/2026-09-02-mobile-menu/V2-plan.md`. Test level: `<level>`. Mark dependencies between tasks (`depends on: T1`) and mark `critical` the tasks that touch shared or risky code. Put a **Summary** (at most ten lines) and a **Files** line (the union of the tasks' Files) in the plan's header.
 
-Writing the plan surfaces deviations from the mandate: an affordance better moved to another slice, a file that doesn't exist, a mechanism the shape didn't foresee. The planner returns the plan's path and its deviation lines: record those in `slices.md` under **"Deviations found while planning V<n>"** (no heading when it returns `none`) and carry on to the review without stopping.
+Writing the plan surfaces deviations from the mandate: an affordance better moved to another slice, a file that doesn't exist, a mechanism the shape didn't foresee. The planner returns `Plan:`, `Summary:`, `Files:` and `Deviations:`; the conductor doesn't read the plan. Record the deviation lines in `slices.md` under **"Deviations found while planning V<n>"** (no heading when it returns `none`) and carry on to the review without stopping.
 
 ### `step: review`
 
-Right after the plan, one `flow:plan-reviewer`, never in session: whoever just wrote the plan is the worst head for finding its contradictions. Dispatch it with the packet, the plan and the lens table below. The decisions in the packet match the plan too: ask `op: descriptions` again with `keywords` and `files:` the plan's files, and add any new description.
+Right after the plan, one `flow:plan-reviewer`, never in session: whoever just wrote the plan is the worst head for finding its contradictions. Dispatch it with the packet, the plan and the lens table below. The decisions in the packet match the plan too: ask `op: descriptions` again with `keywords` and `files:` taken from the planner's `Files:`, and add any new description.
 
 | Lens | Looks for |
 |---|---|
@@ -294,9 +294,9 @@ Right after the plan, one `flow:plan-reviewer`, never in session: whoever just w
 | **Guideline compliance** | Tests, naming, function size and code placement in the plan follow the guidelines |
 | **Project lenses** | The project's own lenses from `docs/impact-lenses.md`, applied to the plan: what this change breaks in this project, not how its code is written. When the file is absent, one line "project lenses: none", not a finding |
 
-**First stop.** One message: the plan in ten lines, the findings ranked with a recommended fix each, the deviations recorded, one question: *"Apply the recommended fixes and execute? Say which to skip."*
+**First stop.** One message: the planner's Summary, the findings ranked with a recommended fix each, the deviations recorded, one question: *"Apply the recommended fixes and execute? Say which to skip."*
 
-Approved fixes go into the plan in place. If the structure changes (tasks split, reordered or added), send the planner back with the findings.
+Approved fixes go into the plan in place, reading only the plan lines the findings point to. If the structure changes (tasks split, reordered or added), send the planner back with the findings.
 
 ### `step: execute`
 
@@ -361,7 +361,7 @@ Code, changelog, version and archived work land on the target in one changeset. 
 |---|---|---|
 | Opening, definition, slice loop | `/flow:dev` | the `flow` plugin |
 | A slice's plan, review and impact | Flow's agents (`flow:planner`, `flow:plan-reviewer`, `flow:impact`) | the `flow` plugin |
-| A plan's execution | Flow's agents (`flow:executor`, `flow:task-reviewer`) | the `flow` plugin |
+| A plan's execution | Flow's agent `flow:slice-runner`, dispatching `flow:executor` and `flow:task-reviewer` | the `flow` plugin |
 | Changelog and version | `flow:docs` (by hand: `/flow:changelog`) | the `flow` plugin |
 | Archiving | `/flow:archive` | the `flow` plugin |
 

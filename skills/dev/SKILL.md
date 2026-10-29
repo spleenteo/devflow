@@ -312,7 +312,7 @@ The runner returns `Status:`, `Commits:`, `Gate:`, `Final review:`, `Rulings:`, 
 
 - `DONE` → the close.
 - `STOP` → put its `Question:` to the user, then dispatch again with `Answer:`.
-- `NO_NESTING`, or the dispatch denied or failing → one line to the user, and the conductor runs `#### The loop` itself, in session, then close moves 1–2 as drafts. The ledger already holds whatever the failed attempt left: keep it, and never write its head (the `printenv` line) again.
+- `NO_NESTING`, or the dispatch denied or failing → one line to the user, and the conductor runs `#### The loop` itself, in session, then close moves 1–2 as drafts. The ledger already holds whatever the failed attempt left: keep it, and never write its head again.
 - Failed or interrupted → `TaskStop` the nested agents still running (or the user does it from `/tasks`), `git status --short`, dispatch again.
 
 #### The loop

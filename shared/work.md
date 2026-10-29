@@ -181,10 +181,11 @@ Flow's own agents live in the plugin's `agents/` folder, one file per role, disp
 | Plan reviewer | `flow:plan-reviewer` | top | Plan reviews, the fidelity check, the action-plan review, the builder check (`flow:brainstorm`) |
 | Impact | `flow:impact` | top | Impact and the reality check, with the lenses in the packet |
 | Executor | `flow:executor` | mid | One task of a plan |
+| Screen checker | `flow:screen-checker` | mid | A drawn screen's check, from exported images (/flow:design) |
 | Slice runner | `flow:slice-runner` | top | A slice's execution and the close's drafts (/flow:dev) |
 | Task reviewer | `flow:task-reviewer` | mid | A task's commits; top tier for a `critical` task, the final review and a third fix round |
 
-**Tiers.** The conductors speak of the top tier (planner, plan-reviewer, impact, slice runner, the fidelity check, a `critical` task's review, the final review, a third fix round) and the mid tier (executor, other task reviews). Only the agent definitions name model aliases.
+**Tiers.** The conductors speak of the top tier (planner, plan-reviewer, impact, slice runner, the fidelity check, a `critical` task's review, the final review, a third fix round) and the mid tier (executor, other task reviews, the screen checker). Only the agent definitions name model aliases.
 
 **Nesting.** The slice runner dispatches the executor and the task reviewer, so it relies on nested subagents: they nest three layers by default, and `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1` turns it off ([nested subagents](https://code.claude.com/docs/en/sub-agents#let-subagents-spawn-their-own-subagents), [env vars](https://code.claude.com/docs/en/env-vars)). With fork mode on, the default, the runner runs in the background and Claude can't wait for it ([foreground or background](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background), [fork mode](https://code.claude.com/docs/en/sub-agents#turn-fork-mode-on-or-off)). The permission prompts of background subagents surface in the main session ([background subagents](https://code.claude.com/docs/en/sub-agents#tools-permissions-and-results-of-background-subagents)). A subagent can resume another with `SendMessage` ([resume subagents](https://code.claude.com/docs/en/sub-agents#resume-subagents)), which, when deferred, it loads through `ToolSearch`, and stop one with `TaskStop` ([tools reference](https://code.claude.com/docs/en/tools-reference)). When the runner can't dispatch, it returns `NO_NESTING` and the conductor runs the loop in session.
 

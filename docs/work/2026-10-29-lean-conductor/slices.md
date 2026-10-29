@@ -43,6 +43,11 @@ Then the session is closed, a new one runs `/flow:dev`, and the resume opens at 
 - The packet on disk is a new file per slice: it is committed with the slice, or the plan says why not.
 - Reports kept short must still let the task reviewer distrust the executor's report: the verbatim report has to reach it.
 
+**Deviations found while planning V1**
+- The slice packet and the agent reports are not committed: they are deleted at the slice close. A committed packet copies guideline text whose relative links break the link-check gate from the work folder, and both files can be rebuilt from committed files; the ledger keeps every agent's return.
+- The docs change beyond the lines named: `docs/architecture.md` line 133 (only the packet sentence; the ledger part stays for V3) and line 187.
+- The throwaway work has three slices: two run through their closes, the third is where the resume and the planner's packet are checked.
+
 ## V2 — Screenshots checked out of the main session
 
 **In.**

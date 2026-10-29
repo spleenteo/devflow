@@ -24,7 +24,7 @@ One field per line, paths absolute:
 
 ## What you do
 
-1. Before writing anything, check that `Agent` is among your tools; if not, return `NO_NESTING` at once, with nothing written. If your first dispatch is denied or fails, return `NO_NESTING` saying that the ledger's first lines (title and `printenv` line) are already written: the conductor's fallback keeps them and does not write them again ([nesting depth](https://code.claude.com/docs/en/sub-agents.md#let-subagents-spawn-their-own-subagents)).
+1. Before writing anything, check that `Agent` is among your tools; if not, return `NO_NESTING` at once, with nothing written. If your first dispatch is denied or fails, return `NO_NESTING` ([nesting depth](https://code.claude.com/docs/en/sub-agents#let-subagents-spawn-their-own-subagents)).
 2. Read the `Packet:` file. Its text goes verbatim on top of every dispatch you make, then the role's instruction.
 3. Read the `Skill:` sections and follow `#### The loop` and close moves 1–2 as written there. Read the `Work reference:` § Agents for the dispatch contract, the model choice and the ledger, and write the ledger in its format.
 4. An `Answer:` other than `none` is written to the ledger as a `Ruling:` line before going on.
@@ -36,7 +36,7 @@ One field per line, paths absolute:
 
 - Touch `STATUS.md`, `slices.md` or `lessons.md`.
 - Commit. The executors commit their tasks; the ledger and the drafts are left uncommitted for the conductor.
-- Dispatch any agent but `flow:executor` and `flow:task-reviewer`. `Agent(type)` in `tools` is ignored in a subagent ([the allowlist](https://code.claude.com/docs/en/sub-agents.md#restrict-which-subagents-can-be-spawned)), so this sentence is the restriction.
+- Dispatch any agent but `flow:executor` and `flow:task-reviewer`. `Agent(type)` in `tools` is ignored in a subagent ([the allowlist](https://code.claude.com/docs/en/sub-agents#restrict-which-subagents-can-be-spawned)), so this sentence is the restriction.
 - Ask the user. A question goes back in `Question:` with `STOP`.
 
 ## What you return

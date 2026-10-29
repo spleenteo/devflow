@@ -1,7 +1,7 @@
 ---
 kind: decision
-status: active
-superseded_by: null
+status: superseded
+superseded_by: 2026-10-29-slice-execution-runs-in-a-runner-subagent.md
 work: lean-conductor
 area: engine
 touches: [skills/dev/SKILL.md, shared/work.md, agents/]
@@ -42,3 +42,4 @@ Claude Code lets a skill clear or compact the session itself, or a measured work
 ## Status log
 
 - 2026-10-29 — recorded
+- 2026-10-29 — It discarded running the execute loop in a subagent on a false premise (subagents can dispatch subagents by default); the new decision does exactly that.

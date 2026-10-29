@@ -52,6 +52,11 @@ Decision: [2026-10-29-slice-execution-runs-in-a-runner-subagent](../../decisions
 - The runner's own context grows through the slice: a long slice could compact inside it. The packet file and the ledger are what let it go on.
 - The runner is a judgement role (it rules on blocked tasks and findings): its tier is decided in the plan.
 
+**Deviations found while planning V1**
+- To apply review fixes, the conductor reads only the plan lines the findings point to; "doesn't read the plan" holds for the plan in full.
+- The Done runs from a hand-made fixture already at `step: plan`, not a full opening: the Done is measured from the first stop's yes.
+- A new session can't see a runner still running from another session, so its resume message asks the user.
+
 ## V2 — Screenshots checked out of the main session
 
 **In.**

@@ -13,9 +13,13 @@ This skill holds the project's design files in one place, keeps an index of them
 
 Called mode is told apart by its args: the Skill tool `flow:design` with args holding the `## The criterion` block verbatim (when the work has one), then `Shaping: <absolute path of shaping.md>` and `Screens: <the screens to draw, comma-separated>`. A `Shaping:` line means called; none means by hand.
 
-Called, the skill runs Place, Adapter, First use, Medium, Compose, Promote and Safety unchanged, every consent step still asked of the user (it runs in the conductor's session). It reads `shaping.md` and never writes it; it writes only under `docs/design/` and never commits.
+Called, the skill runs Place, Adapter, First use, Medium, Compose, Check, Promote and Safety unchanged, every consent step still asked of the user (it runs in the conductor's session). It reads `shaping.md` and never writes it; it writes only under `docs/design/` and never commits.
 
 A requirement correction is anything the design shows wrong, missing or unneeded in `shaping.md`, collected as one line: `<requirement id, or new> — <the correction> — <what in the design showed it>`. When a criterion was passed, each also names the criterion line it serves, and one that serves none is reported as such; with no criterion, no anchor. They are returned as **Requirement corrections**, beside **Files touched** (see § Exit).
+
+## Models
+
+Flow's agents are in `${CLAUDE_PLUGIN_ROOT}/agents/` (dispatched as `flow:<name>`). Preference for the mid tier: `${user_config.model_mid}`. A value that is empty, or begins with `${`, is unset. Which model each dispatch takes and the dispatch contract: the work reference, § Agents (`${CLAUDE_PLUGIN_ROOT}/shared/work.md`).
 
 ## Place
 
@@ -60,8 +64,8 @@ Once a skill resolves, read its `## Requires` before anything else.
   - `### Compose`: compose a screen from the listed components and tokens;
   - `### Promote`: promote a local component into a library, in the tool's steps;
   - `### Note`: write the in-file note;
-  - `### Export`: export nodes to a folder.
-- `## Cautions`: what can go wrong with the tool's files, and how to avoid it.
+  - `### Export`: export nodes to a folder; also the check export of § Check (PNG, to a scratch folder outside the base).
+- `## Cautions`: what can go wrong with the tool's files, and how to avoid it; and every tool or call that returns an image into the session.
 
 ## First use
 
@@ -97,10 +101,24 @@ Artifacts only in the four cases of § Adapter.
 3. Run the adapter's Open on the file. When a library is not imported, run the adapter's Import. Then run the adapter's List on the libraries the area file imports.
 4. Compose through the adapter's Compose, from the listed components and tokens only.
 5. For each element no component fits, propose a new one (name, what it is, why none fits). Build it locally only on an ok.
-6. Ask whether the screen is approved.
+6. Run § Check on the screens changed in this round, then ask whether the screen is approved.
 7. After each change, update the file's note through the adapter's Note and its index row (contents, imports), both in the folder's language.
 
 Every call follows the adapter's Session.
+
+## Check
+
+The main session never receives an image, by `Read` or by any tool result: never read an exported image unless the user asks to look at it, and never call a tool the adapter's `## Cautions` name as returning one.
+
+Once per round of edits, for design files only:
+
+1. Make the folder with `mktemp -d` at the first check of the run and reuse it afterwards.
+2. Export the round's screens through the adapter's Export as PNG to it.
+3. Check each path with `test -f`.
+4. Dispatch `flow:screen-checker` (mid tier, see § Models). Its packet: the criterion block when there is one; then per screen its absolute PNG path and what it must show (the requirement lines, or the user's request by hand); then what to check. When the dispatch runs in the background, say one line, end the turn, and touch neither the design file nor the folder until the notification arrives.
+5. Fix the defects it names, or show the verdict to the user in step 6. An `unreadable` screen is reported to the user in one line at step 6, never counted as a pass.
+
+The folder is outside the base and never committed. With no `Agent` tool in the session: skip the check and say so in one line.
 
 ## Promote
 
@@ -114,7 +132,7 @@ Promotion is never atomic: the tool works on one file at a time. If the second s
 
 - **No deletion unasked.** No file, frame or component is deleted or replaced unless the user asks. The removal of the local copy in a promotion is part of the move the user approved; moves at first use are not deletions.
 - **Direction.** This skill draws and never edits code. Building a screen in code, or redrawing what the code does, is proposed in one line with what would change, and done only on an ok. By hand with code to write, propose `/flow:dev`; called, say the code belongs to the work's later slices. Every change of direction needs the user's consent.
-- **Exports only on request.** Through the adapter's Export, to a folder the user names (asked when not given). Check each path it returns with `test -f`; a missing file is reported as failed.
+- **Exports only on request, except the check export of § Check.** Through the adapter's Export, to a folder the user names (asked when not given). Check each path it returns with `test -f`; a missing file is reported as failed.
 
 ## Exit
 

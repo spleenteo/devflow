@@ -207,7 +207,7 @@ Two environment variables beat all of this, and Flow can't see past them: `CLAUD
 - `- T<n>: complete` when a task's review passes; `Ruling: <what> — <why> — <cost if wrong>` for each ruling.
 - Each agent's report is appended under its line, trimmed to status, commits, tests run, `Servers:`, concerns.
 - On resume at `step: execute` the ledger is reloaded, and tasks marked complete are never dispatched again.
-- At the end, in this order: `Final review: <done | skipped>`; `Gate: <result>`; then `## Close draft` holding `Narrative: <text>`, `Lessons:` (one rule per line) and `Decision candidate: <gist | none>`.
+- At the end, in this order: any `pending: <Done item>` lines, one each; `Final review: <done | skipped>`; `Gate: <result>`; then `## Close draft` holding `Narrative: <text>`, `Lessons:` (one rule per line) and `Decision candidate: <gist | none>`.
 
 ## Closing a work
 

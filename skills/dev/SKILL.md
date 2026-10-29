@@ -178,7 +178,7 @@ Resuming reloads the **standing documents**, and nothing else:
 | plan | `docs/impact-lenses.md` and the decisions matched by the slice's `files:` |
 | review | the plan's header only |
 | execute | `rg -n '^## Close draft' <ledger>`: a match goes to the close, no runner; else the runner (the ledger tells which tasks are complete, and they are never dispatched again). In a new session, the resume message also asks whether another session still runs the slice: never a second runner |
-| close | the ledger from the `pending:` lines on: `Final review:`, `Gate:` and `## Close draft` |
+| close | the ledger from `Final review:` on, with the `pending:` lines just before it: `Final review:`, `Gate:` and `## Close draft` |
 
 A standing document is one that is still true. A closed phase is a debate that ended. Each row of the second table holds what the next step reads and nothing more: `shaping.md` or `breadboard.md` is what slicing cuts from, `slices.md` is what impact and the plan measure against, the lenses and matched decisions are what the planner weighs, the plan's header is what a review checks, the ledger is the only record of what the runner has done, and the close draft is the work already done, waiting to be confirmed. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a work that resumes without it resumes on whatever was written last.
 

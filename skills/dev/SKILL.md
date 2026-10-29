@@ -166,9 +166,21 @@ Resuming reloads the **standing documents**, and nothing else:
 
 | Always reloaded | Never reloaded |
 |---|---|
-| `STATUS.md`; the `## The criterion` block of `frame.md` when the work has one; the sections of `docs/development-guidelines.md` that apply; `lessons.md`; the `description:` line of the `docs/decisions-log/` files that match the work (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords` from the `description:` in `STATUS.md`); the current slice's plan; at `phase: design`, `shaping.md` and `docs/design/README.md`; at `step: execute`, the slice's ledger (tasks marked complete are never dispatched again) | `brainstorm.md`; `shaping.md` (except at `phase: design`); `breadboard.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
+| `STATUS.md`; the `## The criterion` block of `frame.md` when the work has one; the sections of `docs/development-guidelines.md` that apply; `lessons.md`; the `description:` line of the `docs/decisions-log/` files that match the work (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords` from the `description:` in `STATUS.md`) | `brainstorm.md`; `shaping.md` (except by the table below); `breadboard.md` (except by the table below); closed plans; `spike-*.md`; `frame.md` below its criterion |
 
-A standing document is one that is still true. A closed phase is a debate that ended. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a work that resumes without it resumes on whatever was written last.
+**By phase and step**, on top of the always-reloaded row:
+
+| Phase or step | Reloaded |
+|---|---|
+| design | `shaping.md`, `docs/design/README.md` |
+| slicing | `shaping.md`, or `breadboard.md` when breadboarding slices |
+| impact | `slices.md`, in full |
+| plan | `docs/impact-lenses.md` and the decisions matched by the slice's `files:` |
+| review | the plan's header only |
+| execute | `rg -n '^## Close draft' <ledger>`: a match goes to the close, no runner; else the runner (the ledger tells which tasks are complete, and they are never dispatched again). In a new session, the resume message also asks whether another session still runs the slice: never a second runner |
+| close | the ledger's `## Close draft` |
+
+A standing document is one that is still true. A closed phase is a debate that ended. Each row of the second table holds what the next step reads and nothing more: `shaping.md` or `breadboard.md` is what slicing cuts from, `slices.md` is what impact and the plan measure against, the lenses and matched decisions are what the planner weighs, the plan's header is what a review checks, the ledger is the only record of what the runner has done, and the close draft is the work already done, waiting to be confirmed. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a work that resumes without it resumes on whatever was written last.
 
 Open with what you reloaded, in five lines — work, phase and slice, cost so far from the Log, the criterion in the frame's own words, the blockers from the last Log line — then ask. The user has to be able to see that the frame is in the room.
 

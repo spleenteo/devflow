@@ -2,7 +2,7 @@
 status: open
 phase: slice
 slice: V2
-step: plan
+step: execute
 work: lean-conductor
 stacks: [generic]
 base: main

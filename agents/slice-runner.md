@@ -24,7 +24,7 @@ One field per line, paths absolute:
 
 ## What you do
 
-1. If `Agent` is not among your tools, or your first dispatch is denied or fails, return `NO_NESTING` at once, with nothing written and nothing committed by you ([nesting depth](https://code.claude.com/docs/en/sub-agents.md#let-subagents-spawn-their-own-subagents)).
+1. Before writing anything, check that `Agent` is among your tools; if not, return `NO_NESTING` at once, with nothing written. If your first dispatch is denied or fails, return `NO_NESTING` saying that the ledger's first lines (title and `printenv` line) are already written: the conductor's fallback keeps them and does not write them again ([nesting depth](https://code.claude.com/docs/en/sub-agents.md#let-subagents-spawn-their-own-subagents)).
 2. Read the `Packet:` file. Its text goes verbatim on top of every dispatch you make, then the role's instruction.
 3. Read the `Skill:` sections and follow `#### The loop` and close moves 1–2 as written there. Read the `Work reference:` § Agents for the dispatch contract, the model choice and the ledger, and write the ledger in its format.
 4. An `Answer:` other than `none` is written to the ledger as a `Ruling:` line before going on.

@@ -116,9 +116,9 @@ Once per round of edits, for design files only:
 2. Export the round's screens through the adapter's Export as PNG to it.
 3. Check each path with `test -f`; a missing one is reported as failed and left out of the dispatch.
 4. Dispatch `flow:screen-checker` (mid tier, see § Models). Its packet: the criterion block when there is one; then per screen its absolute PNG path and what it must show (the requirement lines, or the user's request by hand); then what to check. When the dispatch runs in the background, say one line, end the turn, and touch neither the design file nor the folder until the notification arrives.
-5. Fix the defects it names, or show the verdict to the user in § Compose step 6, with the screens' pass/fail lines, one each, including those fixed in session. An `unreadable` screen is reported to the user in one line at § Compose step 6, never counted as a pass.
+5. Fix the defects it names, then at § Compose step 6 show the user the screens' pass/fail lines, one each, including those fixed in session. An `unreadable` screen is reported to the user in one line at § Compose step 6, never counted as a pass.
 
-The folder is outside the base and never committed. With no `Agent` tool in the session: skip the check and say so in one line.
+The folder is outside the base and never committed. With no `Agent` tool in the session: skip the check and say so in one line. When the adapter's Export doesn't name the check export, skip the check the same way.
 
 ## Promote
 
@@ -132,7 +132,7 @@ Promotion is never atomic: the tool works on one file at a time. If the second s
 
 - **No deletion unasked.** No file, frame or component is deleted or replaced unless the user asks. The removal of the local copy in a promotion is part of the move the user approved; moves at first use are not deletions.
 - **Direction.** This skill draws and never edits code. Building a screen in code, or redrawing what the code does, is proposed in one line with what would change, and done only on an ok. By hand with code to write, propose `/flow:dev`; called, say the code belongs to the work's later slices. Every change of direction needs the user's consent.
-- **Exports only on request, except the check export of § Check.** Through the adapter's Export, On request: to a folder the user names (asked when not given). Check each path it returns with `test -f`; a missing file is reported as failed.
+- **Exports only on request, except the check export of § Check.** On request: through the adapter's Export, to a folder the user names (asked when not given). Check each path it returns with `test -f`; a missing file is reported as failed.
 
 ## Exit
 

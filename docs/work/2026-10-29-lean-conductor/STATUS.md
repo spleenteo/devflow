@@ -1,12 +1,12 @@
 ---
 status: open
 phase: slice
-slice: V2
-step: execute
+slice: V3
+step: plan
 work: lean-conductor
 stacks: [generic]
 base: main
-updated: 2026-10-29
+updated: 2026-10-30
 tags: [work, lean-conductor]
 description: "Cut the context the main session carries through a work: run each slice's execution in a subagent, keep screenshots out of the session, update the work's state with fewer calls."
 ---
@@ -20,7 +20,7 @@ description: "Cut the context the main session carries through a work: run each 
 ## Slices
 
 - [x] V1 — The slice runs in a subagent
-- [ ] V2 — Screenshots checked out of the main session
+- [x] V2 — Screenshots checked out of the main session
 - [ ] V3 — Bookkeeping in fewer writes
 
 ## Log
@@ -32,3 +32,4 @@ description: "Cut the context the main session carries through a work: run each 
 - 2026-10-29 — V1 review — a second review (Fable) found the premise "subagents can't dispatch subagents" false (verified on code.claude.com); V1 reshaped around a slice runner, decision superseded, V1 plan dropped; Maestro: no link found — impact on V1 — 2 h (planner ran ~2 h) — n/a
 - 2026-10-29 — impact on V1 — 1 high (the runner runs in the background under fork mode, verified), 7 medium, 4 low; all fixed in slices.md and the decision — V1 plan — 10 min — n/a
 - 2026-10-29 — V1 — slice runner, planner summary, reload tables, docs; 7 tasks, final review in 4 rounds, gate green; Done run A passed except the context bound (11k, runner's share 2k); runs B and C pending — V2 plan — 3 h — n/a
+- 2026-10-30 — V2 — screen checker, § Check in /flow:design, pen adapter's check export and Cautions; 5 tasks via the slice runner, 2 fix rounds on T3, final review done, gate green; Done passed with the Pen app (0 images in session, planted defect caught, ~2.8k per image) — V3 plan — 1 h 30 — n/a

@@ -24,7 +24,7 @@ The context grew across the slices without ever dropping: 132k at the start of V
 
 | Source | Calls | Size in the transcript | Note |
 |---|---|---|---|
-| Screenshots read in session | 9 | about 13k tokens each | Read during the design phase; stayed until the next compaction |
+| Screenshots read in session | 9 | about 3k tokens each at 1280×800 (measured in V2; first estimated at 13k) | Read during the design phase; stayed until the next compaction |
 | Bash on `STATUS.md` and plans | 66 | 61k chars | Mostly one-line `sed` or `python` edits; each call rereads the whole context |
 | Bash reading the plugin's own files | 18 | 84k chars | `sed -n` ranges of `shared/work.md` and `SKILL.md` files |
 | Bash on the design tool | 35 | 50k chars | |
@@ -43,7 +43,7 @@ Over the whole work, in transcript characters:
 
 Bookkeeping during execute: about 18 ledger writes for about 12 tasks, plus 2 to 4 writes on plans, `slices.md` and `STATUS.md` around each stop.
 
-The image estimate above comes from the context jumps between calls, not from `usage` deltas per image; it is checked in V2.
+The image cost was first estimated at 13k from the context jumps between calls. V2 measured one 1280×800 PNG at about 2.8k tokens from the `usage` delta around its `Read`; the screenshots in the baseline may have been larger.
 
 ## Subagents
 

@@ -16,7 +16,19 @@ def work_write(cmd):
         if re.search(r'\btee\b',cmd): return True
         if re.search(r'\b(sed|perl)\s+(-\w+\s+)*-\w*i\b',cmd): return True
     return False
+def strip_heredocs(cmd):
+    # drop heredoc bodies (and their terminator lines); keep the operator lines
+    out=[];pending=[]
+    for ln in cmd.split('\n'):
+        if pending:
+            dash,term=pending[0]
+            if (ln.lstrip('\t') if dash else ln)==term: pending.pop(0)
+            continue
+        out.append(ln)
+        pending=[(d=='-',t) for d,t in re.findall(r'(?<!<)<<(-?)\s*[\'"]?(\w+)[\'"]?',ln)]
+    return '\n'.join(out)
 def kind(cmd):
+    cmd=strip_heredocs(cmd)
     if re.search(r'\bgit\b',cmd): return 'git'
     if work_write(cmd): return BOOK
     if 'plugins/cache' in cmd: return 'plugin reads (skill/shared)'

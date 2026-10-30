@@ -1,6 +1,6 @@
 ---
-status: open
-phase: slice
+status: closed
+phase: done
 slice: V3
 step: closed
 work: lean-conductor
@@ -34,3 +34,4 @@ description: "Cut the context the main session carries through a work: run each 
 - 2026-10-29 — V1 — slice runner, planner summary, reload tables, docs; 7 tasks, final review in 4 rounds, gate green; Done run A passed except the context bound (11k, runner's share 2k); runs B and C pending — V2 plan — 3 h — n/a
 - 2026-10-30 — V2 — screen checker, § Check in /flow:design, pen adapter's check export and Cautions; 5 tasks via the slice runner, 2 fix rounds on T3, final review done, gate green; Done passed with the Pen app (0 images in session, planted defect caught, ~2.8k per image) — V3 plan — 1 h 30 — n/a
 - 2026-10-30 — V3 — ledger in two writes per task, rulings at once, one-call closes, fixed bash_kinds.py; 6 tasks via the slice runner, 2 fix rounds on T6, final review in one round, gate green; Done passed in three fixtures (5 bookkeeping calls, one-call plan fixes and close, old and new ledgers resume into T1's review) — closing the work — 1 h 30 — n/a
+- 2026-10-30 — close — work complete: V1–V3 done; pending from V1: runs B (fallback) and C (irreversible stop) — changelog, archive, merge — 5 min — n/a

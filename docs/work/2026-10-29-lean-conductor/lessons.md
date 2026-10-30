@@ -7,3 +7,6 @@
 - A reviewer can notify twice with different findings; a task marked complete is reopened when a later report from the same review holds a medium. (V2)
 - When a skill section gets its own numbered steps, references to another section's step name that section ("§ Compose step 6"). (V2)
 - A finding that quotes a sentence is checked against the file before it goes to an executor; reviewers can cite text that isn't there. (V2)
+- Test a transcript-measuring script on a real transcript, not only on the plan's fixture: the fixture had no `cd` and no heredoc body quoting git, and both undercounted. (V3)
+- When a write is deferred to a later batch, check every commit that can land before the batch: the final review's fix round needed its own resume rule. (V3)
+- An executor's edit script that asserts its matches should run them all before writing any file, or one bad match splits the task across commits. (V3)

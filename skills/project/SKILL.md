@@ -89,7 +89,9 @@ Resuming reloads the **standing documents**, and nothing else:
 
 | Always reloaded | Never reloaded |
 |---|---|
-| `STATUS.md`; `constraints.md`; the `## The criterion` block of `frame.md`; `lessons.md`; the `description:` line of each file in `decisions/`; the current slice's plan | `brainstorm.md`; `shaping.md`; `kickoff.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
+| `STATUS.md`; `constraints.md`; the `## The criterion` block of `frame.md`; `lessons.md`; the `description:` line of each file in `decisions/`; the current slice's plan | `brainstorm.md`; `shaping.md` (except as below); `kickoff.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
+
+At `phase: slicing` it also reloads `shaping.md`; at `phase: reality`, `slices.md` in full and `shaping.md`.
 
 A standing document is one that is still true. A closed phase is a debate that ended. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a project that resumes without it resumes on whatever was written last, which is usually a detail.
 
@@ -250,7 +252,7 @@ A *"/flow:design: <artifact>"* row closes when the user reports the artifact app
 
 1. Verify the Done as written in `slices.md`, with evidence the user names: the document, the photo, the invoice, the confirmation. Record what it cost in time and money against the slice's budget.
 2. Lessons, in two places. The narrative under the slice in `slices.md`, as **"S<n> — done on <date>"**: what happened, what surprised, what it cost. The rules, one line each, appended to `lessons.md`: *"ask the supplier for the lead time in writing before the slice that depends on it starts."*
-3. Tick the slice, set the next `slice:` and `step: plan`, add the Log line (the work reference, § `slices.md` and `lessons.md`).
+3. Tick the slice, set the next `slice:` and `step: plan`, add the Log line (the work reference, § `slices.md` and `lessons.md`). Moves 2 and 3 are one call: the narrative, the rules and `STATUS.md`, with the commit (the design files of the slice's `/flow:design` rows in it) when the home is under version control, chained with `&&`.
 4. **Second stop.** One message: what closed, the evidence, spent against budget and against the appetite so far, the new rules, the decision candidate if any with the question whether to record it, and: *"S3 closed. Plan S4, or stop here?"*
 
 A closed slice isn't reopened; if a later slice finds it was wrong, the fix goes forward, within the appetite (same section).
@@ -265,7 +267,7 @@ Applies to frame, shaping, kickoff, slicing and reality. Four moves, in order:
    | **Criterion fidelity** | Each requirement, shape or slice names the criterion line it serves; whatever traces to none is reported with what keeping it would take |
 
    The frame phase checks itself differently: that the criterion block exists and that the body doesn't contradict it.
-2. **Update `STATUS.md`**: `phase:`, `updated:`, Log line.
+2. **Update `STATUS.md`**: `phase:`, `updated:`, Log line; when the home is under version control, commit it with the document just produced, in one call (explicit `git add`). If the call stops before the commit: `git status --short`, finish the missing write, then commit.
 3. **Decision candidate** in the same report, when the work reference, § Decisions, says so: a real alternative discarded, a known problem deferred on purpose, a choice that will surprise whoever reads the plan later. Propose it; never write it unasked, and on a yes send the `decision-write` request that section shows.
 4. **Stop and ask** before the next phase.
 

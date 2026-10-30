@@ -2,6 +2,22 @@
 
 What shipped, by version, newest first. Each entry names the work it came from; the version lives in `.version`.
 
+## v0.4.0 — 2026-10-30 — Lighter work sessions, and screens checked without filling the session
+
+A slice's execution no longer piles up in the main session, so long works stay well under the point where the context is compacted. Design screens can now be checked by a separate agent that returns only a verdict.
+
+- **Slice runner**: in `/flow:dev`, executing a slice (executors, reviewers, fix rounds, the ledger, the final review and the gate) runs in one background subagent that returns a short summary; the main session keeps the stops, `STATUS.md` and the commits. With nested subagents turned off, the loop runs in the main session as before.
+- **Leaner hand-offs**: the slice packet is passed by path, agents return short summaries with the full reports on disk, the planner returns a ten-line summary, and the ledger and the slice close are written in fewer calls.
+- **No forced restart**: the user is never asked to run `/clear` or `/compact` at a slice close; a new session is suggested only at a natural pause.
+- **Screen check**: a new screen-checker agent looks at an exported screen and reports a verdict, and `/flow:design` and the Pen adapter use it so screenshots stay out of the main session.
+- **Projects**: the project close chains its bookkeeping in one call.
+- **Docs**: the README and the architecture describe the runner, the ledger writes and the screen checker.
+- **Work**: `lean-conductor`
+- **Decision**: [A slice's execution runs in a runner subagent, not in the main session](decisions-log/2026-10-29-slice-execution-runs-in-a-runner-subagent.md)
+- **Decision**: [The main session grows less instead of being cleared at every slice](decisions-log/2026-10-29-main-session-grows-less-not-cleared.md)
+
+---
+
 ## v0.3.0 — 2026-10-27 — A design phase for Flow, with /flow:design
 
 Flow can now carry design work alongside the code: design files live in the repo, and a new `/flow:design` skill composes screens from a shared library and promotes new components back to it. Pen is the first supported tool.

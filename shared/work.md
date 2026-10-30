@@ -108,7 +108,7 @@ description: "<what the user wants to achieve>"
 <!-- date — slice — what happened — spent (time, money) — remaining — blockers -->
 ```
 
-**Both.** `work:` (repo) or `project:` (project) is the bare name; the date lives in the folder name. `phase:` says where the work is; when it's `slice`, `slice:` and `step:` say which slice and where in it (`plan`, `review`, `execute`, `close`). `phase:` moves when a definition phase closes, together with `updated:` and a Log line. Without these three fields an interrupted work shows up the next morning as finished, or as never started. (repo) `tests:` is present only when the level was raised for this work, and overrides the project's level for it. (project) `design:` and `presets:` name the tool `/flow:design` uses and its adapter; they live only in the top home (`parent: null`, sub-projects don't carry them), are present only when set (on the user's word, never guessed), and without `design:` only Claude artifacts are offered. After a verification, the Log line states the outcome: *"09-02 — impact — 2 problems, fixed in V2 and V4 — 14 min — $2.10"*.
+**Both.** `work:` (repo) or `project:` (project) is the bare name; the date lives in the folder name. `phase:` says where the work is; when it's `slice`, `slice:` and `step:` say which slice and where in it (`plan`, `review`, `execute`, `close`; in repo, `close` is reached through the ledger's `## Close draft` and never written). `phase:` moves when a definition phase closes, together with `updated:` and a Log line. Without these three fields an interrupted work shows up the next morning as finished, or as never started. (repo) `tests:` is present only when the level was raised for this work, and overrides the project's level for it. (project) `design:` and `presets:` name the tool `/flow:design` uses and its adapter; they live only in the top home (`parent: null`, sub-projects don't carry them), are present only when set (on the user's word, never guessed), and without `design:` only Claude artifacts are offered. After a verification, the Log line states the outcome: *"09-02 — impact — 2 problems, fixed in V2 and V4 — 14 min — $2.10"*.
 
 ## `slices.md` and `lessons.md`
 
@@ -116,9 +116,9 @@ description: "<what the user wants to achieve>"
 
 `lessons.md` is created at the first slice close: one rule per line, the digest every later subagent reads instead of `slices.md` in full.
 
-**Closing a slice, the bookkeeping.** Tick the slice in `STATUS.md`, set `slice:` to the next one and `step:` to `plan`, add the Log line. A closed slice isn't reopened: if a later slice finds an earlier one was wrong, the fix goes into the current slice, stated in `slices.md`, or becomes a new slice at the end (project: if the appetite allows).
+**Closing a slice, the bookkeeping.** Tick the slice in `STATUS.md`, set `slice:` to the next one and `step:` to `plan`, add the Log line. These edits, the narrative into `slices.md`, the rules into `lessons.md` and the commit go in one call, chained with `&&` so it commits only when every write succeeded (project: the commit only when the home is under version control). If the call stops before the commit: `git status --short` and `git diff --stat` on the three files, then finish the missing writes, then commit. A closed slice isn't reopened: if a later slice finds an earlier one was wrong, the fix goes into the current slice, stated in `slices.md`, or becomes a new slice at the end (project: if the appetite allows).
 
-**Commits.** repo: commit at each phase close and slice close, with explicit `git add <paths>`, never `-A` or `.`. project: the same when the home is under version control; in a plain folder the files are the record.
+**Commits.** repo: commit at each phase close and slice close, `STATUS.md` updated before the commit and in it, with explicit `git add <paths>`, never `-A` or `.`. project: the same when the home is under version control; in a plain folder the files are the record.
 
 ## Decisions
 
@@ -181,9 +181,13 @@ Flow's own agents live in the plugin's `agents/` folder, one file per role, disp
 | Plan reviewer | `flow:plan-reviewer` | top | Plan reviews, the fidelity check, the action-plan review, the builder check (`flow:brainstorm`) |
 | Impact | `flow:impact` | top | Impact and the reality check, with the lenses in the packet |
 | Executor | `flow:executor` | mid | One task of a plan |
+| Screen checker | `flow:screen-checker` | mid | A drawn screen's check, from exported images (/flow:design) |
+| Slice runner | `flow:slice-runner` | top | A slice's execution and the close's drafts (/flow:dev) |
 | Task reviewer | `flow:task-reviewer` | mid | A task's commits; top tier for a `critical` task, the final review and a third fix round |
 
-**Tiers.** The conductors speak of the top tier (planner, plan-reviewer, impact, the fidelity check, a `critical` task's review, the final review, a third fix round) and the mid tier (executor, other task reviews). Only the agent definitions name model aliases.
+**Tiers.** The conductors speak of the top tier (planner, plan-reviewer, impact, slice runner, the fidelity check, a `critical` task's review, the final review, a third fix round) and the mid tier (executor, other task reviews, the screen checker). Only the agent definitions name model aliases.
+
+**Nesting.** The slice runner dispatches the executor and the task reviewer, so it relies on nested subagents: they nest three layers by default, and `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1` turns it off ([nested subagents](https://code.claude.com/docs/en/sub-agents#let-subagents-spawn-their-own-subagents), [env vars](https://code.claude.com/docs/en/env-vars)). With fork mode on, the default, the runner runs in the background and Claude can't wait for it ([foreground or background](https://code.claude.com/docs/en/sub-agents#run-subagents-in-foreground-or-background), [fork mode](https://code.claude.com/docs/en/sub-agents#turn-fork-mode-on-or-off)). The permission prompts of background subagents surface in the main session ([background subagents](https://code.claude.com/docs/en/sub-agents#tools-permissions-and-results-of-background-subagents)). A subagent can resume another with `SendMessage` ([resume subagents](https://code.claude.com/docs/en/sub-agents#resume-subagents)), which, when deferred, it loads through `ToolSearch`, and stop one with `TaskStop` ([tools reference](https://code.claude.com/docs/en/tools-reference)). When the runner can't dispatch, it returns `NO_NESTING` and the conductor runs the loop in session.
 
 **Model per dispatch**, first hit wins:
 
@@ -195,15 +199,16 @@ A role whose definition is mid, dispatched on the top tier with no request and n
 
 Two environment variables beat all of this, and Flow can't see past them: `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` (with `CLAUDE_CODE_SUBAGENT_MODEL`) forces the model of every subagent ([model choice](https://code.claude.com/docs/en/sub-agents.md#choose-a-model), [one model for all](https://code.claude.com/docs/en/sub-agents.md#run-every-subagent-on-one-model)), and `CLAUDE_CODE_EFFORT_LEVEL` overrides every effort ([effort level](https://code.claude.com/docs/en/model-config.md#set-the-effort-level)). Name them to the user in one sentence when a model they asked for doesn't seem to apply.
 
-**Dispatch contract.** The prompt is the slice packet (or the conductor's own packet) verbatim at the top, then the role's instruction. Paths in a packet or an instruction are expanded absolute paths, never variables: a subagent substitutes nothing.
+**Dispatch contract.** The prompt is the slice packet (or the conductor's own packet) verbatim at the top, then the role's instruction. Paths in a packet or an instruction are expanded absolute paths, never variables: a subagent substitutes nothing. Every dispatch carries the packet in its prompt, except the slice runner, which gets the packet as a file.
 
-**Ledger.** `<work dir>/V<n>-ledger.md`, written by the conductor and committed with the close.
+**Ledger.** `<work dir>/V<n>-ledger.md`, written by the slice runner (the conductor in the fallback) and committed with the close.
 
-- First line `# Ledger — V<n>`. At the start of execute the conductor runs `printenv CLAUDE_CODE_SUBAGENT_MODEL_FORCE CLAUDE_CODE_SUBAGENT_MODEL` once and writes the result on the second line.
-- One line per dispatch, written once, when the agent returns: `- <task> · <agent> · <model> · <outcome> · <commits>`. The model is the passed value, or `definition: <alias>` when none was passed, plus `forced` when the variable is set.
-- `- T<n>: complete` when a task's review passes; `Ruling: <what> — <why> — <cost if wrong>` for each ruling.
+- The head, in one write: first line `# Ledger — V<n>`, second line the result of `printenv CLAUDE_CODE_SUBAGENT_MODEL_FORCE CLAUDE_CODE_SUBAGENT_MODEL`, run once at the start of execute.
+- Two writes per task. At the first executor return that carries commits: its line `- <task> · <agent> · <model> · <outcome> · <commits>` and its report, with any earlier return of the task held until then. When the task passes: every later line of the task in order (each review, each fix dispatch with its report), then `- T<n>: complete`. A task reopened after `complete` gets one more write when it passes again. Before a `STOP` returns, the lines held so far go in one write. The model is the passed value, or `definition: <alias>` when none was passed, plus `forced` when the variable is set.
+- `Ruling: <what> — <why> — <cost if wrong>`, written at once as its own write: a ruling on findings, a split (`T4a`/`T4b`), and the user's answer to a `STOP`, written when the runner is dispatched again.
 - Each agent's report is appended under its line, trimmed to status, commits, tests run, `Servers:`, concerns.
-- On resume at `step: execute` the ledger is reloaded, and tasks marked complete are never dispatched again.
+- On resume at `step: execute` the ledger is reloaded, and tasks marked complete are never dispatched again. A task with commits and no `complete` is reviewed again: its commits in the ledger, plus the later commits whose subject is `Fix review findings on T<n>:`. A task resumed between its two writes is reviewed from round 1, and review verdicts and low findings not yet written are lost. Ledgers written one line per dispatch have the same lines and resume the same way. With every task complete and no tail yet, the final review takes the ledger's shas plus the commits of `git log --format='%h %s' <first ledger sha>..HEAD`, so a final-review fix committed before the tail write is not lost.
+- At the end, in one write and in this order: the final review's lines and its fix round, the gate's fix round; any `pending: <Done item>` lines, one each; `Final review: <done | skipped>`; `Gate: <result>`; then `## Close draft` holding `Narrative: <text>`, `Lessons:` (one rule per line) and `Decision candidate: <gist | none>`.
 
 ## Closing a work
 

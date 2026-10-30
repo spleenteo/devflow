@@ -75,7 +75,7 @@ Token cost comes from fresh contexts rereading the same documents. Wall-clock co
 2. **Same packet, same position.** Within a slice, the packet is one verbatim text placed at the top of every subagent prompt, with the specific instruction after it. Identical prefixes hit the prompt cache.
 3. **Two stops per slice.** After the reviewed plan, and after the close. Plan and review run back to back.
 4. **One message per verification.** Findings ranked by severity, each with a recommended action, one question at the end. Never one finding at a time.
-5. **Model and effort by role.** Top tier for the planner, the plan review, impact and the fidelity check; mid tier for executors and task reviews, except a `critical` task's. Tasks without dependencies dispatched in parallel. Tiers and precedence: the work reference, § Agents.
+5. **Model and effort by role.** Top tier for the planner, the plan review, the slice runner, impact and the fidelity check; mid tier for executors and task reviews, except a `critical` task's. Tasks without dependencies dispatched in parallel. Tiers and precedence: the work reference, § Agents.
 
 And measure: every Log line in `STATUS.md` carries wall-clock and cost (from `/cost`), so the next tuning is a comparison, not an opinion.
 
@@ -166,9 +166,21 @@ Resuming reloads the **standing documents**, and nothing else:
 
 | Always reloaded | Never reloaded |
 |---|---|
-| `STATUS.md`; the `## The criterion` block of `frame.md` when the work has one; the sections of `docs/development-guidelines.md` that apply; `lessons.md`; the `description:` line of the `docs/decisions-log/` files that match the work (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords` from the `description:` in `STATUS.md`); the current slice's plan; at `phase: design`, `shaping.md` and `docs/design/README.md`; at `step: execute`, the slice's ledger (tasks marked complete are never dispatched again) | `brainstorm.md`; `shaping.md` (except at `phase: design`); `breadboard.md`; closed plans; `spike-*.md`; `frame.md` below its criterion |
+| `STATUS.md`; the `## The criterion` block of `frame.md` when the work has one; the sections of `docs/development-guidelines.md` that apply; `lessons.md`; the `description:` line of the `docs/decisions-log/` files that match the work (`flow:docs`, `op: descriptions`, `layout: repo`, `dir`, `keywords` from the `description:` in `STATUS.md`) | `brainstorm.md`; `shaping.md` (except by the table below); `breadboard.md` (except by the table below); closed plans; `spike-*.md`; `frame.md` below its criterion |
 
-A standing document is one that is still true. A closed phase is a debate that ended. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a work that resumes without it resumes on whatever was written last.
+**By phase and step**, on top of the always-reloaded row:
+
+| Phase or step | Reloaded |
+|---|---|
+| design | `shaping.md`, `docs/design/README.md` |
+| slicing | `shaping.md`, or `breadboard.md` when breadboarding slices |
+| impact | `slices.md`, in full |
+| plan | `docs/impact-lenses.md` and the decisions matched by the slice's `files:` |
+| review | the plan's header only |
+| execute | `rg -n '^## Close draft' <ledger>`: a match goes to the close, no runner; else, if a `flow:slice-runner` was dispatched earlier in this conversation and hasn't returned, wait for its notification and never dispatch again; else the runner (the ledger tells which tasks are complete, and they are never dispatched again), then § step: execute from move 2 (move 3 says when the packet is rebuilt). In a new session, the resume message also asks whether another session still runs the slice (the user can see it in `/tasks`): never a second runner |
+| close | the ledger from `Final review:` on, with the `pending:` lines just before it: `Final review:`, `Gate:` and `## Close draft` |
+
+A standing document is one that is still true. A closed phase is a debate that ended. Each row of the second table holds what the next step reads and nothing more: `shaping.md` or `breadboard.md` is what slicing cuts from, `slices.md` is what impact and the plan measure against, the lenses and matched decisions are what the planner weighs, the plan's header is what a review checks, the ledger is the only record of what the runner has done, and the close draft is the work already done, waiting to be confirmed. The frame belongs to the first kind: it carries the criterion every later document is measured against, and a work that resumes without it resumes on whatever was written last.
 
 Open with what you reloaded, in five lines — work, phase and slice, cost so far from the Log, the criterion in the frame's own words, the blockers from the last Log line — then ask. The user has to be able to see that the frame is in the room.
 
@@ -196,7 +208,7 @@ Then write the profile's answers (`## Profile`, § Writing) and commit them ther
 
 ## Step 3 — Define: from problem to slices
 
-For each phase: invoke the tool telling it where to save, commit, update `phase:`, stop. These phases are dialogues with the user; the stops are natural.
+For each phase: invoke the tool telling it where to save, then close by Step 5 (`STATUS.md` and the commit in one call), stop. These phases are dialogues with the user; the stops are natural.
 
 | `phase:` | When | Tool | Produces |
 |---|---|---|---|
@@ -266,13 +278,13 @@ From here `phase: slice`. For each slice, in `slices.md` order, four steps and t
 
 Dispatch `flow:planner` with the packet, the effective test level, the previous slice's plan path when there is one (a model for tone; the impact findings are already in `slices.md`), the expanded absolute path of `executor.md` in the agents folder (its test policy is the one the plan points to) and this instruction:
 
-> Save the plan to `docs/work/2026-09-02-mobile-menu/V2-plan.md`. Test level: `<level>`. Mark dependencies between tasks (`depends on: T1`) and mark `critical` the tasks that touch shared or risky code.
+> Save the plan to `docs/work/2026-09-02-mobile-menu/V2-plan.md`. Test level: `<level>`. Mark dependencies between tasks (`depends on: T1`) and mark `critical` the tasks that touch shared or risky code. Put a **Summary** (at most ten lines) and a **Files** line (the union of the tasks' Files) in the plan's header.
 
-Writing the plan surfaces deviations from the mandate: an affordance better moved to another slice, a file that doesn't exist, a mechanism the shape didn't foresee. The planner returns the plan's path and its deviation lines: record those in `slices.md` under **"Deviations found while planning V<n>"** (no heading when it returns `none`) and carry on to the review without stopping.
+Writing the plan surfaces deviations from the mandate: an affordance better moved to another slice, a file that doesn't exist, a mechanism the shape didn't foresee. The planner returns `Plan:`, `Summary:`, `Files:` and `Deviations:`; the conductor doesn't read the plan. Record the deviation lines in `slices.md` under **"Deviations found while planning V<n>"** (no heading when it returns `none`) and carry on to the review without stopping.
 
 ### `step: review`
 
-Right after the plan, one `flow:plan-reviewer`, never in session: whoever just wrote the plan is the worst head for finding its contradictions. Dispatch it with the packet, the plan and the lens table below. The decisions in the packet match the plan too: ask `op: descriptions` again with `keywords` and `files:` the plan's files, and add any new description.
+Right after the plan, one `flow:plan-reviewer`, never in session: whoever just wrote the plan is the worst head for finding its contradictions. Dispatch it with the packet, the plan and the lens table below. The decisions in the packet match the plan too: ask `op: descriptions` again with `keywords` and `files:` taken from the planner's `Files:`, and add any new description.
 
 | Lens | Looks for |
 |---|---|
@@ -282,28 +294,50 @@ Right after the plan, one `flow:plan-reviewer`, never in session: whoever just w
 | **Guideline compliance** | Tests, naming, function size and code placement in the plan follow the guidelines |
 | **Project lenses** | The project's own lenses from `docs/impact-lenses.md`, applied to the plan: what this change breaks in this project, not how its code is written. When the file is absent, one line "project lenses: none", not a finding |
 
-**First stop.** One message: the plan in ten lines, the findings ranked with a recommended fix each, the deviations recorded, one question: *"Apply the recommended fixes and execute? Say which to skip."*
+**First stop.** One message: the planner's Summary, the findings ranked with a recommended fix each, the deviations recorded, one question: *"Apply the recommended fixes and execute? Say which to skip."*
 
-Approved fixes go into the plan in place. If the structure changes (tasks split, reordered or added), send the planner back with the findings.
+Approved fixes go into the plan in place, in one call, reading only the plan lines the findings point to: one `Edit` when they fall in one passage, else one Bash call that applies every replacement and writes nothing unless each matches exactly once; never one call per finding. If the structure changes (tasks split, reordered or added), send the planner back with the findings.
 
 ### `step: execute`
 
-Check the tree first (`git status --short`), then keep the ledger, `docs/work/<dir>/V<n>-ledger.md`, in the format of § Agents: run the `printenv` line now. Tasks marked complete are never dispatched again. Commits in the ledger without `complete` → review those commits. Uncommitted leftovers of a task not complete → a fresh executor gets the file list and either finishes them or restores them; never discard silently, never reset. The loop runs without stopping between tasks:
+The conductor stays thin here: it hands the slice to `flow:slice-runner` and waits. Its moves, in order:
+
+1. Write `step: execute` and `updated:` in `STATUS.md` and commit it with the plan's fixes (`Start executing V<n>`), so a resume in another session finds the step on the branch. No `step: close` is ever written: a ledger holding `## Close draft` sends a resume straight to the close.
+2. Decide `Final review:` without reading the plan: `run` when `rg -c '^### T' <plan>` is above 4, or a path of the plan's `Files:` line (the planner's return, or on a resume `rg -n '^\*\*Files\*\*' <plan>`) appears in another slice's section of `slices.md`; else `skip`.
+3. Write `<work dir>/V<n>-packet.md`, the slice packet verbatim. It is committed at the close with the ledger. On a resume at `step: execute`, move 1 doesn't run again, moves 2 and 4 run with the existing packet file, and this move runs only if the file is missing.
+4. Dispatch `flow:slice-runner` once, on the top tier by § Agents, with one field per line, all paths expanded and absolute: `Packet: <work dir>/V<n>-packet.md` · `Skill: ${CLAUDE_SKILL_DIR}/SKILL.md, § step: execute › The loop and § step: close moves 1–2` · `Work reference: ${CLAUDE_PLUGIN_ROOT}/shared/work.md § Agents` · `Agents: ${CLAUDE_PLUGIN_ROOT}/agents/` · `Plan: <path>` · `Ledger: <path>` · `Work dir: <path>` · `Models: <the request made in session | top=<x>, mid=<y> from the Models paragraph | none>` · `Final review: run | skip` · `User at first stop: <what the user said | none>` · `Answer: <the user's answer to a previous STOP | none>`.
+5. Say one line, for example *"V2 runs in the background in the slice runner; I'll pick it up when it reports. I won't touch the checkout meanwhile."*, end the turn, and touch nothing in the checkout or the work folder until the notification arrives.
+
+The runner returns `Status:`, `Commits:`, `Gate:`, `Final review:`, `Rulings:`, `Decision candidate:`, `Pending:` and `Question:`:
+
+- `DONE` → the close. A `Gate:` that isn't green: don't close; tell the user.
+- `STOP` → put its `Question:` to the user, then dispatch again with `Answer:`.
+- `NO_NESTING`, or the dispatch denied or erroring before the runner starts → one line to the user, and the conductor runs `#### The loop` itself, in session, then close moves 1–2 as drafts. The ledger already holds whatever the failed attempt left: keep it; the loop writes the head only if it is missing, never again.
+- Failed or interrupted (a runner that dies partway included) → `TaskStop` the nested agents still running (or the user does it from `/tasks`), `git status --short`, dispatch again.
+
+#### The loop
+
+The loop runs in the runner, or in session in the fallback. First, check the tree (`git status --short`) and keep the ledger, `docs/work/<dir>/V<n>-ledger.md`, in the format and writes of § Agents › Ledger (the head in one write, two writes per task, rulings at once, the tail in one write): run the `printenv` line and write the head now, unless the ledger already has it. Tasks marked complete are never dispatched again. Commits in the ledger without `complete` → review those commits and the task's fix commits after them (`git log --format='%h %s' <the task's first sha>..HEAD`, subjects `Fix review findings on T<n>:`), in ledgers of either format. Uncommitted leftovers of a task not complete → a fresh executor gets the file list and either finishes them or restores them; never discard silently, never reset. The loop runs without stopping between tasks:
 
 - **Order.** A task with no pending dependency whose files are disjoint from the others' runs in parallel with them; tasks that share a file, or a build step that would see the other's half-written files, run one after another.
 - **Dispatch `flow:executor`**: packet verbatim on top, the task text, the Interfaces of the tasks it depends on. Model by § Agents (mid tier).
-- **Status.** `DONE` → review. `DONE_WITH_CONCERNS` → read the concerns, then review. `NEEDS_CONTEXT` → answer from the repo and the packet, and continue the same executor with SendMessage (fallback as under Findings). `BLOCKED` → more context; then the top tier; then the conductor splits the task, recording it in the ledger with a `Ruling:` line; else a ruling, or a stop.
+- **Status.** `DONE` → review. `DONE_WITH_CONCERNS` → read the concerns, then review. `NEEDS_CONTEXT` → answer from the repo and the packet, and continue the same executor with SendMessage (fallback as under Findings). `BLOCKED` → more context; then the top tier; then the runner (or the conductor, in the fallback) splits the task, recording it in the ledger with a `Ruling:` line, written at once; else a ruling, or a stop.
 - **Review** with `flow:task-reviewer`: packet on top, the task text, the executor's report verbatim (never the ledger's trimmed copy), the task's own commits (`git show <shas>`, from the report), never a BASE..HEAD range that parallel tasks share, and the expanded absolute path of `executor.md` in the agents folder (the Models paragraph), whose test policy, commit rules and server rule it checks against. Mid tier; top tier when the task is `critical`.
-- **Findings.** Rounds 1 and 2 go back to the same executor with SendMessage (a deferred tool: load it first; when it can't be reached, a fresh executor with the findings and the commits), each followed by a review of the fix commits. Round 3 is a fresh executor on the top tier, then a top-tier review. After that, a ruling and on: `Ruling: <what> — <why> — <cost if wrong>`. A task passes when both verdicts are `pass` and no high or medium finding remains; low findings are logged in the ledger, not fixed. Then `- T<n>: complete`.
-- **Stops** only for an irreversible step, a security matter, a side effect outside the checkout, a plan broken beyond guessing. This skill doesn't interrupt the loop to fix the plan; the rulings are read at the close.
-- **Final review**, `flow:task-reviewer` on the top tier, with the slice packet, the plan as the task text, the slice's shas from the ledger and the `executor.md` path, only when the plan has more than four tasks or touches files shared with other slices. Its findings go to one fresh mid-tier executor, then one review; what remains is ruled.
+- **Findings.** Rounds 1 and 2 go back to the same executor with SendMessage (a deferred tool: load it first; when it can't be reached, a fresh executor with the findings and the commits), each followed by a review of the fix commits. The fix instruction names the commit subject `Fix review findings on T<n>: <what>`. Round 3 is a fresh executor on the top tier, then a top-tier review. After that, a ruling and on (written at once): `Ruling: <what> — <why> — <cost if wrong>`. A task passes when both verdicts are `pass` and no high or medium finding remains; low findings are logged in the ledger, not fixed. Then `- T<n>: complete`, in the task's second write (a reopened task: one more write when it passes again).
+- **Stops** only for an irreversible step, a security matter, a side effect outside the checkout, a plan broken beyond guessing, a gate still red after its fix round: in the runner, it writes the ledger lines it holds in one write and returns `STOP` with the question; in the fallback, the conductor asks the user. The loop doesn't stop to fix the plan; the rulings are read at the close.
+- **Final review**, `flow:task-reviewer` on the top tier, with the slice packet, the plan as the task text, the slice's shas from the ledger (on a resume with no tail, plus the later commits, as § Agents › Ledger says) and the `executor.md` path, only when the instruction says `Final review: run` (the conductor's rule above; in the fallback, the same rule). Its findings go to one fresh mid-tier executor, then one review; what remains is ruled.
 
 ### `step: close`
 
-1. Verify the slice's Done as written in `slices.md`, plus the gate: the `## Gate` section of the guidelines if present, else tests green, typecheck or lint green, build green. Run the server checks the executors reported (`Servers:`), then stop what you started. The full suite runs here and only here, through the gate. The server rule binds this skill too: start no dev server or watcher unless a check needs one, stop whatever was started before moving on, and `lsof -nP -iTCP -sTCP:LISTEN` when in doubt. If the slice is a refactor, the Done is a regression checklist written before starting and run by hand before committing.
-2. Lessons, in two places. The narrative under the slice in `slices.md`, as **"V<n> — done on <date>"**: what execution revealed, the rulings read from the ledger. The rules, one line each, appended to `lessons.md`: *"before declaring something unused, grep all of `src`, value and setter, and say in the report where you looked."* A ruling that discarded a real alternative is a decision candidate (see the work reference, § Decisions).
-3. Update `STATUS.md` as the work reference says (§ `slices.md` and `lessons.md`, closing a slice), with wall-clock and cost in the Log line.
-4. Commit, the ledger with it. **Second stop.** One message: what closed, the gate result, the new rules, the decision candidate if any with the question whether to record it, and: *"V3 closed and committed. Plan V4, or stop here?"*
+Moves 1–2 are drafts: the runner writes them (the conductor, in the fallback), and they end in the ledger tail of § Agents › Ledger. The runner never touches `slices.md` or `lessons.md`.
+
+1. Verify the slice's Done as written in `slices.md`, plus the gate: the `## Gate` section of the guidelines if present, else tests green, typecheck or lint green, build green. Run the server checks the executors reported (`Servers:`), then stop what you started. The full suite runs here and only here, through the gate. The server rule binds this skill too: start no dev server or watcher unless a check needs one, stop whatever was started before moving on, and `lsof -nP -iTCP -sTCP:LISTEN` when in doubt. If the slice is a refactor, the Done is a regression checklist written before starting and run by hand before committing. A Done item that can't be run goes in the ledger as `pending: <Done item>`, one line each, just before `Final review:`. The ledger gets `Final review:` and `Gate:` (all in the tail's one write, § Agents › Ledger). A gate that isn't green gets one fix round (a fresh executor with the failure, then a review) before the close draft is written; still red → `STOP` (the conductor asks the user, in the fallback).
+2. Lessons, drafted in the ledger's `## Close draft`. `Narrative:` is what execution revealed, with the rulings read from the ledger, for the slice's **"V<n> — done on <date>"** entry in `slices.md`. `Lessons:` holds the rules, one line each, for `lessons.md`: *"before declaring something unused, grep all of `src`, value and setter, and say in the report where you looked."* A ruling that discarded a real alternative is the `Decision candidate:` (see the work reference, § Decisions).
+
+Then the conductor, before move 3: runs `lsof -nP -iTCP -sTCP:LISTEN` and stops leftovers; runs each `pending:` item with the user.
+
+3. In one call, chained with `&&`: `Narrative:` into `slices.md` under the slice, as **"V<n> — done on <date>"**; `Lessons:` into `lessons.md`; `STATUS.md` as the work reference says (§ `slices.md` and `lessons.md`, closing a slice), with wall-clock and cost in the Log line; `git add` of the three, the ledger and the packet file; the commit. If the call stops before the commit: `git status --short` and `git diff --stat` on the three files, then finish the missing writes, then commit.
+4. **Second stop.** One message: what closed, the gate result, the new rules, the decision candidate if any with the question whether to record it, and: *"V3 closed and committed. Plan V4, or stop here?"*
 
 A closed slice isn't reopened (rule in the same section).
 
@@ -318,8 +352,8 @@ Applies to frame, shaping, breadboard, design, slicing and impact. Five moves, i
    | **Criterion fidelity** | Each requirement, shape or slice names the criterion line it serves; whatever traces to none is reported with what keeping it would take |
 
    On the others, in session. Skipped entirely on a work with no frame, and said so. At `design` the document checked is the corrected `shaping.md`, skipped when there were no corrections, and said so.
-2. **Commit** the document just produced. Explicit `git add` on the touched files, never `-A` or `.`: the working tree may hold unrelated work. Imperative messages, in the language the repo already uses. The design phase runs move 3 first and commits `shaping.md`, the files `/flow:design` returned and `STATUS.md` (`phase: slicing`, `updated:`, Log line) in one commit.
-3. **Update `STATUS.md`**: `phase:`, `updated:`, Log line with wall-clock and cost. After a verification the line states the outcome: *"09-02 — impact — 2 problems, fixed in V2 and V4 — 14 min — $2.10"*.
+2. **Update `STATUS.md`**: `phase:`, `updated:`, Log line with wall-clock and cost. After a verification the line states the outcome: *"09-02 — impact — 2 problems, fixed in V2 and V4 — 14 min — $2.10"*.
+3. **Commit** the document just produced with `STATUS.md`; moves 2 and 3 are one call, chained with `&&`. If the call stops before the commit: `git status --short`, finish the missing write, then commit. Explicit `git add` on the touched files, never `-A` or `.`: the working tree may hold unrelated work. Imperative messages, in the language the repo already uses. The design phase commits `shaping.md`, the files `/flow:design` returned and `STATUS.md` (`phase: slicing`, `updated:`, Log line) in one commit.
 4. **Decision candidate** in the same report, when the work reference, § Decisions, says so: a real alternative discarded, a known problem deferred on purpose, a behaviour that will surprise whoever reads the code. Propose it; never write it unasked, and on a yes send the `decision-write` request that section shows.
 5. **Stop and ask** before the next phase.
 
@@ -349,7 +383,7 @@ Code, changelog, version and archived work land on the target in one changeset. 
 |---|---|---|
 | Opening, definition, slice loop | `/flow:dev` | the `flow` plugin |
 | A slice's plan, review and impact | Flow's agents (`flow:planner`, `flow:plan-reviewer`, `flow:impact`) | the `flow` plugin |
-| A plan's execution | Flow's agents (`flow:executor`, `flow:task-reviewer`) | the `flow` plugin |
+| A plan's execution | Flow's agent `flow:slice-runner`, dispatching `flow:executor` and `flow:task-reviewer` | the `flow` plugin |
 | Changelog and version | `flow:docs` (by hand: `/flow:changelog`) | the `flow` plugin |
 | Archiving | `/flow:archive` | the `flow` plugin |
 

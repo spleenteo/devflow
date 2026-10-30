@@ -10,6 +10,11 @@ def work_write(cmd):
     if re.search(r'\btee\b[^|;&\n]*docs/work/',cmd): return True
     if re.search(r'\b(sed|perl)\s+(-\w+\s+)*-\w*i\b[^|;&\n]*docs/work/',cmd): return True
     if re.search(r'\.write\(|write_text\(',cmd) and 'docs/work/' in cmd: return True
+    # after a cd into the work folder, a write to any path counts
+    if re.search(r'\bcd\s+\S*docs/work/',cmd):
+        if re.search(r'(?<![0-9&>])>>?\s*[^\s&>]',cmd): return True
+        if re.search(r'\btee\b',cmd): return True
+        if re.search(r'\b(sed|perl)\s+(-\w+\s+)*-\w*i\b',cmd): return True
     return False
 def kind(cmd):
     if re.search(r'\bgit\b',cmd): return 'git'

@@ -217,7 +217,7 @@ Read the [Releases](docs/development-guidelines.md#releases) rules before changi
 
 ## Update
 
-Third-party marketplaces don't auto-update by default ([keep plugins updated](https://code.claude.com/docs/en/plugins/install#keep-plugins-updated)). To pick up a release:
+`/flow:dev` and `/flow:project` say in their first message when a newer release is out. Third-party marketplaces don't auto-update by default ([keep plugins updated](https://code.claude.com/docs/en/plugins/install#keep-plugins-updated)). To pick up a release:
 
 ```bash
 claude plugin marketplace update flow

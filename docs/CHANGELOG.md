@@ -2,6 +2,17 @@
 
 What shipped, by version, newest first. Each entry names the work it came from; the version lives in `.version`.
 
+## v0.4.1 — 2026-10-30 — Flow tells you when a newer release is out
+
+Flow now checks, at the start of a session, whether a newer release exists, so an installed copy no longer falls silently behind.
+
+- **Update notice**: `/flow:dev` and `/flow:project` compare the highest `v*` tag of Flow's repository with the installed version, after the dependency check, and add one line with the update commands to the first message when a newer release exists.
+- **Quiet when it cannot know**: offline, or on a development copy, nothing is shown.
+- **Docs**: the README's Update section mentions the notice.
+- **Work**: `update-check`
+
+---
+
 ## v0.4.0 — 2026-10-30 — Lighter work sessions, and screens checked without filling the session
 
 A slice's execution no longer piles up in the main session, so long works stay well under the point where the context is compacted. Design screens can now be checked by a separate agent that returns only a verdict.

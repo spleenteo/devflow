@@ -341,6 +341,17 @@ Report: which work, how many links updated, where its trace remains, whether the
 3. No wall. No `archived.md`, unless the parent folder is a git repo: then add the same one-row entry to `<home>/../archived.md`, creating it with the header above (paths adjusted).
 4. Report where it went.
 
+## Release check
+
+Tells the user when a newer Flow is out. Runs once per invocation of `/flow:dev` and `/flow:project`, right after the dependency check; it never blocks, asks or installs. The installed version is the plugin's `.version` (the skill gives its path); the latest release is the highest `v*` tag of Flow's public repo:
+
+```bash
+git -c http.lowSpeedLimit=1000 -c http.lowSpeedTime=5 ls-remote --tags --refs https://github.com/spleenteo/flow 'v*' 2>/dev/null |
+  sed 's#.*refs/tags/v##' | sort -t. -k1,1n -k2,2n -k3,3n | tail -1
+```
+
+When the latest is higher than the installed version, compared number by number, the first message to the user carries one line: "Flow <latest> is out (installed: <version>). To update: `claude plugin marketplace update flow && claude plugin update flow@flow`, then restart Claude Code." Silent when the versions match, when the installed one is higher (a development copy), and when the command prints nothing (offline, or the repo unreachable).
+
 ## Upgrade
 
 Old traces are what an earlier version of this plugin left behind under other names. The upgrade rewrites the ones Flow owns and points at the ones it doesn't. It is a run of its own: when `/flow:dev` or `/flow:project` finds old traces, it says so, offers the upgrade, and nothing else happens in that run (no profile, no first-run questions, no work opened or resumed). The next run starts on the upgraded state. `/flow:changelog`, `/flow:archive` and `flow:docs` never upgrade: facing an older configuration file, they stop and point to `/flow:dev`.

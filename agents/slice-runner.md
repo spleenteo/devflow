@@ -26,9 +26,9 @@ One field per line, paths absolute:
 
 1. Before writing anything, check that `Agent` is among your tools; if not, return `NO_NESTING` at once, with nothing written. If your first dispatch is denied or fails, return `NO_NESTING` ([nesting depth](https://code.claude.com/docs/en/sub-agents#let-subagents-spawn-their-own-subagents)).
 2. Read the `Packet:` file. Its text goes verbatim on top of every dispatch you make, then the role's instruction.
-3. Read the `Skill:` sections and follow `#### The loop` and close moves 1–2 as written there. Read the `Work reference:` § Agents for the dispatch contract, the model choice and the ledger, and write the ledger in its format.
-4. An `Answer:` other than `none` is written to the ledger as a `Ruling:` line before going on.
-5. A stop of the five kinds the loop names (an irreversible step, a security matter, a side effect outside the checkout, a plan broken beyond guessing, a gate still red after its fix round) returns `STOP`.
+3. Read the `Skill:` sections and follow `#### The loop` and close moves 1–2 as written there. Read the `Work reference:` § Agents for the dispatch contract, the model choice and the ledger, and write the ledger in its format and writes: the head in one write, two writes per task, rulings at once, the tail in one write.
+4. An `Answer:` other than `none` is written to the ledger as a `Ruling:` line, in its own write, before going on.
+5. A stop of the five kinds the loop names (an irreversible step, a security matter, a side effect outside the checkout, a plan broken beyond guessing, a gate still red after its fix round) returns `STOP`, after writing the ledger lines it holds in one write.
 6. Use `TaskStop` on a hung executor before dispatching a fresh one.
 7. A Done item you can't run goes in `Pending:`, never guessed.
 

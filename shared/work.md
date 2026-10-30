@@ -116,9 +116,9 @@ description: "<what the user wants to achieve>"
 
 `lessons.md` is created at the first slice close: one rule per line, the digest every later subagent reads instead of `slices.md` in full.
 
-**Closing a slice, the bookkeeping.** Tick the slice in `STATUS.md`, set `slice:` to the next one and `step:` to `plan`, add the Log line. A closed slice isn't reopened: if a later slice finds an earlier one was wrong, the fix goes into the current slice, stated in `slices.md`, or becomes a new slice at the end (project: if the appetite allows).
+**Closing a slice, the bookkeeping.** Tick the slice in `STATUS.md`, set `slice:` to the next one and `step:` to `plan`, add the Log line. These edits, the narrative into `slices.md`, the rules into `lessons.md` and the commit go in one call, chained with `&&` so it commits only when every write succeeded (project: the commit only when the home is under version control). If the call stops before the commit: `git status --short` and `git diff --stat` on the three files, then finish the missing writes, then commit. A closed slice isn't reopened: if a later slice finds an earlier one was wrong, the fix goes into the current slice, stated in `slices.md`, or becomes a new slice at the end (project: if the appetite allows).
 
-**Commits.** repo: commit at each phase close and slice close, with explicit `git add <paths>`, never `-A` or `.`. project: the same when the home is under version control; in a plain folder the files are the record.
+**Commits.** repo: commit at each phase close and slice close, `STATUS.md` updated first and in the same commit, with explicit `git add <paths>`, never `-A` or `.`. project: the same when the home is under version control; in a plain folder the files are the record.
 
 ## Decisions
 
@@ -203,12 +203,12 @@ Two environment variables beat all of this, and Flow can't see past them: `CLAUD
 
 **Ledger.** `<work dir>/V<n>-ledger.md`, written by the slice runner (the conductor in the fallback) and committed with the close.
 
-- First line `# Ledger — V<n>`. At the start of execute the runner runs `printenv CLAUDE_CODE_SUBAGENT_MODEL_FORCE CLAUDE_CODE_SUBAGENT_MODEL` once and writes the result on the second line.
-- One line per dispatch, written once, when the agent returns: `- <task> · <agent> · <model> · <outcome> · <commits>`. The model is the passed value, or `definition: <alias>` when none was passed, plus `forced` when the variable is set.
-- `- T<n>: complete` when a task's review passes; `Ruling: <what> — <why> — <cost if wrong>` for each ruling.
+- The head, in one write: first line `# Ledger — V<n>`, second line the result of `printenv CLAUDE_CODE_SUBAGENT_MODEL_FORCE CLAUDE_CODE_SUBAGENT_MODEL`, run once at the start of execute.
+- Two writes per task. At the first executor return that carries commits: its line `- <task> · <agent> · <model> · <outcome> · <commits>` and its report, with any earlier return of the task held until then. When the task passes: every later line of the task in order (each review, each fix dispatch with its report), then `- T<n>: complete`. A task reopened after `complete` gets one more write when it passes again. Before a `STOP` returns, the lines held so far go in one write. The model is the passed value, or `definition: <alias>` when none was passed, plus `forced` when the variable is set.
+- `Ruling: <what> — <why> — <cost if wrong>`, written at once as its own write: a ruling on findings, a split (`T4a`/`T4b`), and the user's answer to a `STOP`, written when the runner is dispatched again.
 - Each agent's report is appended under its line, trimmed to status, commits, tests run, `Servers:`, concerns.
-- On resume at `step: execute` the ledger is reloaded, and tasks marked complete are never dispatched again.
-- At the end, in this order: any `pending: <Done item>` lines, one each; `Final review: <done | skipped>`; `Gate: <result>`; then `## Close draft` holding `Narrative: <text>`, `Lessons:` (one rule per line) and `Decision candidate: <gist | none>`.
+- On resume at `step: execute` the ledger is reloaded, and tasks marked complete are never dispatched again. A task with commits and no `complete` is reviewed again: its commits in the ledger, plus the later commits whose subject is `Fix review findings on T<n>:`. A task resumed between its two writes is reviewed from round 1, and review verdicts and low findings not yet written are lost. Ledgers written one line per dispatch have the same lines and resume the same way.
+- At the end, in one write and in this order: the final review's lines and its fix round; any `pending: <Done item>` lines, one each; `Final review: <done | skipped>`; `Gate: <result>`; then `## Close draft` holding `Narrative: <text>`, `Lessons:` (one rule per line) and `Decision candidate: <gist | none>`.
 
 ## Closing a work
 

@@ -16,7 +16,7 @@ Not in this work:
 
 ## V1 — The slice runs in a subagent
 
-Decision: [2026-10-29-slice-execution-runs-in-a-runner-subagent](../../decisions-log/2026-10-29-slice-execution-runs-in-a-runner-subagent.md). It supersedes the decision that kept the loop in the main session on a false premise.
+Decision: [2026-10-29-slice-execution-runs-in-a-runner-subagent](../../../decisions-log/2026-10-29-slice-execution-runs-in-a-runner-subagent.md). It supersedes the decision that kept the loop in the main session on a false premise.
 
 **In.**
 - A new agent, `flow:slice-runner`, dispatched once per slice after the first stop's yes. It runs `step: execute` as `skills/dev/SKILL.md` describes it today (order, dispatches, statuses, reviews, fix rounds, rulings, the ledger, the final review) and the close's moves 1 and 2 (gate, servers, the slice narrative and the `lessons.md` lines drafted from the ledger). It returns one short summary: status, the slice's commits, the gate result, the rulings, a decision candidate if any, Done items it could not run as `pending: <item>`.

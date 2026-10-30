@@ -36,8 +36,8 @@ Claude Code lets a skill clear or compact the session itself, or a measured work
 
 ## References
 
-- docs/work/2026-10-29-lean-conductor/slices.md
-- docs/work/2026-10-29-lean-conductor/baseline.md
+- docs/work/archive/2026-10-29-lean-conductor/slices.md
+- docs/work/archive/2026-10-29-lean-conductor/baseline.md
 
 ## Status log
 

@@ -7,7 +7,7 @@ updated: 2026-10-29
 
 # V2 plan — Screenshots checked out of the main session
 
-**Mandate**: [slices.md § V2](slices.md) · decisions: [design is agnostic](../../decisions-log/2026-10-27-design-is-agnostic-skill-plus-tool-adapter.md), [design runs as a dev phase](../../decisions-log/2026-10-27-design-runs-as-a-dev-phase.md), [slice runner](../../decisions-log/2026-10-29-slice-execution-runs-in-a-runner-subagent.md) · **Guidelines**: [Tests, Naming, Language, Commits, Gate](../../development-guidelines.md) · **Lessons**: [lessons.md](lessons.md) · **Execution rules**: [executor.md](../../../agents/executor.md)
+**Mandate**: [slices.md § V2](slices.md) · decisions: [design is agnostic](../../../decisions-log/2026-10-27-design-is-agnostic-skill-plus-tool-adapter.md), [design runs as a dev phase](../../../decisions-log/2026-10-27-design-runs-as-a-dev-phase.md), [slice runner](../../../decisions-log/2026-10-29-slice-execution-runs-in-a-runner-subagent.md) · **Guidelines**: [Tests, Naming, Language, Commits, Gate](../../../development-guidelines.md) · **Lessons**: [lessons.md](lessons.md) · **Execution rules**: [executor.md](../../../../agents/executor.md)
 
 **Summary**
 1. New agent `agents/screen-checker.md`: mid tier, low effort, `tools: Read`, returns a verdict per screen in a few lines.

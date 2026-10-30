@@ -7,6 +7,7 @@ work: lean-conductor
 stacks: [generic]
 base: main
 updated: 2026-10-30
+archived: 2026-10-30
 tags: [work, lean-conductor]
 description: "Cut the context the main session carries through a work: run each slice's execution in a subagent, keep screenshots out of the session, update the work's state with fewer calls."
 ---

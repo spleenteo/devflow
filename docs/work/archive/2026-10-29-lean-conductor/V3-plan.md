@@ -7,7 +7,7 @@ updated: 2026-10-30
 
 # V3 plan — Bookkeeping in fewer writes
 
-**Mandate**: [slices.md § V3](slices.md) · decision: [slice runner](../../decisions-log/2026-10-29-slice-execution-runs-in-a-runner-subagent.md) · **Guidelines**: [Tests, Naming, Language, Commits, Gate](../../development-guidelines.md) · **Lessons**: [lessons.md](lessons.md) · **Execution rules**: [executor.md](../../../agents/executor.md)
+**Mandate**: [slices.md § V3](slices.md) · decision: [slice runner](../../../decisions-log/2026-10-29-slice-execution-runs-in-a-runner-subagent.md) · **Guidelines**: [Tests, Naming, Language, Commits, Gate](../../../development-guidelines.md) · **Lessons**: [lessons.md](lessons.md) · **Execution rules**: [executor.md](../../../../agents/executor.md)
 
 **Summary**
 1. `shared/work.md` § Agents › Ledger: the head in one write, two writes per task, rulings at once, the tail in one write; same line shapes, so old ledgers resume as before. § Closing a slice: `STATUS.md`, `slices.md`, `lessons.md` and the commit in one chained call.

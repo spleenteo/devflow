@@ -7,7 +7,7 @@ updated: 2026-10-29
 
 # V1 plan — The slice runs in a subagent
 
-**Mandate**: [slices.md § V1](slices.md) · [decision](../../decisions-log/2026-10-29-slice-execution-runs-in-a-runner-subagent.md) · **Guidelines**: [Tests, Naming, Language, Commits, Gate](../../development-guidelines.md) · **Lessons**: none yet · **Execution rules**: [executor.md](../../../agents/executor.md)
+**Mandate**: [slices.md § V1](slices.md) · [decision](../../../decisions-log/2026-10-29-slice-execution-runs-in-a-runner-subagent.md) · **Guidelines**: [Tests, Naming, Language, Commits, Gate](../../../development-guidelines.md) · **Lessons**: none yet · **Execution rules**: [executor.md](../../../../agents/executor.md)
 
 **Summary**
 1. New agent `agents/slice-runner.md` (top tier) runs the loop and close moves 1–2 as drafts, returns `DONE | STOP | NO_NESTING`.

@@ -36,8 +36,8 @@ Claude Code changes or removes nested subagents, or a measured work shows the ru
 
 ## References
 
-- [slices](../work/2026-10-29-lean-conductor/slices.md)
-- [baseline](../work/2026-10-29-lean-conductor/baseline.md)
+- [slices](../work/archive/2026-10-29-lean-conductor/slices.md)
+- [baseline](../work/archive/2026-10-29-lean-conductor/baseline.md)
 
 ## Status log
 

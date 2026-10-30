@@ -267,7 +267,7 @@ Applies to frame, shaping, kickoff, slicing and reality. Four moves, in order:
    | **Criterion fidelity** | Each requirement, shape or slice names the criterion line it serves; whatever traces to none is reported with what keeping it would take |
 
    The frame phase checks itself differently: that the criterion block exists and that the body doesn't contradict it.
-2. **Update `STATUS.md`**: `phase:`, `updated:`, Log line; when the home is under version control, commit it with the document just produced, in one call (explicit `git add`).
+2. **Update `STATUS.md`**: `phase:`, `updated:`, Log line; when the home is under version control, commit it with the document just produced, in one call (explicit `git add`). If the call stops before the commit: `git status --short`, finish the missing write, then commit.
 3. **Decision candidate** in the same report, when the work reference, § Decisions, says so: a real alternative discarded, a known problem deferred on purpose, a choice that will surprise whoever reads the plan later. Propose it; never write it unasked, and on a yes send the `decision-write` request that section shows.
 4. **Stop and ask** before the next phase.
 
